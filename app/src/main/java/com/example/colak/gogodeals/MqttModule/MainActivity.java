@@ -47,7 +47,7 @@ public class MainActivity extends AppCompatActivity  {
         LoginManager.getInstance().registerCallback(callbackManager,
                 new FacebookCallback<LoginResult>() {
 
-                    Intent gogoApp = new Intent(MainActivity.this, connection.class);
+                    Intent gogoApp = new Intent(MainActivity.this, MapsActivity.class);
 
                     @Override
                     public void onSuccess(LoginResult loginResult) {
