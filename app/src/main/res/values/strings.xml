@@ -1,4 +1,7 @@
 <resources>
     <string name="app_name">GogoDeals</string>
     <string name="action_settings">Settings</string>
+    <string name="testing">testing</string>
+    <string name="facebook_app_id">1845779298989366</string>
+
 </resources>
