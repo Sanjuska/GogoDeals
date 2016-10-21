@@ -21,7 +21,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         super.onCreate(savedInstanceState);
         //Olle, map needs to be initialized :D
         //also changed the version of google play services on gradle.app from 9.6.1 to
-        //7.5.0 cause this is compatible
+        //7.5.0 cause of compatibility.
+        //Also, on manifest we just need one main launcher for the whole app :D
         MapsInitializer.initialize(getApplicationContext());
 
         setContentView(R.layout.activity_maps);
