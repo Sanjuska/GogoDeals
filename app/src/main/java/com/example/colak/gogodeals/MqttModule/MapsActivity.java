@@ -23,7 +23,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
 
-    private Connection connection;
+    public Connection connection;
     public static GoogleMap mMap;
     /**
      * ATTENTION: This was auto-generated to implement the App Indexing API.
