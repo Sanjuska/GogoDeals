@@ -23,7 +23,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
 
-    private Connection connection;
+    private SubscribeOnDeal connection;
     public static GoogleMap mMap;
     /**
      * ATTENTION: This was auto-generated to implement the App Indexing API.
@@ -45,7 +45,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
-        connection = new Connection(this);
+        connection = new SubscribeOnDeal(this);
         //sleep(2000);
         //connection.showDealOnTheMap();
         // ATTENTION: This was auto-generated to implement the App Indexing API.
