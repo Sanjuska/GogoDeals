@@ -1,6 +1,7 @@
 package com.example.colak.gogodeals.MqttModule;
 
 import android.Manifest;
+import android.content.Context;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -14,11 +15,10 @@ import android.support.v4.app.FragmentActivity;
 import android.util.Base64;
 import android.util.Log;
 import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.Button;
+import android.widget.Chronometer;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.PopupWindow;
 import android.widget.TextView;
 
 import com.example.colak.gogodeals.R;
@@ -28,15 +28,12 @@ import com.google.android.gms.appindexing.Thing;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationListener;
-import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.model.BitmapDescriptor;
-import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
@@ -59,13 +56,6 @@ public class MapsActivity extends FragmentActivity implements
     LocationManager locationManager;
 
     Marker lastOpened = null;
-
-    PopupWindow popupMessage;
-    LocationRequest locationRequest;
-
-
-    Button popupButton;
-    LinearLayout mainLayout;
 
     // Creating an instance of MarkerOptions to set position
     private GoogleApiClient client;
@@ -124,7 +114,7 @@ public class MapsActivity extends FragmentActivity implements
         // Add a marker in Gothenburg and move the camera
         LatLng gothenburg = new LatLng(57.7089, 11.9746);
         mMap.addMarker(new MarkerOptions().position(gothenburg).title("Gothenburg"));
-        //mMap.moveCamera(CameraUpdateFactory.newLatLng(gothenburg));
+        mMap.moveCamera(CameraUpdateFactory.newLatLng(gothenburg));
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             return;
         }
@@ -133,7 +123,7 @@ public class MapsActivity extends FragmentActivity implements
         mMap.setMyLocationEnabled(true);
         mMap.getUiSettings().setScrollGesturesEnabled(false);
         mMap.getUiSettings().setCompassEnabled(false);
-        mMap.getUiSettings().setRotateGesturesEnabled(false);
+        mMap.getUiSettings().setRotateGesturesEnabled(true);
         mMap.getUiSettings().setMyLocationButtonEnabled(false);
         mMap.getUiSettings().setZoomGesturesEnabled(true);
         mMap.setMinZoomPreference(14.0f);
@@ -161,6 +151,7 @@ public class MapsActivity extends FragmentActivity implements
                             }
                         }
                         Bitmap icon;
+
 
                         //BitmapDescriptor deal = BitmapDescriptorFactory.fromResource(R.drawable.deal);
                         BitmapDescriptor deal = BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_MAGENTA);
