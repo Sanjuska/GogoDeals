@@ -2,51 +2,69 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="150dp"
-    android:layout_height="200dp"
+    android:layout_width="300dp"
+    android:layout_height="300dp"
     android:weightSum="1"
     android:baselineAligned="false"
     android:gravity="center_vertical|center_horizontal"
     android:orientation="vertical">
 
     <android.support.constraint.ConstraintLayout
-        android:layout_width="50dp"
-        android:layout_height="50dp">
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:id="@+id/picture">
 
         <ImageView
             app:srcCompat="@drawable/common_google_signin_btn_icon_dark_pressed"
             android:id="@+id/dealPicture"
-            android:layout_width="50dp"
-            android:layout_height="50dp" />
+            android:layout_width="100dp"
+            android:textColor="@color/com_facebook_button_login_silver_background_color"
+            android:layout_height="100dp" />
 
     </android.support.constraint.ConstraintLayout>
 
     <TextView
         android:text="TextView"
         android:layout_width="match_parent"
-        android:layout_height="30dp"
+        android:layout_height="20dp"
+        android:textAlignment="center"
+        android:textColor="@color/com_facebook_button_login_silver_background_color"
         android:id="@+id/description"
         android:layout_marginTop="5dp" />
 
     <TextView
         android:text="TextView"
         android:layout_width="match_parent"
-        android:layout_height="30dp"
+        android:layout_height="20dp"
+        android:textAlignment="center"
+        android:textColor="@color/com_facebook_button_login_silver_background_color"
         android:layout_marginTop="5dp"
         android:id="@+id/price" />
 
     <TextView
         android:text="TextView"
         android:layout_width="match_parent"
-        android:layout_height="30dp"
-        android:paddingBottom="10dp"
+        android:layout_height="20dp"
+        android:textAlignment="center"
         android:layout_marginTop="5dp"
+        android:textColor="@color/com_facebook_button_login_silver_background_color"
         android:id="@+id/units" />
 
-    <Chronometer
+
+    <TextView
+        android:text="TextView"
         android:layout_width="match_parent"
-        android:layout_height="30dp"
+        android:layout_height="20dp"
+        android:textAlignment="center"
         android:layout_marginTop="5dp"
+        android:textColor="@color/com_facebook_button_login_silver_background_color"
         android:id="@+id/duration" />
+
+    <Button android:text=""
+        android:id="@+id/grab"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:background="@drawable/grab">
+    </Button>
 
 </LinearLayout>
