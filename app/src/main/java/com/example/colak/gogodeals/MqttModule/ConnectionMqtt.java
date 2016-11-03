@@ -146,7 +146,7 @@ public class ConnectionMqtt extends Activity implements MqttCallback {
         }
     }
     public void connectionLost(Throwable cause){
-        Log.d(TAG, "Connection lost");
+        Log.d(TAG, "Deals lost");
         System.exit(1);
     }
     //Called when publish has been completed and accepted by broker.

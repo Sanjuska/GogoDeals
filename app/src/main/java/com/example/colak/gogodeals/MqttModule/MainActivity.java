@@ -28,6 +28,7 @@ import java.util.Arrays;
 public class MainActivity extends AppCompatActivity  {
 
     private TextView info;
+
     private LoginButton loginButton;
 
     private CallbackManager callbackManager;
@@ -77,14 +78,11 @@ public class MainActivity extends AppCompatActivity  {
                     @Override
                     public void onSuccess(LoginResult loginResult) {
                         startActivity(gogoApp);
-
                     }
 
                     @Override
                     public void onCancel() {
-
                         Toast.makeText(MainActivity.this, "Login canceled", Toast.LENGTH_SHORT).show();
-
                     }
 
                     @Override
@@ -92,23 +90,13 @@ public class MainActivity extends AppCompatActivity  {
                         info.setText("Login attempt failed.");
                         Log.e("Failed: ",e.toString());
                     }
-
-
                 }
         );
-
     }
 
     @Override
     protected void onActivityResult(int requestCode,int resultCode,Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         callbackManager.onActivityResult(requestCode, resultCode, data);
-
-
-
     }
-
-
-
-
 }
