@@ -14,12 +14,9 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.util.Base64;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Chronometer;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.PopupWindow;
 import android.widget.TextView;
 
 import com.example.colak.gogodeals.R;
@@ -122,18 +119,15 @@ public class MapsActivity extends FragmentActivity implements
         mMap.getUiSettings().setCompassEnabled(false);
         mMap.getUiSettings().setRotateGesturesEnabled(true);
         mMap.getUiSettings().setMyLocationButtonEnabled(false);
-        mMap.getUiSettings().setZoomGesturesEnabled(true);
-        mMap.setMaxZoomPreference(15.0f);
-        mMap.setMinZoomPreference(17.0f);
+        mMap.getUiSettings().setZoomGesturesEnabled(false);
 
         // GoogleMap marker settings
         mMap.setOnMarkerClickListener(
                 new GoogleMap.OnMarkerClickListener() {
                     boolean doNotMoveCameraToCenterMarker = true;
-
                     public boolean onMarkerClick(Marker marker) {
                         // Check if there is an open info window
-                        /*if (lastOpened != null) {
+                        if (lastOpened != null) {
                             // Close the info window
                             lastOpened.hideInfoWindow();
 
@@ -144,71 +138,30 @@ public class MapsActivity extends FragmentActivity implements
                                 // Return so that the info window isn't openned again
                                 return true;
                             }
-                        }*/
+                        }
 
                         // Open the info window for the marker
-                        //Marker.showInfoWindow();
-
-                        LayoutInflater layoutInflater
-                                = (LayoutInflater) getBaseContext()
-                                .getSystemService(LAYOUT_INFLATER_SERVICE);
-                        View popupView = layoutInflater.inflate(R.layout.deal_pop_up, null);
-                        final PopupWindow popupWindow = new PopupWindow(
-                                popupView,
-                                LinearLayout.LayoutParams.WRAP_CONTENT,
-                                LinearLayout.LayoutParams.WRAP_CONTENT);
-
-
-                        String[] components = marker.getSnippet().split(";");
-
-                        TextView description = (TextView) popupView.findViewById(R.id.description);
-                        description.setText(components[0].split(":")[1]);
-                        Log.d("InfoWindow description:", components[0]);
-
-                        TextView price = ((TextView) popupView.findViewById(R.id.price));
-                        price.setText(components[1].split(":")[1]);
-                        Log.d("InfoWindow description:", components[1]);
-
-                        TextView units = ((TextView) popupView.findViewById(R.id.units));
-                        units.setText(components[2].split(":")[1]);
-                        Log.d("InfoWindow description:", components[0]);
-
-                        Chronometer duration = ((Chronometer) popupView.findViewById(R.id.duration));
-                        String dur = components[3].split(":")[1];
-                        Log.d("InfoWindow description:", dur);
-
-                        ImageView dealPicture = (ImageView) popupView.findViewById(R.id.dealPicture);
-                        // Converting String byte picture to an ImageView
-                        String base = components[4].split(",")[1];
-                        byte[] decodedString = Base64.decode(base, Base64.DEFAULT);
-                        Bitmap decodedByte = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
-                        dealPicture.setImageBitmap(decodedByte);
-                        Log.d("InfoWindow picture:", components[4]);
-
-                        //popupWindow.showAtLocation(popupView,0,0);
-
-
+                        marker.showInfoWindow();
                         // Re-assign the last openned such that we can close it later
-                        //lastOpened = marker;
+                        lastOpened = marker;
                         return doNotMoveCameraToCenterMarker;
                     }
                 });
-    }
 
         //adapter for custom info-window - added icon for navigation
-        //mMap.setInfoWindowAdapter(new GoogleMap.InfoWindowAdapter() {
+        mMap.setInfoWindowAdapter(new GoogleMap.InfoWindowAdapter() {
 
 
-         /*   @Override
+            @Override
             public View getInfoWindow(Marker arg0) {
                 // TODO Auto-generated method stub
                 return null;
-            }*/
+            }
 
             //Sanja
             //Showing deal in the marker popup
-           // @Override
-          //  public View getInfoContents(Marker marker) {
+            @Override
+            public View getInfoContents(Marker marker) {
                 // TODO Auto-generated method stub
                 // Getting view from the layout file info_window_layout
                /* LayoutInflater layoutInflater
@@ -222,7 +175,7 @@ public class MapsActivity extends FragmentActivity implements
 
                /* Getting reference to the TextView to get information
                 from the webpage in the popup.*/
-               /* View popupView = getLayoutInflater().inflate(R.layout.deal_pop_up, null);
+                View popupView = getLayoutInflater().inflate(R.layout.deal_pop_up, null);
                 String[] components = marker.getSnippet().split(";");
 
                 TextView description = (TextView) popupView.findViewById(R.id.description);
@@ -251,9 +204,9 @@ public class MapsActivity extends FragmentActivity implements
 
                     // Returning the view containing InfoWindow contents
                     return popupView;
-                }*/
-      //  });
-    //}
+                }
+        });
+    }
     //Unused method
     public Action getIndexApiAction() {
         Thing object = new Thing.Builder()

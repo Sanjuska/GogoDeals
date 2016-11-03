@@ -152,6 +152,7 @@ public class Deals extends AppCompatActivity implements
                 .position(dealPosition)
                 .title(company)
                 .snippet(description + ";" + price + ";" + units + ";" + duration + ";" + dealPicture));
+        Log.i("deal added" ,"woop");
 
     }
 }
