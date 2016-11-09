@@ -173,6 +173,7 @@ public class MapsActivity extends FragmentActivity implements
                         popupMessage.update(700, 620);
 
 
+
                         //marker.showInfoWindow();
                         // Re-assign the last openned such that we can close it later
                         lastOpened = marker;
