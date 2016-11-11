@@ -146,9 +146,19 @@ public class MapsActivity extends FragmentActivity implements
         }
 
         // Add a marker in Gothenburg and move the camera
-        LatLng gothenburg = new LatLng(57.7089, 11.9746);
-        mMap.addMarker(new MarkerOptions().position(gothenburg).title("Gothenburg"));
-        //mMap.moveCamera(CameraUpdateFactory.newLatLng(gothenburg));
+
+        mMap.addMarker(new MarkerOptions()
+                .position(new LatLng(57.7023251, 12.9610613))
+                .icon(BitmapDescriptorFactory.fromResource(R.drawable.burger)));
+
+        mMap.addMarker(new MarkerOptions()
+                .position(new LatLng(57.70295718, 12.96085882))
+                .icon(BitmapDescriptorFactory.fromResource(R.drawable.beer)));
+
+        mMap.addMarker(new MarkerOptions()
+                .position(new LatLng(57.70189092, 12.96091247))
+                .icon(BitmapDescriptorFactory.fromResource(R.drawable.shirt)));
+
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             return;
         }
