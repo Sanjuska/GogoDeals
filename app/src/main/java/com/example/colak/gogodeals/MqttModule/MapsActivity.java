@@ -2,19 +2,25 @@ package com.example.colak.gogodeals.MqttModule;
 
 import android.Manifest;
 import android.content.pm.PackageManager;
+import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.location.Location;
-import android.location.LocationManager;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.SystemClock;
 import android.support.annotation.NonNull;
+import android.support.annotation.RequiresApi;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.util.Base64;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
+import android.view.animation.Interpolator;
+import android.view.animation.LinearInterpolator;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -39,6 +45,7 @@ import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MapStyleOptions;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
@@ -56,9 +63,10 @@ public class MapsActivity extends FragmentActivity implements
 
     Location mLastLocation;
 
-    LocationManager locationManager;
+    Marker mPositionMarker;
 
     Marker lastOpened = null;
+
 
     PopupWindow popupMessage;
     LocationRequest locationRequest;
@@ -121,6 +129,21 @@ public class MapsActivity extends FragmentActivity implements
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
+
+        try {
+            // Customise the styling of the base map using a JSON object defined
+            // in a raw resource file.
+            boolean success = mMap.setMapStyle(
+                    MapStyleOptions.loadRawResourceStyle(
+                            this, R.raw.json));
+
+            if (!success) {
+                Log.e("MapsActivityRaw", "Style parsing failed.");
+            }
+        } catch (Resources.NotFoundException e) {
+            Log.e("MapsActivityRaw", "Can't find style.", e);
+        }
+
         // Add a marker in Gothenburg and move the camera
         LatLng gothenburg = new LatLng(57.7089, 11.9746);
         mMap.addMarker(new MarkerOptions().position(gothenburg).title("Gothenburg"));
@@ -130,7 +153,7 @@ public class MapsActivity extends FragmentActivity implements
         }
 
         //GoogleMap settings
-        mMap.setMyLocationEnabled(true);
+        mMap.setMyLocationEnabled(false);
         mMap.getUiSettings().setScrollGesturesEnabled(false);
         mMap.getUiSettings().setCompassEnabled(false);
         mMap.getUiSettings().setRotateGesturesEnabled(false);
@@ -138,6 +161,9 @@ public class MapsActivity extends FragmentActivity implements
         mMap.getUiSettings().setZoomGesturesEnabled(true);
         mMap.setMinZoomPreference(14.0f);
         mMap.setMaxZoomPreference(18.0f);
+
+
+
 
 
 
@@ -257,6 +283,7 @@ public class MapsActivity extends FragmentActivity implements
         super.onStop();
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
     public void onConnected(Bundle connectionHint) {
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
@@ -280,6 +307,7 @@ public class MapsActivity extends FragmentActivity implements
 
     // Define a listener that responds to location updates
     LocationListener locationListener = new LocationListener() {
+        @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
         public void onLocationChanged(Location location) {
             // Called when a new location is found by the network location provider.
             makeUseOfNewLocation(location);
@@ -311,13 +339,64 @@ public class MapsActivity extends FragmentActivity implements
     }
 
     //Location view settings
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     private void makeUseOfNewLocation(Location location) {
         // Define a listener that responds to location updates
         LatLng myLatLang = new LatLng(location.getLatitude(), location.getLongitude());
         // Called when a new location is found by the network location provider.
         CameraPosition myPosition = new CameraPosition.Builder().
-                target(myLatLang).zoom(17.0f).build();
+                target(myLatLang).zoom(mMap.getCameraPosition().zoom).build();
         //locationListener.onLocationChanged(location);
         mMap.animateCamera(CameraUpdateFactory.newCameraPosition(myPosition));
+
+        if (mPositionMarker == null) {
+
+            mPositionMarker = mMap.addMarker(new MarkerOptions()
+                    .flat(true)
+                    .icon(BitmapDescriptorFactory
+                            .fromResource(R.drawable.shopper))
+                    .anchor(0.5f, 0.5f)
+                    .position(myLatLang));
+        }
+
+        animateMarker(mPositionMarker, location); // Helper method for smooth
+        // animation
+
+
+    }
+
+    public void animateMarker(final Marker marker, final Location location) {
+        final Handler handler = new Handler();
+        final long start = SystemClock.uptimeMillis();
+        final LatLng startLatLng = marker.getPosition();
+        final double startRotation = marker.getRotation();
+        final long duration = 500;
+
+        final Interpolator interpolator = new LinearInterpolator();
+
+        handler.post(new Runnable() {
+            @Override
+            public void run() {
+                long elapsed = SystemClock.uptimeMillis() - start;
+                float t = interpolator.getInterpolation((float) elapsed
+                        / duration);
+
+                double lng = t * location.getLongitude() + (1 - t)
+                        * startLatLng.longitude;
+                double lat = t * location.getLatitude() + (1 - t)
+                        * startLatLng.latitude;
+
+                // rotation = (float) (t * location.getBearing() + (1 - t)
+                    //    * startRotation);
+
+                marker.setPosition(new LatLng(lat, lng));
+                //marker.setRotation(rotation);
+
+                if (t < 1.0) {
+                    // Post again 16ms later.
+                    handler.postDelayed(this, 16);
+                }
+            }
+        });
     }
 }
