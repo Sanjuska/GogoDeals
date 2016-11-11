@@ -123,6 +123,7 @@ public class MapsActivity extends FragmentActivity implements
         locationRequest = LocationRequest.create();
         locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
         locationRequest.setInterval(100);
+
     }
 
     //Olle, adding Gothenburg marker on the map
@@ -135,7 +136,7 @@ public class MapsActivity extends FragmentActivity implements
             // in a raw resource file.
             boolean success = mMap.setMapStyle(
                     MapStyleOptions.loadRawResourceStyle(
-                            this, R.raw.json));
+                            this, R.raw.grey));
 
             if (!success) {
                 Log.e("MapsActivityRaw", "Style parsing failed.");
@@ -156,11 +157,11 @@ public class MapsActivity extends FragmentActivity implements
         mMap.setMyLocationEnabled(false);
         mMap.getUiSettings().setScrollGesturesEnabled(false);
         mMap.getUiSettings().setCompassEnabled(false);
-        mMap.getUiSettings().setRotateGesturesEnabled(false);
+        mMap.getUiSettings().setRotateGesturesEnabled(true);
         mMap.getUiSettings().setMyLocationButtonEnabled(false);
         mMap.getUiSettings().setZoomGesturesEnabled(true);
-        mMap.setMinZoomPreference(14.0f);
-        mMap.setMaxZoomPreference(18.0f);
+        mMap.setMinZoomPreference(16.0f);
+        mMap.setMaxZoomPreference(19.0f);
 
 
 
@@ -345,7 +346,7 @@ public class MapsActivity extends FragmentActivity implements
         LatLng myLatLang = new LatLng(location.getLatitude(), location.getLongitude());
         // Called when a new location is found by the network location provider.
         CameraPosition myPosition = new CameraPosition.Builder().
-                target(myLatLang).zoom(mMap.getCameraPosition().zoom).build();
+                target(myLatLang).zoom(mMap.getCameraPosition().zoom).bearing(mMap.getCameraPosition().bearing).build();
         //locationListener.onLocationChanged(location);
         mMap.animateCamera(CameraUpdateFactory.newCameraPosition(myPosition));
 
@@ -369,7 +370,6 @@ public class MapsActivity extends FragmentActivity implements
         final Handler handler = new Handler();
         final long start = SystemClock.uptimeMillis();
         final LatLng startLatLng = marker.getPosition();
-        final double startRotation = marker.getRotation();
         final long duration = 500;
 
         final Interpolator interpolator = new LinearInterpolator();
@@ -386,11 +386,9 @@ public class MapsActivity extends FragmentActivity implements
                 double lat = t * location.getLatitude() + (1 - t)
                         * startLatLng.latitude;
 
-                // rotation = (float) (t * location.getBearing() + (1 - t)
-                    //    * startRotation);
 
                 marker.setPosition(new LatLng(lat, lng));
-                //marker.setRotation(rotation);
+                marker.setRotation(mMap.getCameraPosition().bearing);
 
                 if (t < 1.0) {
                     // Post again 16ms later.
