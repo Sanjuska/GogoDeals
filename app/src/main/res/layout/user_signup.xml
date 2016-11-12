@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <EditText
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/email"
+            android:text="email"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentEnd="true" />
+
+        <EditText
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/password"
+            android:layout_below="@+id/email"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentEnd="true"
+            android:text="password"
+            android:inputType="textPassword"
+            android:hint="password" />
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Sign up"
+            android:id="@+id/signup"
+            android:layout_below="@+id/password"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="52dp" />
+
+        <EditText
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/confirmpassword"
+            android:text="confirm password"
+            android:layout_below="@+id/password"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentEnd="true"
+            android:inputType="textPassword"
+            android:hint="confirm password" />
+
+    </RelativeLayout>
+</LinearLayout>
