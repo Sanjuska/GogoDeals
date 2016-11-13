@@ -21,12 +21,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private Button mainLogin;
 
+    private TextView welcometext;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main_screen);
 
+        welcometext = (TextView)findViewById(R.id.welcometext);
         mainLogin = (Button) findViewById(R.id.mainLogin);
 
         mainLogin.setOnClickListener(this);

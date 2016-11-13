@@ -21,4 +21,13 @@
         android:layout_alignParentStart="true"
         android:layout_below="@+id/mainLogin"
         android:layout_alignParentLeft="true" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Welcome to Gogodeals"
+        android:id="@+id/welcometext"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentEnd="true"
+        android:background="#c8c4c4" />
 </RelativeLayout>
