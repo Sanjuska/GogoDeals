@@ -15,12 +15,18 @@
 
     <style name="TextViewStyle">
         <item name="android:textColor">@color/textViewColor</item>
-        <item name="android:textSize">12dp</item>
-        <item name="android:layout_marginTop">5dp</item>
+        <item name="android:textSize">13sp</item>
         <item name="android:paddingBottom">5dp</item>
-        <item name="android:fontFamily">serif-monospace</item>
+        <item name="android:fontFamily">normal</item>
     </style>
 
+    <style name="TextViewStyleHeader">
+        <item name="android:textColor">@color/textViewColor</item>
+        <item name="android:textSize">15sp</item>
+        <item name="android:layout_marginTop">5dp</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:fontFamily">normal</item>
+    </style>
     <style name="PopupWindow">
         <item name="android:popupBackground">@color/popUpColorBackground</item>
     </style>

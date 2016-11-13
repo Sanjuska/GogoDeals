@@ -1,7 +1,6 @@
 package com.example.colak.gogodeals.MqttModule;
 
 import android.Manifest;
-import android.content.Context;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -14,9 +13,12 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.util.Base64;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.View;
-import android.widget.Chronometer;
+import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.PopupWindow;
 import android.widget.TextView;
 
 import com.example.colak.gogodeals.R;
@@ -26,12 +28,15 @@ import com.google.android.gms.appindexing.Thing;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationListener;
+import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptor;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
@@ -55,12 +60,22 @@ public class MapsActivity extends FragmentActivity implements
 
     Marker lastOpened = null;
 
+    PopupWindow popupMessage;
+    LocationRequest locationRequest;
+
+
+    Button popupButton;
+    LinearLayout mainLayout;
+
     // Creating an instance of MarkerOptions to set position
     private GoogleApiClient client;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        popupMessage = new PopupWindow(this);
+
+        mainLayout = new LinearLayout(this);
         //Olle, map needs to be initialized :D
         //also changed the version of google play services on gradle.app from 9.6.1 to
         //7.5.0 cause of compatibility.
@@ -97,8 +112,9 @@ public class MapsActivity extends FragmentActivity implements
                     .build();
         }
         // Acquire a reference to the system Location Manager
-       locationManager  = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
-
+        locationRequest = LocationRequest.create();
+        locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+        locationRequest.setInterval(100);
     }
 
     //Olle, adding Gothenburg marker on the map
@@ -108,7 +124,7 @@ public class MapsActivity extends FragmentActivity implements
         // Add a marker in Gothenburg and move the camera
         LatLng gothenburg = new LatLng(57.7089, 11.9746);
         mMap.addMarker(new MarkerOptions().position(gothenburg).title("Gothenburg"));
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(gothenburg));
+        //mMap.moveCamera(CameraUpdateFactory.newLatLng(gothenburg));
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             return;
         }
@@ -117,14 +133,19 @@ public class MapsActivity extends FragmentActivity implements
         mMap.setMyLocationEnabled(true);
         mMap.getUiSettings().setScrollGesturesEnabled(false);
         mMap.getUiSettings().setCompassEnabled(false);
-        mMap.getUiSettings().setRotateGesturesEnabled(true);
+        mMap.getUiSettings().setRotateGesturesEnabled(false);
         mMap.getUiSettings().setMyLocationButtonEnabled(false);
-        mMap.getUiSettings().setZoomGesturesEnabled(false);
+        mMap.getUiSettings().setZoomGesturesEnabled(true);
+        mMap.setMinZoomPreference(14.0f);
+        mMap.setMaxZoomPreference(18.0f);
+
+
 
         // GoogleMap marker settings
         mMap.setOnMarkerClickListener(
                 new GoogleMap.OnMarkerClickListener() {
                     boolean doNotMoveCameraToCenterMarker = true;
+
                     public boolean onMarkerClick(Marker marker) {
                         // Check if there is an open info window
                         if (lastOpened != null) {
@@ -139,74 +160,29 @@ public class MapsActivity extends FragmentActivity implements
                                 return true;
                             }
                         }
+                        Bitmap icon;
 
-                        // Open the info window for the marker
-                        marker.showInfoWindow();
+                        //BitmapDescriptor deal = BitmapDescriptorFactory.fromResource(R.drawable.deal);
+                        BitmapDescriptor deal = BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_MAGENTA);
+                        marker.setIcon(deal);
+
+
+                        View popup = getContent(marker);
+                        popupMessage.setContentView(popup);
+                        popupMessage.showAtLocation(mainLayout, Gravity.CENTER, 0, 0);
+                        popupMessage.update(700, 620);
+
+
+                        //marker.showInfoWindow();
                         // Re-assign the last openned such that we can close it later
                         lastOpened = marker;
                         return doNotMoveCameraToCenterMarker;
                     }
                 });
 
-        //adapter for custom info-window - added icon for navigation
-        mMap.setInfoWindowAdapter(new GoogleMap.InfoWindowAdapter() {
 
-
-            @Override
-            public View getInfoWindow(Marker arg0) {
-                // TODO Auto-generated method stub
-                return null;
-            }
-
-            //Sanja
-            //Showing deal in the marker popup
-            @Override
-            public View getInfoContents(Marker marker) {
-                // TODO Auto-generated method stub
-                // Getting view from the layout file info_window_layout
-               /* LayoutInflater layoutInflater
-                        = (LayoutInflater) getBaseContext()
-                        .getSystemService(LAYOUT_INFLATER_SERVICE);
-                View popupView = layoutInflater.inflate(R.layout.deal_pop_up, null);
-                final PopupWindow popupWindow = new PopupWindow(
-                        popupView,
-                        LinearLayout.LayoutParams.WRAP_CONTENT,
-                        LinearLayout.LayoutParams.WRAP_CONTENT);*/
-
-               /* Getting reference to the TextView to get information
-                from the webpage in the popup.*/
-                View popupView = getLayoutInflater().inflate(R.layout.deal_pop_up, null);
-                String[] components = marker.getSnippet().split(";");
-
-                TextView description = (TextView) popupView.findViewById(R.id.description);
-                description.setText(components[0].split(":")[1]);
-                Log.d("InfoWindow description:", components[0]);
-
-                TextView price = ((TextView) popupView.findViewById(R.id.price));
-                price.setText(components[1].split(":")[1]);
-                Log.d("InfoWindow description:", components[1]);
-
-                TextView units = ((TextView) popupView.findViewById(R.id.units));
-                units.setText(components[2].split(":")[1]);
-                Log.d("InfoWindow description:", components[0]);
-
-                Chronometer duration = ((Chronometer) popupView.findViewById(R.id.duration));
-                String dur = components[3].split(":")[1];
-                Log.d("InfoWindow description:", dur);
-
-                ImageView dealPicture = (ImageView) popupView.findViewById(R.id.dealPicture);
-                    // Converting String byte picture to an ImageView
-                    String base = components[4].split(",")[1];
-                    byte[] decodedString = Base64.decode(base, Base64.DEFAULT);
-                    Bitmap decodedByte = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
-                    dealPicture.setImageBitmap(decodedByte);
-                    Log.d("InfoWindow picture:", components[4]);
-
-                    // Returning the view containing InfoWindow contents
-                    return popupView;
-                }
-        });
     }
+
     //Unused method
     public Action getIndexApiAction() {
         Thing object = new Thing.Builder()
@@ -225,6 +201,55 @@ public class MapsActivity extends FragmentActivity implements
         super.onStart();
     }
 
+
+    public View getContent(Marker marker) {
+
+        // Getting view from the layout file info_window_layout
+        View v = getLayoutInflater().inflate(R.layout.deal_pop_up, null);
+
+        String[] components = marker.getSnippet().split(";");
+
+        TextView description = (TextView) v.findViewById(R.id.description);
+        description.setText(components[0].split(":")[1]);
+        Log.d("InfoWindow description:", components[0]);
+
+        TextView price = ((TextView) v.findViewById(R.id.price));
+        price.setText(components[1].split(":")[1]);
+        Log.d("InfoWindow description:", components[1]);
+
+        TextView units = ((TextView) v.findViewById(R.id.units));
+        units.setText(components[2].split(":")[1]);
+        Log.d("InfoWindow description:", components[0]);
+
+        //Chronometer duration = ((Chronometer) v.findViewById(R.id.duration));
+        //String dur = components[3].split(":")[1];
+        //Log.d("InfoWindow description:", dur);
+
+        TextView duration = ((TextView) v.findViewById(R.id.duration));
+        duration.setText(components[3].split(":")[0]);
+        //Log.d("InfoWindow description:", components[1]);
+
+        Button grab = ((Button) v.findViewById(R.id.grabButton));
+        grab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                popupMessage.dismiss();
+            }
+        });
+
+        ImageView dealPicture = (ImageView) v.findViewById(R.id.dealPicture);
+        // Converting String byte picture to an ImageView
+        String base = components[4].split(",")[1];
+        byte[] decodedString = Base64.decode(base, Base64.DEFAULT);
+        Bitmap decodedByte = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
+        dealPicture.setImageBitmap(decodedByte);
+        Log.d("InfoWindow picture:", components[4]);
+
+        // Returning the view containing InfoWindow contents
+        return v;
+
+    }
+
     @Override
     public void onStop() {
         mGoogleApiClient.disconnect();
@@ -239,6 +264,8 @@ public class MapsActivity extends FragmentActivity implements
         mLastLocation = LocationServices.FusedLocationApi.getLastLocation(
                 mGoogleApiClient);
         makeUseOfNewLocation(mLastLocation);
+        startLocationUpdates();
+
     }
 
     @Override
@@ -249,6 +276,7 @@ public class MapsActivity extends FragmentActivity implements
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
     }
 
+
     // Define a listener that responds to location updates
     LocationListener locationListener = new LocationListener() {
         public void onLocationChanged(Location location) {
@@ -256,12 +284,30 @@ public class MapsActivity extends FragmentActivity implements
             makeUseOfNewLocation(location);
         }
 
-        public void onStatusChanged(String provider, int status, Bundle extras) {}
+        public void onStatusChanged(String provider, int status, Bundle extras) {
+        }
 
-        public void onProviderEnabled(String provider) {}
+        public void onProviderEnabled(String provider) {
+        }
 
-        public void onProviderDisabled(String provider) {}
+        public void onProviderDisabled(String provider) {
+        }
     };
+
+    protected void startLocationUpdates() {
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            // TODO: Consider calling
+            //    ActivityCompat#requestPermissions
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for ActivityCompat#requestPermissions for more details.
+            return;
+        }
+        LocationServices.FusedLocationApi.requestLocationUpdates(
+                mGoogleApiClient, locationRequest, locationListener);
+    }
 
     //Location view settings
     private void makeUseOfNewLocation(Location location) {
@@ -269,7 +315,8 @@ public class MapsActivity extends FragmentActivity implements
         LatLng myLatLang = new LatLng(location.getLatitude(), location.getLongitude());
         // Called when a new location is found by the network location provider.
         CameraPosition myPosition = new CameraPosition.Builder().
-                target(myLatLang).zoom(17).build();
+                target(myLatLang).zoom(17.0f).build();
+        //locationListener.onLocationChanged(location);
         mMap.animateCamera(CameraUpdateFactory.newCameraPosition(myPosition));
     }
 }
