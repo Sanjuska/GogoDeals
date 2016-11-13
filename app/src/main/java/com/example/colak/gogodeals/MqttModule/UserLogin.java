@@ -3,6 +3,7 @@ package com.example.colak.gogodeals.MqttModule;
 /**
  * Created by Nikos on 12/11/2016.
  */
+
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -90,7 +91,7 @@ public class UserLogin extends AppCompatActivity  {
                 new FacebookCallback<LoginResult>() {
 
 
-                    Intent gogoApp = new Intent(UserLogin.this, UserSignup.class);
+                    Intent gogoApp = new Intent(UserLogin.this, MapsActivity.class);
 
 
                     @Override
@@ -99,8 +100,6 @@ public class UserLogin extends AppCompatActivity  {
                         //Profile profile = Profile.getCurrentProfile();
                         //Log.d("fbusername : ", fbusername);
                         startActivity(gogoApp);
-                        Bundle parameters = new Bundle();
-                        parameters.putString("fields", "name,email");
 
                         //Facebook user data
                         GraphRequest request = GraphRequest.newMeRequest(
@@ -129,11 +128,10 @@ public class UserLogin extends AppCompatActivity  {
                                     }
                                 });
 
+                        Bundle parameters = new Bundle();
+                        parameters.putString("fields", "name,email");
                         request.setParameters(parameters);
                         request.executeAsync();
-
-
-
 
 
                     }
