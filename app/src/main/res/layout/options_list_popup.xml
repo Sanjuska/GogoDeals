@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical" android:layout_width="250dp"
+    android:layout_height="400dp"
+    android:layout_gravity="center"
+    android:focusable="true"
+    android:focusableInTouchMode="true">
+
+    <Button
+        android:text="My Profile"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="30dp"
+        android:layout_marginTop="50dp"
+        android:id="@+id/buttonmyprofile" />
+
+    <Button
+        android:text="My Deals"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/buttonmydeals"
+        android:layout_marginBottom="30dp" />
+
+    <Button
+    android:text="Deal Filters"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+        android:layout_marginBottom="30dp"
+        android:id="@+id/buttondealfilters" />
+
+    <Button
+        android:text="Logout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/buttonlogout"
+        android:layout_marginBottom="30dp" />
+
+</LinearLayout>

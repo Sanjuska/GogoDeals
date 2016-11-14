@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:layout_width="250dp"
+    android:layout_height="400dp"
+    android:layout_gravity="center"
+    android:focusable="true"
+    android:focusableInTouchMode="true">
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:inputType="textPersonName"
+        android:text="My Deals "
+        android:ems="10"
+        android:id="@+id/editText"
+        android:textStyle="normal|bold"
+        android:textSize="24sp"
+        android:textAlignment="center" />
+
+    <ListView
+        android:layout_width="match_parent"
+        android:layout_height="295dp"
+        android:elevation="24dp" />
+
+    <Button
+        android:layout_height="wrap_content"
+        android:id="@+id/backButtonFilter"
+        android:layout_width="wrap_content"
+        android:layout_marginLeft="200dp"
+        android:background="@drawable/backbutton" />
+</LinearLayout>

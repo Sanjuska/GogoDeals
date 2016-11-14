@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="250dp"
+    android:layout_height="400dp"
+    android:layout_gravity="center"
+    android:focusable="true"
+    android:focusableInTouchMode="true"
+    android:weightSum="1">
+
+    <ImageView
+        android:layout_width="131dp"
+        android:layout_height="wrap_content"
+        app:srcCompat="@android:drawable/alert_dark_frame"
+        android:id="@+id/imageView"
+        android:layout_weight="0.19" />
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:inputType="textPersonName"
+        android:text="Name"
+        android:ems="10"
+        android:id="@+id/editText2" />
+
+    <EditText
+        android:layout_width="248dp"
+        android:layout_height="wrap_content"
+        android:inputType="textEmailAddress"
+        android:ems="10"
+        android:id="@+id/editText3"
+        android:text="Email" />
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:inputType="phone"
+        android:ems="10"
+        android:id="@+id/editText4"
+        android:text="Phone " />
+
+    <Button
+        android:layout_height="wrap_content"
+        android:id="@+id/backButtonFilter"
+        android:layout_width="wrap_content"
+        android:layout_marginLeft="200dp"
+        android:background="@drawable/backbutton"
+        android:gravity="bottom|left"
+        android:layout_gravity="bottom|right"
+        android:layout_marginTop="170dp" />
+</LinearLayout>

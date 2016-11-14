@@ -16,6 +16,7 @@ import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
@@ -40,7 +41,6 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
-import com.google.android.gms.maps.model.MarkerOptions;
 
 
 public class MapsActivity extends FragmentActivity implements
@@ -63,6 +63,9 @@ public class MapsActivity extends FragmentActivity implements
     PopupWindow popupMessage;
     LocationRequest locationRequest;
 
+    Button optionslistButton;
+    PopupWindow optionsPopup;
+    boolean isClicked = true;
 
     Button popupButton;
     LinearLayout mainLayout;
@@ -117,14 +120,9 @@ public class MapsActivity extends FragmentActivity implements
         locationRequest.setInterval(100);
     }
 
-    //Olle, adding Gothenburg marker on the map
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
-        // Add a marker in Gothenburg and move the camera
-        LatLng gothenburg = new LatLng(57.7089, 11.9746);
-        mMap.addMarker(new MarkerOptions().position(gothenburg).title("Gothenburg"));
-        //mMap.moveCamera(CameraUpdateFactory.newLatLng(gothenburg));
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             return;
         }
@@ -180,7 +178,24 @@ public class MapsActivity extends FragmentActivity implements
                     }
                 });
 
+        final ImageButton imageButton = (ImageButton) findViewById(R.id.optionslistbutton);
+        imageButton.setOnClickListener(new View.OnClickListener()
+        {
 
+            public void onClick(View v) {
+                if (isClicked) {
+                    isClicked = false;
+                    optionsPopup.showAtLocation(mainLayout, Gravity.CENTER, 10, 10);
+                    optionsPopup.update(50, 50, 320, 90);
+                    getLayoutInflater().inflate(R.layout.options_list_popup, null);
+                } else {
+                    isClicked = true;
+                    optionsPopup.dismiss();
+                }
+
+
+            }
+        });
     }
 
     //Unused method
