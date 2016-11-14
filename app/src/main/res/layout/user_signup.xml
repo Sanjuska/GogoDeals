@@ -14,7 +14,10 @@
             android:text="email"
             android:layout_alignParentTop="true"
             android:layout_alignParentStart="true"
-            android:layout_alignParentEnd="true" />
+            android:layout_alignParentEnd="true"
+            android:singleLine="false"
+            android:inputType="textPersonName"
+            android:autoText="false" />
 
         <EditText
             android:layout_width="wrap_content"
@@ -24,8 +27,8 @@
             android:layout_alignParentStart="true"
             android:layout_alignParentEnd="true"
             android:text="password"
-            android:inputType="textPassword"
-            android:hint="password" />
+            android:hint="password"
+            android:inputType="textPersonName" />
 
         <Button
             android:layout_width="wrap_content"
@@ -34,7 +37,8 @@
             android:id="@+id/signup"
             android:layout_below="@+id/password"
             android:layout_centerHorizontal="true"
-            android:layout_marginTop="52dp" />
+            android:layout_marginTop="52dp"
+            android:onClick="onClick1" />
 
         <EditText
             android:layout_width="wrap_content"
@@ -44,8 +48,9 @@
             android:layout_below="@+id/password"
             android:layout_alignParentStart="true"
             android:layout_alignParentEnd="true"
-            android:inputType="textPassword"
-            android:hint="confirm password" />
+            android:hint="confirm password"
+            android:password="false"
+            android:inputType="textPersonName" />
 
     </RelativeLayout>
 </LinearLayout>

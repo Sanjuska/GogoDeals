@@ -10,18 +10,18 @@
         android:text="Login with Facebook"
         android:id="@+id/mainLogin"
         android:layout_marginLeft="0dp"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentStart="true"
-        android:layout_marginTop="176dp" />
+        android:layout_below="@+id/welcometext"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="127dp" />
 
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Login with gogodeals profile"
-        android:id="@+id/button2"
-        android:layout_alignParentStart="true"
-        android:layout_below="@+id/mainLogin"
-        android:layout_alignParentLeft="true" />
+        android:text="SIGN UP"
+        android:id="@+id/mainsignup"
+        android:layout_marginLeft="60dp"
+        android:layout_centerVertical="true"
+        android:layout_centerHorizontal="true" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -35,4 +35,4 @@
         android:textStyle="normal|italic"
         android:typeface="serif"
         android:textSize="26dp" />
-</RelativeLayout>
+</RelativeLayout>	

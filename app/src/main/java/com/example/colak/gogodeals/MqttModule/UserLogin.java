@@ -4,7 +4,9 @@ package com.example.colak.gogodeals.MqttModule;
  * Created by Nikos on 12/11/2016.
  */
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -161,8 +163,13 @@ public class UserLogin extends AppCompatActivity  {
 
     }
 
-    private void loginity() {
-        Name1 = Name;
-        Log.i("usertest ", Name1);
+    public void saveUserInfo(){
+        SharedPreferences sharedPref = getSharedPreferences("userInfo", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPref.edit();
+        editor.putString("username", Name);
+        editor.putString("email", Email);
+        editor.apply();
+
+        Toast.makeText(this, "User Info Saved", Toast.LENGTH_LONG).show();
     }
 }

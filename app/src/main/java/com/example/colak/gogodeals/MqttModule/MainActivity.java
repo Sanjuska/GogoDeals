@@ -20,6 +20,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private CallbackManager callbackManager;
 
     private Button mainLogin;
+    private Button mainsignup;
 
     private TextView welcometext;
 
@@ -31,8 +32,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         welcometext = (TextView)findViewById(R.id.welcometext);
         mainLogin = (Button) findViewById(R.id.mainLogin);
+        mainsignup = (Button)findViewById(R.id.mainsignup);
 
         mainLogin.setOnClickListener(this);
+        mainsignup.setOnClickListener(this);
 
 
     }
@@ -43,6 +46,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             case R.id.mainLogin:
                 Intent gogoApp1 = new Intent(MainActivity.this, UserLogin.class);
                 startActivity(gogoApp1);
+                break;
+            case R.id.mainsignup:
+                Intent gogoApp2 = new Intent(MainActivity.this, UserSignup.class);
+                startActivity(gogoApp2);
                 break;
         }
     }
