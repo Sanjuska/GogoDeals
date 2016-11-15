@@ -35,19 +35,19 @@ public class UserSignup extends AppCompatActivity implements MqttCallback {
     private String newUserConfirmPassword;
 
     //mqtt
-    private static MqttAndroidClient user;
+    private static MqttAndroidClient client;
     private static final String TAG = "ConnectionMqtt";
 
     //mqtt connectivity
     public void mqttConnection() {
         String clientId = MqttClient.generateClientId();
 
-        user = new MqttAndroidClient(this.getApplicationContext(), "tcp://176.10.136.208:1883",
+        client = new MqttAndroidClient(this.getApplicationContext(), "tcp://176.10.136.208:1883",
                 clientId);
-        user.setCallback(this);
+        client.setCallback(this);
 
         try {
-            IMqttToken token = user.connect();
+            IMqttToken token = client.connect();
             token.setActionCallback(new IMqttActionListener() {
                 @Override
                 public void onSuccess(IMqttToken asyncActionToken) {
@@ -69,10 +69,10 @@ public class UserSignup extends AppCompatActivity implements MqttCallback {
     }
 
     public void saveUserDetails() {
-        String topic = "userTable";
+        String topic = "deal/gogodeals/client/new";
         int qos = 1;
         try {
-            IMqttToken subToken = user.subscribe(topic, qos);
+            IMqttToken subToken = client.subscribe(topic, qos);
             subToken.setActionCallback(new IMqttActionListener() {
                 @Override
                 public void onSuccess(IMqttToken asyncActionToken) {
@@ -114,14 +114,17 @@ public class UserSignup extends AppCompatActivity implements MqttCallback {
         switch (v.getId()) {
             case R.id.signup:
                 if (newUserPassword.equals(newUserConfirmPassword)) {
-                    Toast.makeText(getApplicationContext(), "Email: " + newUserEmail, Toast.LENGTH_SHORT).show();
-                    Toast.makeText(getApplicationContext(), "Password: " + newUserPassword, Toast.LENGTH_SHORT).show();
+                    //test for accessing UserLogin data (name-email)
+                    Toast.makeText(getApplicationContext(), "Email: " + UserLogin.UserEmail, Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(), "Password: " + UserLogin.UserName, Toast.LENGTH_SHORT).show();
 
                 }
 
                 else {
                     Toast.makeText(getApplicationContext(), "Confirm Password: " + newUserConfirmPassword, Toast.LENGTH_SHORT).show();
                 }
+                break;
+
         }
     }
 

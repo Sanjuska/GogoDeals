@@ -14,20 +14,20 @@ import java.sql.Statement;
 public class testdbClass {
 
     static final String JDBC_DRIVER = "com.mysql.jdbc.Driver";
-    static final String DB_URL = "jdbc:mysql://localhost:3306/testdb";
+    static final String DB_URL = "jdbc:mysql://localhost:3306/gogodeals";
 
     public static String name2;
 
     //db access
     static final String USER = "root";
-    static final String PASS = "DIT029XES";
+    static final String PASS = "nikos";
 
     public static void main(String[] args) {
         Connection conn = null;
         Statement stmt = null;
         try{
             //register driver and connect to db
-            Class.forName("com.mysql.jdbc.Driver");
+            Class.forName(JDBC_DRIVER);
             System.out.println("Connecting to database...");
             conn = DriverManager.getConnection(DB_URL, USER, PASS);
 
@@ -35,7 +35,7 @@ public class testdbClass {
             System.out.println("Creating statement...");
             stmt = conn.createStatement();
             String sql;
-            sql = "select * from new_table";
+            sql = "select * from users";
             name2 = "user";
 
             System.out.println("test");

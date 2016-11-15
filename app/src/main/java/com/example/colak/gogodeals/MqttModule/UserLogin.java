@@ -4,9 +4,7 @@ package com.example.colak.gogodeals.MqttModule;
  * Created by Nikos on 12/11/2016.
  */
 
-import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -41,7 +39,8 @@ public class UserLogin extends AppCompatActivity  {
 
     private String Name;
     private String Email;
-    private String Name1;
+    public static String UserName;
+    public static String UserEmail;
 
 
 
@@ -93,7 +92,7 @@ public class UserLogin extends AppCompatActivity  {
                 new FacebookCallback<LoginResult>() {
 
 
-                    Intent gogoApp = new Intent(UserLogin.this, MapsActivity.class);
+                    Intent gogoApp = new Intent(UserLogin.this, ConnectionMqtt.class);
 
 
                     @Override
@@ -108,23 +107,27 @@ public class UserLogin extends AppCompatActivity  {
                                 loginResult.getAccessToken(),
                                 new GraphRequest.GraphJSONObjectCallback() {
                                     @Override
-                                    public void onCompleted(
+                                     public void onCompleted(
                                             JSONObject object,
                                             GraphResponse response) {
                                         Log.i("LoginActivity Response ", response.toString());
 
                                         try {
                                             Name = object.getString("name");
+                                            UserName = Name;
                                             //Birthday = object.getString("birthday");
                                             Email = object.getString("email");
+                                            UserEmail = Email;
                                             Log.d("Email = ", " " + Email);
-                                            //Name1 = Name +"test";
+
+
+                                        //Name1 = Name +"test";
                                             Toast.makeText(getApplicationContext(), "Name: " + Name, Toast.LENGTH_LONG).show();
                                             Toast.makeText(getApplicationContext(), "Email: " + Email, Toast.LENGTH_SHORT).show();
                                             //Toast.makeText(getApplicationContext(), "age: " + Birthday, Toast.LENGTH_SHORT).show();
                                             //Toast.makeText(getApplicationContext(), "" + Name1, Toast.LENGTH_SHORT).show();
                                             //loginity();
-                                        } catch (JSONException e) {
+                                            } catch (JSONException e) {
                                             e.printStackTrace();
                                         }
                                     }
@@ -134,7 +137,6 @@ public class UserLogin extends AppCompatActivity  {
                         parameters.putString("fields", "name,email");
                         request.setParameters(parameters);
                         request.executeAsync();
-
 
                     }
 
@@ -163,13 +165,5 @@ public class UserLogin extends AppCompatActivity  {
 
     }
 
-    public void saveUserInfo(){
-        SharedPreferences sharedPref = getSharedPreferences("userInfo", Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = sharedPref.edit();
-        editor.putString("username", Name);
-        editor.putString("email", Email);
-        editor.apply();
 
-        Toast.makeText(this, "User Info Saved", Toast.LENGTH_LONG).show();
-    }
 }
