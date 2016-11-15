@@ -65,7 +65,7 @@ public class MapsActivity extends FragmentActivity implements
 
     Button optionslistButton;
     PopupWindow optionsPopup;
-    boolean isClicked = true;
+    int isClicked = 1;
 
     Button popupButton;
     LinearLayout mainLayout;
@@ -77,7 +77,7 @@ public class MapsActivity extends FragmentActivity implements
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         popupMessage = new PopupWindow(this);
-
+        optionsPopup = new PopupWindow(this);
         mainLayout = new LinearLayout(this);
         //Olle, map needs to be initialized :D
         //also changed the version of google play services on gradle.app from 9.6.1 to
@@ -183,13 +183,15 @@ public class MapsActivity extends FragmentActivity implements
         {
 
             public void onClick(View v) {
-                if (isClicked) {
-                    isClicked = false;
-                    optionsPopup.showAtLocation(mainLayout, Gravity.CENTER, 10, 10);
-                    optionsPopup.update(50, 50, 320, 90);
-                    getLayoutInflater().inflate(R.layout.options_list_popup, null);
+                if (isClicked == 1) {
+                    isClicked = 0;
+                    View optPop = getLayoutInflater().inflate(R.layout.options_list_popup, null);
+                    optionsPopup.setContentView(optPop);
+                    optionsPopup.showAtLocation(mainLayout, Gravity.CENTER, 0, 0);
+                    optionsPopup.update(700, 620);
+
                 } else {
-                    isClicked = true;
+                    isClicked = 1;
                     optionsPopup.dismiss();
                 }
 

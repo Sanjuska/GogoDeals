@@ -11,8 +11,8 @@
         android:text="My Profile"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="30dp"
-        android:layout_marginTop="50dp"
+        android:layout_marginBottom="20dp"
+        android:layout_marginTop="24dp"
         android:id="@+id/buttonmyprofile" />
 
     <Button
@@ -20,13 +20,13 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/buttonmydeals"
-        android:layout_marginBottom="30dp" />
+        android:layout_marginBottom="20dp" />
 
     <Button
     android:text="Deal Filters"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-        android:layout_marginBottom="30dp"
+        android:layout_marginBottom="20dp"
         android:id="@+id/buttondealfilters" />
 
     <Button
@@ -34,6 +34,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/buttonlogout"
-        android:layout_marginBottom="30dp" />
+        android:layout_marginBottom="20dp" />
 
 </LinearLayout>
