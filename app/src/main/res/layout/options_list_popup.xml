@@ -13,13 +13,15 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="20dp"
         android:layout_marginTop="24dp"
-        android:id="@+id/buttonmyprofile" />
+        android:onClick="profileButtonPressed"
+        android:id="@+id/buttonmyprofile"/>
 
     <Button
         android:text="My Deals"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/buttonmydeals"
+        android:onClick="mydealsButtonPressed"
         android:layout_marginBottom="20dp" />
 
     <Button

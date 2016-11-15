@@ -60,10 +60,16 @@ public class MapsActivity extends FragmentActivity implements
 
     Marker lastOpened = null;
 
+    boolean isClickedPop = true;
+    Button profileButton;
+
     PopupWindow popupMessage;
     LocationRequest locationRequest;
 
     Button optionslistButton;
+
+    PopupWindow myDealsPopup;
+    PopupWindow profilePopup;
     PopupWindow optionsPopup;
     int isClicked = 1;
 
@@ -78,6 +84,8 @@ public class MapsActivity extends FragmentActivity implements
         super.onCreate(savedInstanceState);
         popupMessage = new PopupWindow(this);
         optionsPopup = new PopupWindow(this);
+        profilePopup = new PopupWindow(this);
+        myDealsPopup = new PopupWindow(this);
         mainLayout = new LinearLayout(this);
         //Olle, map needs to be initialized :D
         //also changed the version of google play services on gradle.app from 9.6.1 to
@@ -178,8 +186,8 @@ public class MapsActivity extends FragmentActivity implements
                     }
                 });
 
-        final ImageButton imageButton = (ImageButton) findViewById(R.id.optionslistbutton);
-        imageButton.setOnClickListener(new View.OnClickListener()
+        final ImageButton hamburgerButton = (ImageButton) findViewById(R.id.optionslistbutton);
+        hamburgerButton.setOnClickListener(new View.OnClickListener()
         {
 
             public void onClick(View v) {
@@ -190,14 +198,69 @@ public class MapsActivity extends FragmentActivity implements
                     optionsPopup.showAtLocation(mainLayout, Gravity.CENTER, 0, 0);
                     optionsPopup.update(700, 620);
 
+
+                    switch (v.getId()) {
+                        case R.id.buttonmyprofile:
+                            profileButtonPressed(v);
+                        case R.id.buttonmydeals:
+                            mydealsButtonPressed(v);
+
+                                    break;
+
+                    }
+
+
                 } else {
                     isClicked = 1;
                     optionsPopup.dismiss();
                 }
 
 
+
             }
+
         });
+
+
+
+       /* final Button profileButton = (Button) findViewById(R.id.buttonmyprofile);
+        profileButton.setOnClickListener(new View.OnClickListener()
+        {
+            public void onClick(View v) {
+                if (isClickedPop == true) {
+                    optionsPopup.dismiss();
+                    View profPop = getLayoutInflater().inflate(R.layout.myprofile, null);
+                    profilePopup.setContentView(profPop);
+                    profilePopup.showAtLocation(mainLayout, Gravity.CENTER, 0, 0);
+                    profilePopup.update(700, 620);
+                }
+                else{
+                    profilePopup.dismiss();
+                }
+
+
+            }
+        });*/
+    }
+    public void profileButtonPressed(View v){
+        optionsPopup.dismiss();
+        isClicked = 1;
+        View profPop = getLayoutInflater().inflate(R.layout.myprofile, null);
+        profilePopup.setContentView(profPop);
+        profilePopup.showAtLocation(mainLayout, Gravity.CENTER, 0, 0);
+        profilePopup.update(700, 620);
+
+    }
+
+    public void mydealsButtonPressed(View v){
+        optionsPopup.dismiss();;
+        isClicked = 1;
+        View myDealsPop = getLayoutInflater().inflate(R.layout.mydeals, null);
+        myDealsPopup.setContentView(myDealsPop);
+        myDealsPopup.showAtLocation(mainLayout, Gravity.CENTER, 0 ,0);
+        myDealsPopup.update(700, 620);
+
+
     }
 
     //Unused method
