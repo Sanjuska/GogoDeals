@@ -61,19 +61,19 @@ public class MapsActivity extends FragmentActivity implements
     Marker lastOpened = null;
 
     boolean isClickedPop = true;
-    Button profileButton;
+    boolean filtersClicked = false;
+    boolean dealsClicked = false;
+    boolean profileClicked = false;
 
     PopupWindow popupMessage;
     LocationRequest locationRequest;
 
-    Button optionslistButton;
 
+    PopupWindow filterPopup;
     PopupWindow myDealsPopup;
     PopupWindow profilePopup;
     PopupWindow optionsPopup;
-    int isClicked = 1;
 
-    Button popupButton;
     LinearLayout mainLayout;
 
     // Creating an instance of MarkerOptions to set position
@@ -86,11 +86,10 @@ public class MapsActivity extends FragmentActivity implements
         optionsPopup = new PopupWindow(this);
         profilePopup = new PopupWindow(this);
         myDealsPopup = new PopupWindow(this);
+        filterPopup = new PopupWindow(this);
         mainLayout = new LinearLayout(this);
-        //Olle, map needs to be initialized :D
         //also changed the version of google play services on gradle.app from 9.6.1 to
         //7.5.0 cause of compatibility.
-        //Also, on manifest we just need one main launcher for the whole app :D
         MapsInitializer.initialize(getApplicationContext());
         setContentView(R.layout.activity_maps);
 
@@ -191,8 +190,20 @@ public class MapsActivity extends FragmentActivity implements
         {
 
             public void onClick(View v) {
-                if (isClicked == 1) {
-                    isClicked = 0;
+                if (isClickedPop == true) {
+                    isClickedPop = false;
+                    if(profileClicked == true){
+                        profilePopup.dismiss();
+                        profileClicked = false;
+                    }
+                    if(dealsClicked == true){
+                        myDealsPopup.dismiss();
+                        dealsClicked = false;
+                    }
+                    if(filtersClicked == true){
+                        filterPopup.dismiss();
+                        filtersClicked = false;
+                    }
                     View optPop = getLayoutInflater().inflate(R.layout.options_list_popup, null);
                     optionsPopup.setContentView(optPop);
                     optionsPopup.showAtLocation(mainLayout, Gravity.CENTER, 0, 0);
@@ -204,14 +215,15 @@ public class MapsActivity extends FragmentActivity implements
                             profileButtonPressed(v);
                         case R.id.buttonmydeals:
                             mydealsButtonPressed(v);
-
-                                    break;
+                        case R.id.buttondealfilters:
+                            filterButtonPressed(v);
+                    break;
 
                     }
 
 
                 } else {
-                    isClicked = 1;
+                    isClickedPop = true;
                     optionsPopup.dismiss();
                 }
 
@@ -242,26 +254,46 @@ public class MapsActivity extends FragmentActivity implements
             }
         });*/
     }
+
+    // Opens the popup with My Profile on click. Dismisses the current pop up, the options list and changes the boolean isClickedPopup to true
+    //so that the next time you press the options button it is already in the state.
     public void profileButtonPressed(View v){
         optionsPopup.dismiss();
-        isClicked = 1;
+        isClickedPop = true;
+        profileClicked = true;
         View profPop = getLayoutInflater().inflate(R.layout.myprofile, null);
         profilePopup.setContentView(profPop);
         profilePopup.showAtLocation(mainLayout, Gravity.CENTER, 0, 0);
         profilePopup.update(700, 620);
-
     }
 
-    public void mydealsButtonPressed(View v){
-        optionsPopup.dismiss();;
-        isClicked = 1;
+    // Opens the popup with My Deals on click. Dismisses the current pop up, the options list and changes the boolean isClickedPopup to true
+    //so that the next time you press the options button it is already in the state.
+    public void mydealsButtonPressed(View v) {
+        optionsPopup.dismiss();
+        isClickedPop = true;
+        dealsClicked = true;
         View myDealsPop = getLayoutInflater().inflate(R.layout.mydeals, null);
         myDealsPopup.setContentView(myDealsPop);
-        myDealsPopup.showAtLocation(mainLayout, Gravity.CENTER, 0 ,0);
+        myDealsPopup.showAtLocation(mainLayout, Gravity.CENTER, 0, 0);
         myDealsPopup.update(700, 620);
-
-
     }
+
+    // Opens the popup with Filters on click. Dismisses the current pop up, the options list and changes the boolean isClickedPopup to true
+    //so that the next time you press the options button it is already in the state.
+    public void filterButtonPressed(View v){
+        optionsPopup.dismiss();;
+        isClickedPop = true;
+        filtersClicked = true;
+        View filtersPop = getLayoutInflater().inflate(R.layout.filterslist, null);
+        filterPopup.setContentView(filtersPop);
+        filterPopup.showAtLocation(mainLayout, Gravity.CENTER, 0 ,0);
+        filterPopup.update(700, 620);
+    }
+
+   /* public void logoutButtonPressed(View v) {
+
+    }*/
 
     //Unused method
     public Action getIndexApiAction() {
