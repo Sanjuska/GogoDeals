@@ -151,7 +151,7 @@ public class MapsActivity extends FragmentActivity implements
             // in a raw resource file.
             boolean success = mMap.setMapStyle(
                     MapStyleOptions.loadRawResourceStyle(
-                            this, R.raw.grey));
+                            this, R.raw.whitegrey));
 
             if (!success) {
                 Log.e("MapsActivityRaw", "Style parsing failed.");
@@ -243,21 +243,20 @@ public class MapsActivity extends FragmentActivity implements
             public void run() {
 
                 String publishTopic = "deal/gogodeals/deal/fetch";
-                String payload = "{\n" +
-                        "      “id”: “12345678-1011-M012-N210-112233445566”,\n" +
-                        "      “data”: {\n" +
-                        "\t“longitude”:"+mMap.getCameraPosition().target.longitude +" ,\n" +
-                        " \t\t“latitude”:"+mMap.getCameraPosition().target.latitude +",\n" +
-                        "\t“filters”: “fika, alcohol, ”,\n" +
-                        "\t“deals”: “ 33333333-1011-M012-N210-112233445566”\n" +
-                        "},\n" +
-                        "}\n";
 
-                String subscribeTopic = "deal/gogodeals/database/deals";
+                  String payload =   "{ \"id\": \"12345678-1011-M012-N210-112233445566\"," +
+                          " \"data\": " +
+                          "{ \"longitude\": "+mMap.getCameraPosition().target.longitude +"," +
+                          " \"latitude\": " +mMap.getCameraPosition().target.latitude + "," +
+                          " \"filters\":" +
+                          " \"fika, alcohol\"," +
+                          " \"deals\": \"33333333-1011-M012-N210-112233445566\"},}";
+
+                    String subscribeTopic = "deal/gogodeals/database/deals";
                 dealMqqt.publish(payload,publishTopic);
                 dealMqqt.subscribe(subscribeTopic,2);
 
-                fetchDeals();
+               // fetchDeals();
             }
         },5000);
     }
