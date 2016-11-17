@@ -36,6 +36,7 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.location.LocationSettingsRequest;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapsInitializer;
@@ -45,6 +46,7 @@ import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.MapStyleOptions;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -119,10 +121,16 @@ public class MapsActivity extends FragmentActivity implements
                     .addApi(LocationServices.API)
                     .build();
         }
+
+
         // Acquire a reference to the system Location Manager
         locationRequest = LocationRequest.create();
         locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
         locationRequest.setInterval(100);
+
+        LocationSettingsRequest.Builder builder = new LocationSettingsRequest.Builder()
+                .addLocationRequest(locationRequest);
+        builder.setAlwaysShow(true);
 
     }
 
@@ -163,6 +171,8 @@ public class MapsActivity extends FragmentActivity implements
             return;
         }
 
+
+
         //GoogleMap settings
         mMap.setMyLocationEnabled(false);
         mMap.getUiSettings().setScrollGesturesEnabled(false);
@@ -181,9 +191,16 @@ public class MapsActivity extends FragmentActivity implements
         // GoogleMap marker settings
         mMap.setOnMarkerClickListener(
                 new GoogleMap.OnMarkerClickListener() {
+
+
                     boolean doNotMoveCameraToCenterMarker = true;
 
                     public boolean onMarkerClick(Marker marker) {
+
+                        if (marker.getTitle()=="user"){
+
+                        }else{
+                            
                         // Check if there is an open info window
                         if (lastOpened != null) {
                             // Close the info window
@@ -196,6 +213,8 @@ public class MapsActivity extends FragmentActivity implements
                                 // Return so that the info window isn't openned again
                                 return true;
                             }
+
+
                         }
                         Bitmap icon;
 
@@ -214,6 +233,7 @@ public class MapsActivity extends FragmentActivity implements
                         //marker.showInfoWindow();
                         // Re-assign the last openned such that we can close it later
                         lastOpened = marker;
+                        }
                         return doNotMoveCameraToCenterMarker;
                     }
                 });
@@ -241,52 +261,56 @@ public class MapsActivity extends FragmentActivity implements
 
 
     public View getContent(Marker marker) {
-
-        // Getting view from the layout file info_window_layout
         View v = getLayoutInflater().inflate(R.layout.deal_pop_up, null);
 
-        String[] components = marker.getSnippet().split(";");
 
-        TextView description = (TextView) v.findViewById(R.id.description);
-        description.setText(components[0].split(":")[1]);
-        Log.d("InfoWindow description:", components[0]);
 
-        TextView price = ((TextView) v.findViewById(R.id.price));
-        price.setText(components[1].split(":")[1]);
-        Log.d("InfoWindow description:", components[1]);
+            // Getting view from the layout file info_window_layout
 
-        TextView units = ((TextView) v.findViewById(R.id.units));
-        units.setText(components[2].split(":")[1]);
-        Log.d("InfoWindow description:", components[0]);
 
-        //Chronometer duration = ((Chronometer) v.findViewById(R.id.duration));
-        //String dur = components[3].split(":")[1];
-        //Log.d("InfoWindow description:", dur);
+            String[] components = marker.getSnippet().split(";");
 
-        TextView duration = ((TextView) v.findViewById(R.id.duration));
-        duration.setText(components[3].split(":")[0]);
-        //Log.d("InfoWindow description:", components[1]);
+            TextView description = (TextView) v.findViewById(R.id.description);
+            description.setText(components[0].split(":")[1]);
+            Log.d("InfoWindow description:", components[0]);
 
-        Button grab = ((Button) v.findViewById(R.id.grabButton));
-        grab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                popupMessage.dismiss();
-            }
-        });
+            TextView price = ((TextView) v.findViewById(R.id.price));
+            price.setText(components[1].split(":")[1]);
+            Log.d("InfoWindow description:", components[1]);
 
-        ImageView dealPicture = (ImageView) v.findViewById(R.id.dealPicture);
-        // Converting String byte picture to an ImageView
-        String base = components[4].split(",")[1];
-        byte[] decodedString = Base64.decode(base, Base64.DEFAULT);
-        Bitmap decodedByte = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
-        dealPicture.setImageBitmap(decodedByte);
-        Log.d("InfoWindow picture:", components[4]);
+            TextView units = ((TextView) v.findViewById(R.id.units));
+            units.setText(components[2].split(":")[1]);
+            Log.d("InfoWindow description:", components[0]);
 
-        // Returning the view containing InfoWindow contents
+            //Chronometer duration = ((Chronometer) v.findViewById(R.id.duration));
+            //String dur = components[3].split(":")[1];
+            //Log.d("InfoWindow description:", dur);
+
+            TextView duration = ((TextView) v.findViewById(R.id.duration));
+            duration.setText(components[3].split(":")[0]);
+            //Log.d("InfoWindow description:", components[1]);
+
+            Button grab = ((Button) v.findViewById(R.id.grabButton));
+            grab.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    popupMessage.dismiss();
+                }
+            });
+
+            ImageView dealPicture = (ImageView) v.findViewById(R.id.dealPicture);
+            // Converting String byte picture to an ImageView
+            String base = components[4].split(",")[1];
+            byte[] decodedString = Base64.decode(base, Base64.DEFAULT);
+            Bitmap decodedByte = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
+            dealPicture.setImageBitmap(decodedByte);
+            Log.d("InfoWindow picture:", components[4]);
+
+            // Returning the view containing InfoWindow contents
         return v;
+        }
 
-    }
+
 
     @Override
     public void onStop() {
@@ -359,7 +383,7 @@ public class MapsActivity extends FragmentActivity implements
                 target(myLatLang).zoom(mMap.getCameraPosition().zoom).bearing(mMap.getCameraPosition().bearing).build();
         //locationListener.onLocationChanged(location);
         mMap.animateCamera(CameraUpdateFactory.newCameraPosition(myPosition));
-
+        mMap.setLatLngBoundsForCameraTarget(new LatLngBounds(myLatLang,myLatLang));
         if (mPositionMarker == null) {
 
             mPositionMarker = mMap.addMarker(new MarkerOptions()
@@ -367,9 +391,11 @@ public class MapsActivity extends FragmentActivity implements
                     .icon(BitmapDescriptorFactory
                             .fromResource(R.drawable.shopper))
                     .anchor(0.5f, 0.5f)
+                    .title("user")
                     .position(myLatLang));
         }
 
+        mPositionMarker.hideInfoWindow();
         animateMarker(mPositionMarker, location); // Helper method for smooth
         // animation
 
