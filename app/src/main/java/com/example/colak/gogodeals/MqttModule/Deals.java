@@ -82,7 +82,7 @@ public class Deals extends AppCompatActivity implements
 
     // Subscribing on a topic and getting messages from the publisher
     public void showDealOnTheMap() {
-        String topic = "topic";
+        String topic = "deal/gogodeals/deal/fetch";
         int qos = 1;
         try {
             IMqttToken subToken = client.subscribe(topic, qos);
