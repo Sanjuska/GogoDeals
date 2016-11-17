@@ -6,7 +6,6 @@ import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.location.Location;
-import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -28,9 +27,7 @@ import android.widget.PopupWindow;
 import android.widget.TextView;
 
 import com.example.colak.gogodeals.R;
-import com.google.android.gms.appindexing.Action;
 import com.google.android.gms.appindexing.AppIndex;
-import com.google.android.gms.appindexing.Thing;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationListener;
@@ -59,11 +56,15 @@ public class MapsActivity extends FragmentActivity implements
 
     public Deals deals;
 
+    ConnectionMqtt dealMqqt;
+
     public static GoogleMap mMap;
 
     GoogleApiClient mGoogleApiClient;
 
     Location mLastLocation;
+
+    Handler fetchHandler;
 
     Marker mPositionMarker;
 
@@ -100,6 +101,10 @@ public class MapsActivity extends FragmentActivity implements
 
         // Create MQTT connection and create listeners to new messages
         deals = new Deals(this);
+
+
+        dealMqqt = new ConnectionMqtt(this);
+
 
         // ATTENTION: This was auto-generated to implement the App Indexing API.
         // See https://g.co/AppIndexing/AndroidStudio for more information.
@@ -139,6 +144,8 @@ public class MapsActivity extends FragmentActivity implements
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
 
+        fetchDeals();
+
         try {
             // Customise the styling of the base map using a JSON object defined
             // in a raw resource file.
@@ -154,18 +161,6 @@ public class MapsActivity extends FragmentActivity implements
         }
 
         // Add a marker in Gothenburg and move the camera
-
-        mMap.addMarker(new MarkerOptions()
-                .position(new LatLng(57.7023251, 12.9610613))
-                .icon(BitmapDescriptorFactory.fromResource(R.drawable.burger)));
-
-        mMap.addMarker(new MarkerOptions()
-                .position(new LatLng(57.70295718, 12.96085882))
-                .icon(BitmapDescriptorFactory.fromResource(R.drawable.beer)));
-
-        mMap.addMarker(new MarkerOptions()
-                .position(new LatLng(57.70189092, 12.96091247))
-                .icon(BitmapDescriptorFactory.fromResource(R.drawable.shirt)));
 
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             return;
@@ -197,10 +192,10 @@ public class MapsActivity extends FragmentActivity implements
 
                     public boolean onMarkerClick(Marker marker) {
 
-                        if (marker.getTitle()=="user"){
+                        if (marker.getTitle().equals("user")){
 
                         }else{
-                            
+
                         // Check if there is an open info window
                         if (lastOpened != null) {
                             // Close the info window
@@ -241,17 +236,32 @@ public class MapsActivity extends FragmentActivity implements
 
     }
 
-    //Unused method
-    public Action getIndexApiAction() {
-        Thing object = new Thing.Builder()
-                .setName("Maps Page")
-                .setUrl(Uri.parse("http://[ENTER-YOUR-URL-HERE]"))
-                .build();
-        return new Action.Builder(Action.TYPE_VIEW)
-                .setObject(object)
-                .setActionStatus(Action.STATUS_TYPE_COMPLETED)
-                .build();
+    private void fetchDeals() {
+        fetchHandler = new Handler();
+        fetchHandler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+
+                String publishTopic = "deal/gogodeals/deal/fetch";
+                String payload = "{\n" +
+                        "      “id”: “12345678-1011-M012-N210-112233445566”,\n" +
+                        "      “data”: {\n" +
+                        "\t“longitude”:"+mMap.getCameraPosition().target.longitude +" ,\n" +
+                        " \t\t“latitude”:"+mMap.getCameraPosition().target.latitude +",\n" +
+                        "\t“filters”: “fika, alcohol, ”,\n" +
+                        "\t“deals”: “ 33333333-1011-M012-N210-112233445566”\n" +
+                        "},\n" +
+                        "}\n";
+
+                String subscribeTopic = "deal/gogodeals/database/deals";
+                dealMqqt.publish(payload,publishTopic);
+                dealMqqt.subscribe(subscribeTopic,2);
+
+                fetchDeals();
+            }
+        },5000);
     }
+
 
     @Override
     public void onStart() {
@@ -383,6 +393,38 @@ public class MapsActivity extends FragmentActivity implements
                 target(myLatLang).zoom(mMap.getCameraPosition().zoom).bearing(mMap.getCameraPosition().bearing).build();
         //locationListener.onLocationChanged(location);
         mMap.animateCamera(CameraUpdateFactory.newCameraPosition(myPosition));
+
+
+        double  latitude1 = mMap.getCameraPosition().target.latitude + 0.0005;
+        double  longitude1 = mMap.getCameraPosition().target.longitude + 0.0005;
+        LatLng icon1 = new LatLng(latitude1,longitude1);
+
+        double  latitude2 = mMap.getCameraPosition().target.latitude - 0.0005;
+        double  longitude2 = mMap.getCameraPosition().target.longitude - 0.0005;
+        LatLng icon2 = new LatLng(latitude2,longitude2);
+
+        double  latitude3 = mMap.getCameraPosition().target.latitude - 0.0005;
+        double  longitude3 = mMap.getCameraPosition().target.longitude + 0.0005;
+        LatLng icon3 = new LatLng(latitude3,longitude3);
+
+
+        mMap.addMarker(new MarkerOptions()
+                .position(icon1)
+                .title("user")
+                .icon(BitmapDescriptorFactory.fromResource(R.drawable.burger)));
+
+        mMap.addMarker(new MarkerOptions()
+                .title("user")
+                .position(icon2)
+                .icon(BitmapDescriptorFactory.fromResource(R.drawable.beer)));
+
+        mMap.addMarker(new MarkerOptions()
+                .position(icon3)
+                .title("user    ")
+                .icon(BitmapDescriptorFactory.fromResource(R.drawable.shirt)));
+
+
+
         mMap.setLatLngBoundsForCameraTarget(new LatLngBounds(myLatLang,myLatLang));
         if (mPositionMarker == null) {
 
