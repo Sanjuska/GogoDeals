@@ -5,29 +5,37 @@
     android:layout_width="250dp"
     android:layout_height="400dp"
     android:layout_gravity="center"
-    android:focusable="true"
-    android:focusableInTouchMode="true">
+    android:focusable="false"
+    android:focusableInTouchMode="false"
+    android:weightSum="1"
+    android:background="#648B79">
 
-    <EditText
+    <TextView
+        android:text="My Deals"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:inputType="textPersonName"
-        android:text="My Deals "
-        android:ems="10"
-        android:id="@+id/editText"
+        android:id="@+id/textView11"
+        android:textSize="18sp"
+        android:layout_weight="0.25"
         android:textStyle="normal|bold"
-        android:textSize="24sp"
-        android:textAlignment="center" />
+        android:textAlignment="center"
+        android:elevation="16dp"
+        android:gravity="center"
+        android:layout_height="25dp" />
 
     <ListView
         android:layout_width="match_parent"
-        android:layout_height="295dp"
-        android:elevation="24dp" />
+        android:layout_height="198dp"
+        android:elevation="24dp"
+        android:background="#648B79"/>
 
     <Button
-        android:layout_height="wrap_content"
-        android:id="@+id/backButtonFilter"
+        android:text="Back"
         android:layout_width="wrap_content"
-        android:layout_marginLeft="200dp"
-        android:background="@drawable/backbutton" />
+        android:id="@+id/dealsBackButton"
+        android:layout_marginLeft="150dp"
+        android:elevation="24dp"
+        android:layout_height="wrap_content"
+        android:onClick="dealsBackButtonPressed"
+        android:alpha="100"
+        android:layout_gravity="right" />
 </LinearLayout>

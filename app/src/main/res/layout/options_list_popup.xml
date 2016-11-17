@@ -1,11 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical" android:layout_width="250dp"
     android:layout_height="400dp"
     android:layout_gravity="center"
-    android:focusable="true"
-    android:focusableInTouchMode="true">
+    android:focusableInTouchMode="false"
+    android:alpha="100"
+    android:focusable="false"
+    android:background="#648B79">
 
     <Button
         android:text="My Profile"
@@ -14,13 +17,14 @@
         android:layout_marginBottom="20dp"
         android:layout_marginTop="24dp"
         android:onClick="profileButtonPressed"
-        android:id="@+id/buttonmyprofile"/>
+        android:id="@+id/profileButton"
+         />
 
     <Button
         android:text="My Deals"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/buttonmydeals"
+        android:id="@+id/dealsButton"
         android:onClick="mydealsButtonPressed"
         android:layout_marginBottom="20dp" />
 
@@ -30,7 +34,7 @@
     android:layout_height="wrap_content"
         android:layout_marginBottom="20dp"
         android:onClick="filterButtonPressed"
-        android:id="@+id/buttondealfilters" />
+        android:id="@+id/filterButton" />
 
     <Button
         android:text="Logout"

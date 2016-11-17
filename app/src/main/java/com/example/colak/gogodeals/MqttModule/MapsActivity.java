@@ -185,106 +185,87 @@ public class MapsActivity extends FragmentActivity implements
                     }
                 });
 
+        //Initializing the Options List button and setting an onClick listener to it.
         final ImageButton hamburgerButton = (ImageButton) findViewById(R.id.optionslistbutton);
         hamburgerButton.setOnClickListener(new View.OnClickListener()
         {
 
+            //Function which handles the user pressing the Options List button. If the button is clicked already the popup will be dismissed instead of appearing again.
+            //Populating the content view with options_list_popup and shows it on top of the main layout in the centre.
+            //Dismisses all other popups when called. While open it handles the options lists buttons by switch case which calls the appropriate function when pressed.
+            //Boolean isClickedPop is used to ensure that the Options List popup is dismissed if the Options List button is pressed while the popup is open and vice versa.
             public void onClick(View v) {
                 if (isClickedPop == true) {
                     isClickedPop = false;
-                    if(profileClicked == true){
-                        profilePopup.dismiss();
-                        profileClicked = false;
-                    }
-                    if(dealsClicked == true){
-                        myDealsPopup.dismiss();
-                        dealsClicked = false;
-                    }
-                    if(filtersClicked == true){
-                        filterPopup.dismiss();
-                        filtersClicked = false;
-                    }
+
                     View optPop = getLayoutInflater().inflate(R.layout.options_list_popup, null);
                     optionsPopup.setContentView(optPop);
                     optionsPopup.showAtLocation(mainLayout, Gravity.CENTER, 0, 0);
                     optionsPopup.update(700, 620);
-
+                    profilePopup.dismiss();
+                    myDealsPopup.dismiss();
+                    filterPopup.dismiss();
 
                     switch (v.getId()) {
-                        case R.id.buttonmyprofile:
+                        case R.id.profileButton:
                             profileButtonPressed(v);
-                        case R.id.buttonmydeals:
+                        case R.id.dealsButton:
                             mydealsButtonPressed(v);
-                        case R.id.buttondealfilters:
+                        case R.id.filterButton:
                             filterButtonPressed(v);
+                        case R.id.profileBackButton:
+                            profileBackButtonPressed(v);
+                        case R.id.dealsBackButton:
+                            dealsBackButtonPressed(v);
+                        case R.id.filterBackButton:
+                            filterBackButtonPressed(v);
                     break;
-
                     }
 
+                }
 
-                } else {
+                else {
                     isClickedPop = true;
                     optionsPopup.dismiss();
-                }
-
-
-
-            }
-
-        });
-
-
-
-       /* final Button profileButton = (Button) findViewById(R.id.buttonmyprofile);
-        profileButton.setOnClickListener(new View.OnClickListener()
-        {
-            public void onClick(View v) {
-                if (isClickedPop == true) {
-                    optionsPopup.dismiss();
-                    View profPop = getLayoutInflater().inflate(R.layout.myprofile, null);
-                    profilePopup.setContentView(profPop);
-                    profilePopup.showAtLocation(mainLayout, Gravity.CENTER, 0, 0);
-                    profilePopup.update(700, 620);
-                }
-                else{
                     profilePopup.dismiss();
+                    myDealsPopup.dismiss();
+                    filterPopup.dismiss();
+
                 }
-
-
             }
-        });*/
+        });
     }
 
-    // Opens the popup with My Profile on click. Dismisses the current pop up, the options list and changes the boolean isClickedPopup to true
-    //so that the next time you press the options button it is already in the state.
+    //Function called by the switch case when back button on My Profile is pressed which dismisses the My Profile popup.
+    public void profileBackButtonPressed(View v){
+        profilePopup.dismiss();
+    }
+    //Function called by the switch case when back button on My Deals is pressed which dismisses the My Deals popup.
+    public void dealsBackButtonPressed(View v){
+        myDealsPopup.dismiss();
+    }
+    //Function called by the switch case when back button on Deal Filters is pressed which dismisses the Deal Filters popup.
+    public void filterBackButtonPressed(View v){
+        filterPopup.dismiss();
+    }
+    // Opens the popup with My Profile on click.
     public void profileButtonPressed(View v){
-        optionsPopup.dismiss();
-        isClickedPop = true;
-        profileClicked = true;
         View profPop = getLayoutInflater().inflate(R.layout.myprofile, null);
         profilePopup.setContentView(profPop);
         profilePopup.showAtLocation(mainLayout, Gravity.CENTER, 0, 0);
         profilePopup.update(700, 620);
     }
 
-    // Opens the popup with My Deals on click. Dismisses the current pop up, the options list and changes the boolean isClickedPopup to true
-    //so that the next time you press the options button it is already in the state.
-    public void mydealsButtonPressed(View v) {
-        optionsPopup.dismiss();
-        isClickedPop = true;
-        dealsClicked = true;
+    // Opens the popup with My Deals on click.
+    public void mydealsButtonPressed(View v){
         View myDealsPop = getLayoutInflater().inflate(R.layout.mydeals, null);
         myDealsPopup.setContentView(myDealsPop);
         myDealsPopup.showAtLocation(mainLayout, Gravity.CENTER, 0, 0);
         myDealsPopup.update(700, 620);
     }
 
-    // Opens the popup with Filters on click. Dismisses the current pop up, the options list and changes the boolean isClickedPopup to true
-    //so that the next time you press the options button it is already in the state.
+    // Opens the popup with Deal Filters on click.
     public void filterButtonPressed(View v){
-        optionsPopup.dismiss();;
-        isClickedPop = true;
-        filtersClicked = true;
         View filtersPop = getLayoutInflater().inflate(R.layout.filterslist, null);
         filterPopup.setContentView(filtersPop);
         filterPopup.showAtLocation(mainLayout, Gravity.CENTER, 0 ,0);
