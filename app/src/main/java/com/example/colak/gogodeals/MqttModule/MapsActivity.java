@@ -4,6 +4,7 @@ import android.Manifest;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.drawable.ColorDrawable;
 import android.location.Location;
 import android.location.LocationManager;
 import android.net.Uri;
@@ -11,6 +12,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
+import android.support.v4.content.ContextCompat;
 import android.util.Base64;
 import android.util.Log;
 import android.view.Gravity;
@@ -57,10 +59,13 @@ public class MapsActivity extends FragmentActivity implements
     Location mLastLocation;
 
     LocationManager locationManager;
+    LatLng lastDealUpdatePosition;
 
     Marker lastOpened = null;
 
     PopupWindow popupMessage;
+    Button grabButton;
+    ImageView grabbedView;
     LocationRequest locationRequest;
 
 
@@ -74,7 +79,6 @@ public class MapsActivity extends FragmentActivity implements
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         popupMessage = new PopupWindow(this);
-
         mainLayout = new LinearLayout(this);
         //Olle, map needs to be initialized :D
         //also changed the version of google play services on gradle.app from 9.6.1 to
@@ -115,6 +119,7 @@ public class MapsActivity extends FragmentActivity implements
         locationRequest = LocationRequest.create();
         locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
         locationRequest.setInterval(100);
+
     }
 
     //Olle, adding Gothenburg marker on the map
@@ -129,6 +134,7 @@ public class MapsActivity extends FragmentActivity implements
             return;
         }
 
+        //Johan && Sanja
         //GoogleMap settings
         mMap.setMyLocationEnabled(true);
         mMap.getUiSettings().setScrollGesturesEnabled(false);
@@ -168,9 +174,15 @@ public class MapsActivity extends FragmentActivity implements
 
 
                         View popup = getContent(marker);
+                        popupMessage.setBackgroundDrawable(new ColorDrawable());
                         popupMessage.setContentView(popup);
                         popupMessage.showAtLocation(mainLayout, Gravity.CENTER, 0, 0);
                         popupMessage.update(700, 620);
+                        popupMessage.setFocusable(true);
+                        popupMessage.setOutsideTouchable(true);
+
+                        // Closes the popup window when touch it
+
 
 
                         //marker.showInfoWindow();
@@ -201,6 +213,16 @@ public class MapsActivity extends FragmentActivity implements
         super.onStart();
     }
 
+    public void buttonPressed(View v) {
+       // grabButton = ((Button) v.findViewById(R.id.grabButton));
+            grabButton.setVisibility(View.INVISIBLE);
+            grabbedView.setVisibility(View.VISIBLE);
+            deals.sendGrab("topic","test Bubca");
+        }
+
+
+
+
 
     public View getContent(Marker marker) {
 
@@ -229,14 +251,6 @@ public class MapsActivity extends FragmentActivity implements
         duration.setText(components[3].split(":")[0]);
         //Log.d("InfoWindow description:", components[1]);
 
-        Button grab = ((Button) v.findViewById(R.id.grabButton));
-        grab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                popupMessage.dismiss();
-            }
-        });
-
         ImageView dealPicture = (ImageView) v.findViewById(R.id.dealPicture);
         // Converting String byte picture to an ImageView
         String base = components[4].split(",")[1];
@@ -244,6 +258,12 @@ public class MapsActivity extends FragmentActivity implements
         Bitmap decodedByte = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
         dealPicture.setImageBitmap(decodedByte);
         Log.d("InfoWindow picture:", components[4]);
+
+        grabbedView = (ImageView) v.findViewById(R.id.grabbedView);
+        int icon;
+        icon = R.drawable.grabbed;
+        grabbedView.setImageDrawable(ContextCompat.getDrawable(getApplicationContext(), icon));
+        grabbedView.setVisibility(View.INVISIBLE);
 
         // Returning the view containing InfoWindow contents
         return v;
@@ -282,6 +302,19 @@ public class MapsActivity extends FragmentActivity implements
         public void onLocationChanged(Location location) {
             // Called when a new location is found by the network location provider.
             makeUseOfNewLocation(location);
+
+            //If no deal update has been triggered so far
+            if(lastDealUpdatePosition == null) {
+                //TODO publish deal read request to server
+                lastDealUpdatePosition = new LatLng(location.getLatitude(), location.getLongitude());
+            }else if (((lastDealUpdatePosition.longitude < location.getLongitude() + 0.1f) ||
+                (lastDealUpdatePosition.longitude > location.getLongitude() - 0.1f)) &&
+                    ((lastDealUpdatePosition.latitude < location.getLatitude() + 0.1f) ||
+                            (lastDealUpdatePosition.latitude > location.getLatitude() - 0.1f))
+            ) {
+                //TODO publish deal read request to server
+                lastDealUpdatePosition = new LatLng(location.getLatitude(), location.getLongitude());
+            }
         }
 
         public void onStatusChanged(String provider, int status, Bundle extras) {

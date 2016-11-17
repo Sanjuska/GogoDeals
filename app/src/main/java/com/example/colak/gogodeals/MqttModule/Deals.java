@@ -17,6 +17,8 @@ import org.eclipse.paho.client.mqttv3.MqttClient;
 import org.eclipse.paho.client.mqttv3.MqttException;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
 
+import java.io.UnsupportedEncodingException;
+
 import static com.example.colak.gogodeals.MqttModule.MapsActivity.mMap;
 
 /**
@@ -155,4 +157,20 @@ public class Deals extends AppCompatActivity implements
         Log.i("deal added" ,"woop");
 
     }
+
+    // publish grab messages
+    public void sendGrab(String grabTopic, String dealID){
+        String topic = grabTopic;
+        String payload = dealID;
+        byte[] encodedPayload = new byte[0];
+        try {
+            encodedPayload = payload.getBytes("UTF-8");
+            MqttMessage message = new MqttMessage(encodedPayload);
+            client.publish(topic, message);
+        } catch (UnsupportedEncodingException | MqttException e) {
+            e.printStackTrace();
+        }
+
+    }
+
 }
