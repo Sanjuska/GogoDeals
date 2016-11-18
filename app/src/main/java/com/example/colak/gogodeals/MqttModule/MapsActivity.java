@@ -407,19 +407,20 @@ public class MapsActivity extends FragmentActivity implements
         LatLng icon3 = new LatLng(latitude3,longitude3);
 
 
-        mMap.addMarker(new MarkerOptions()
+
+        Marker testMarker = mMap.addMarker(new MarkerOptions()
                 .position(icon1)
                 .title("user")
                 .icon(BitmapDescriptorFactory.fromResource(R.drawable.burger)));
 
-        mMap.addMarker(new MarkerOptions()
+        Marker testMarker2 = mMap.addMarker(new MarkerOptions()
                 .title("user")
                 .position(icon2)
                 .icon(BitmapDescriptorFactory.fromResource(R.drawable.beer)));
 
-        mMap.addMarker(new MarkerOptions()
+        Marker testMarker3 = mMap.addMarker(new MarkerOptions()
                 .position(icon3)
-                .title("user    ")
+                .title("user")
                 .icon(BitmapDescriptorFactory.fromResource(R.drawable.shirt)));
 
 
@@ -437,6 +438,7 @@ public class MapsActivity extends FragmentActivity implements
         }
 
         mPositionMarker.hideInfoWindow();
+
         animateMarker(mPositionMarker, location); // Helper method for smooth
         // animation
 
