@@ -1,18 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="#d9d7d7">
+    android:layout_height="match_parent">
 
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Login with Facebook"
+        android:text="Facebook login"
         android:id="@+id/mainLogin"
         android:layout_marginLeft="0dp"
-        android:layout_below="@+id/welcometext"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="127dp" />
+        android:nestedScrollingEnabled="false"
+        android:layout_below="@+id/gogoProfile"
+        android:layout_centerHorizontal="true" />
 
     <Button
         android:layout_width="wrap_content"
@@ -20,7 +19,8 @@
         android:text="SIGN UP"
         android:id="@+id/mainsignup"
         android:layout_marginLeft="60dp"
-        android:layout_centerVertical="true"
+        android:onClick="publishButtonClicked"
+        android:layout_below="@+id/mainLogin"
         android:layout_centerHorizontal="true" />
 
     <TextView
@@ -30,9 +30,19 @@
         android:id="@+id/welcometext"
         android:layout_alignParentStart="true"
         android:layout_alignParentEnd="true"
-        android:background="#c8c4c4"
         style="@style/AppTheme"
         android:textStyle="normal|italic"
         android:typeface="serif"
         android:textSize="26dp" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Gogodeals login"
+        android:id="@+id/gogoProfile"
+        android:layout_marginLeft="0dp"
+        android:nestedScrollingEnabled="false"
+        android:layout_below="@+id/welcometext"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="132dp" />
 </RelativeLayout>	

@@ -1,9 +1,8 @@
-
 package com.example.colak.gogodeals.MqttModule;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -25,14 +24,15 @@ import org.eclipse.paho.client.mqttv3.MqttMessage;
 import java.io.UnsupportedEncodingException;
 import java.util.Locale;
 
-/**
- * Created by colak on 06/10/16.
- */
-
-public class ConnectionMqtt extends AppCompatActivity implements MqttCallback {
+public class newUserSignup extends AppCompatActivity implements MqttCallback {
     // Variables used in the class
     private static final String TAG = "ConnectionMqtt";
-    EditText etSendMessage;
+    EditText regUsername;
+    EditText usconfText;
+    EditText regEmail;
+    EditText regPassword;
+    Button gogosignup;
+
     TextView tvGetMessage;
     Button btnSend, btnRefresh;
     static MqttAndroidClient client;
@@ -42,12 +42,19 @@ public class ConnectionMqtt extends AppCompatActivity implements MqttCallback {
     //Connect class with xml file
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_mqtt);
+        setContentView(R.layout.newuser_signup);
+        //
+        regUsername = (EditText) findViewById(R.id.regUsername);
+        //usconfText = (EditText) findViewById(R.id.usconfText);
+        regEmail = (EditText) findViewById(R.id.regEmail);
+        regPassword = (EditText) findViewById(R.id.regPassword);
+        gogosignup = (Button) findViewById(R.id.gogosignup);
 
-        etSendMessage = (EditText) findViewById(R.id.idSendMessage);
-        tvGetMessage = (TextView) findViewById(R.id.idGetMessage);
-        btnRefresh = (Button) findViewById(R.id.idBtnRefresh);
-        btnSend = (Button) findViewById(R.id.idButtonSend);
+
+        //
+        //tvGetMessage = (TextView) findViewById(R.id.idGetMessage);
+        //btnRefresh = (Button) findViewById(R.id.idBtnRefresh);
+        //btnSend = (Button) findViewById(R.id.idButtonSend);
 
         // Set locale;
         Locale l = getResources().getConfiguration().locale;
@@ -81,14 +88,53 @@ public class ConnectionMqtt extends AppCompatActivity implements MqttCallback {
         }
 
     }
-    // Publishing messages in the -topic- by clicking button
-    public void publishButtonClicked(View v){
+    //Register user without facebook profile
+    public void registerGogouser(View V) {
+
         String topic = "deal/gogodeals/user/new";
 
+        //guards for empty fields, username=password or email
+        if (regUsername.getText().toString().isEmpty() || regEmail.getText().toString().isEmpty() || regPassword.getText().toString().isEmpty()){
+            Toast.makeText(getApplicationContext(), "Credential fields cannot be empty", Toast.LENGTH_SHORT).show();}
 
+            if (regUsername.getText().toString().equals(regPassword.getText().toString())){
+                Toast.makeText(getApplicationContext(), "Username cannot be the same as password", Toast.LENGTH_SHORT).show();
+            }
+
+        else if ((!regUsername.getText().toString().isEmpty() && !regPassword.getText().toString().isEmpty() && !regEmail.getText().toString().isEmpty())){
+            if ((!regUsername.getText().toString().equals(regPassword.getText().toString()) && !regEmail.getText().toString().equals(regPassword.getText().toString())
+                    && !regUsername.getText().toString().equals(regEmail.getText().toString()))) {
+                Toast.makeText(getApplicationContext(), "Welcome:" + regUsername.getText().toString(), Toast.LENGTH_SHORT).show();
+
+
+                String payload = "{\"id\":\"1\",\"data\":{\"username\":\""
+                        + regUsername.getText().toString() + "\",\"password\": \"" + regPassword.getText().toString() + "\",\"email\": \"" + regEmail.getText().toString() + "\"},}";
+
+
+                byte[] encodedPayload;
+                try {
+                    encodedPayload = payload.getBytes("UTF-8");
+                    MqttMessage message = new MqttMessage(encodedPayload);
+                    client.publish(topic, message);
+                    regUsername.getText().clear();
+                    regPassword.getText().clear();
+                    regEmail.getText().clear();
+                    finish();
+                    startActivity(new Intent(this, MapsActivity.class));
+
+                } catch (UnsupportedEncodingException | MqttException e) {
+                    e.printStackTrace();
+                }
+            }
+    }}
+
+    public void registeredUsers(View V){
+        String topic = "deal/gogodeals/user/new";
+        //payload = "{\"id\":\"1\",\"payload_encryption\":\"false\",\"data\":{\"username\":\""
+        //+ UserLogin.UserName+"\",\"password\": \""+(Math.random()+Math.random())+"\",\"email\": \""+UserLogin.UserEmail+"\"},}";
+        //String topic = "deal/gogodeals/user/new";
         String payload = "{\"id\":\"1\",\"data\":{\"username\":\""
-                + UserLogin.UserName+"\",\"password\": \"gener1\",\"email\": \""+UserLogin.UserEmail+"\"},}";
-
+                + UserLogin.UserName+"\",\"password\": \""+(Math.random()+Math.random())+"\",\"email\": \""+UserLogin.UserEmail+"\"},}";
         byte[] encodedPayload;
         try {
             encodedPayload = payload.getBytes("UTF-8");
@@ -98,33 +144,6 @@ public class ConnectionMqtt extends AppCompatActivity implements MqttCallback {
             e.printStackTrace();
         }
     }
-
-    public static void fbRegister(){
-        String topic = "deal/gogodeals/user/new";
-
-
-        String payload = "{\"id\":\"1\",\"payload_encryption\":\"false\",\"data\":{\"username\":\""
-                + UserLogin.UserName+"\",\"password\": \"gener1\",\"email\": \""+UserLogin.UserEmail+"\"},}";
-
-        byte[] encodedPayload;
-        try {
-            encodedPayload = payload.getBytes("UTF-8");
-            MqttMessage message = new MqttMessage(encodedPayload);
-            client.publish(topic, message);
-        } catch (UnsupportedEncodingException | MqttException e) {
-            e.printStackTrace();
-        }
-    }
-
-    //private void userDetails() throws JSONException{
-      //  JSONObject obj = new JSONObject();
-        //obj.put("username", etSendMessage.getText().toString());
-        //obj.put("password", "testnikos1");
-        //obj.put("email", "emailnikos");
-        //System.out.println(obj);
-       // Log.i("s",obj.toString());
-    //}
-
 
 
     // Subscribing on a topic and getting messages from the publisher
@@ -189,11 +208,11 @@ public class ConnectionMqtt extends AppCompatActivity implements MqttCallback {
     // When message from publisher arrived, show it in the text v¢iew.
     public void messageArrived (String topic, MqttMessage message) throws MqttException{
         //should get a message from broker to know if a username is already on the database
-        String text = tvGetMessage.getText().toString();
-        text = text + "\n" + new String (message.getPayload());
-        tvGetMessage.setText(text);
-        Toast.makeText(getApplicationContext(), "Welcome: " + UserLogin.UserName, Toast.LENGTH_SHORT).show();
-        tvGetMessage.setMovementMethod(new ScrollingMovementMethod());
+        //String text = tvGetMessage.getText().toString();
+        //text = text + "\n" + new String (message.getPayload());
+        //tvGetMessage.setText(text);
+        //Toast.makeText(getApplicationContext(), "Welcome: " + UserLogin.UserName, Toast.LENGTH_SHORT).show();
+        //tvGetMessage.setMovementMethod(new ScrollingMovementMethod());
 
         //Log.e("tag",new String (message.getPayload()));
         //String mess = new String (message.getPayload());
@@ -213,10 +232,11 @@ public class ConnectionMqtt extends AppCompatActivity implements MqttCallback {
     }
 
 
+    //public void publish(String payload, String topic) {
+      //  topic = "deal/gogodeals/user/new";
 
+
+        //payload = "{\"id\":\"1\",\"payload_encryption\":\"false\",\"data\":{\"username\":\""
+          //      + UserLogin.UserName+"\",\"password\": \""+(Math.random()+Math.random())+"\",\"email\": \""+UserLogin.UserEmail+"\"},}";
+    //}
 }
-
-
-
-
-

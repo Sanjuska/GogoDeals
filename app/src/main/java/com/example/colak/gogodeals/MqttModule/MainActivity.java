@@ -21,6 +21,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private Button mainLogin;
     private Button mainsignup;
+    private Button gogoProfile;
 
     private TextView welcometext;
 
@@ -33,6 +34,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         welcometext = (TextView)findViewById(R.id.welcometext);
         mainLogin = (Button) findViewById(R.id.mainLogin);
         mainsignup = (Button)findViewById(R.id.mainsignup);
+        gogoProfile = (Button)findViewById(R.id.gogoProfile);
 
         mainLogin.setOnClickListener(this);
         mainsignup.setOnClickListener(this);
@@ -46,9 +48,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             case R.id.mainLogin:
                 Intent gogoApp1 = new Intent(MainActivity.this, UserLogin.class);
                 startActivity(gogoApp1);
+
                 break;
             case R.id.mainsignup:
-                Intent gogoApp2 = new Intent(MainActivity.this, UserSignup.class);
+                Intent gogoApp2 = new Intent(MainActivity.this, newUserSignup.class);
                 startActivity(gogoApp2);
                 break;
         }

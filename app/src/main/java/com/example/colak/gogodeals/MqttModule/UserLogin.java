@@ -28,7 +28,7 @@ import org.json.JSONObject;
 
 import java.util.Arrays;
 
-public class UserLogin extends AppCompatActivity  {
+public class UserLogin extends AppCompatActivity {
 
 
     private TextView info;
@@ -41,6 +41,9 @@ public class UserLogin extends AppCompatActivity  {
     private String Email;
     public static String UserName;
     public static String UserEmail;
+    public static String idfb;
+    public int test;
+
 
 
 
@@ -68,12 +71,11 @@ public class UserLogin extends AppCompatActivity  {
         FacebookSdk.sdkInitialize(getApplicationContext());
         AppEventsLogger.activateApp(this);
         callbackManager = CallbackManager.Factory.create();
-
+        test = 2;
         setContentView(R.layout.mainactivity);
         //shows the user which data gets accessed when log in through fb app
 
-        LoginManager.getInstance().logInWithReadPermissions(this,
-                Arrays.asList("public_profile", "email"));
+
 
 
         info = (TextView)findViewById(R.
@@ -81,7 +83,8 @@ public class UserLogin extends AppCompatActivity  {
 
         loginButton = (LoginButton)findViewById(R.id.login_button);
 
-
+        LoginManager.getInstance().logInWithReadPermissions(this,
+                Arrays.asList("public_profile", "email"));
         //when fb responds to loginresult, next step is executed by invoking one of the methods below
         //keep user logged in to app
         //loginButton.registerCallback(callbackManager,
@@ -92,27 +95,37 @@ public class UserLogin extends AppCompatActivity  {
                 new FacebookCallback<LoginResult>() {
 
 
-                    Intent gogoApp = new Intent(UserLogin.this, ConnectionMqtt.class);
+                    Intent gogoApp = new Intent(UserLogin.this, MapsActivity.class);
 
 
                     @Override
                     public void onSuccess(LoginResult loginResult) {
+
                         //AccessToken accessToken = loginResult.getAccessToken();
                         //Profile profile = Profile.getCurrentProfile();
                         //Log.d("fbusername : ", fbusername);
                         startActivity(gogoApp);
+                        newUserSignup firstLogin = new newUserSignup();
+                        //newstuff
+                        String topic = "deal/gogodeals/user/new";
+                        String payload = "{\"id\":\"1\",\"data\":{\"username\":\""
+                                + Name+"\",\"password\": \""+(Math.random()+Math.random())+"\",\"email\": \""+Email+"\"},}";
+
+
+                        //newstuff
 
                         //Facebook user data
                         GraphRequest request = GraphRequest.newMeRequest(
                                 loginResult.getAccessToken(),
                                 new GraphRequest.GraphJSONObjectCallback() {
                                     @Override
-                                     public void onCompleted(
+                                    public void onCompleted(
                                             JSONObject object,
                                             GraphResponse response) {
                                         Log.i("LoginActivity Response ", response.toString());
 
                                         try {
+                                            //idfb = object.getString("public_profile");
                                             Name = object.getString("name");
                                             UserName = Name;
                                             //Birthday = object.getString("birthday");
@@ -120,14 +133,13 @@ public class UserLogin extends AppCompatActivity  {
                                             UserEmail = Email;
                                             Log.d("Email = ", " " + Email);
 
-
-                                        //Name1 = Name +"test";
+                                            //Name1 = Name +"test";
                                             Toast.makeText(getApplicationContext(), "Name: " + Name, Toast.LENGTH_LONG).show();
                                             Toast.makeText(getApplicationContext(), "Email: " + Email, Toast.LENGTH_SHORT).show();
                                             //Toast.makeText(getApplicationContext(), "age: " + Birthday, Toast.LENGTH_SHORT).show();
                                             //Toast.makeText(getApplicationContext(), "" + Name1, Toast.LENGTH_SHORT).show();
                                             //loginity();
-                                            } catch (JSONException e) {
+                                        } catch (JSONException e) {
                                             e.printStackTrace();
                                         }
                                     }
@@ -137,13 +149,18 @@ public class UserLogin extends AppCompatActivity  {
                         parameters.putString("fields", "name,email");
                         request.setParameters(parameters);
                         request.executeAsync();
+                        //if (test==4) {
+                        //firstLogin.publish(topic, payload);}
+                        LoginManager.getInstance().logOut();
+                        finish();
+
 
                     }
 
 
-
                     @Override
                     public void onCancel() {
+                        LoginManager.getInstance().logOut();
                         Toast.makeText(UserLogin.this, "Login canceled", Toast.LENGTH_SHORT).show();
 
                     }
@@ -151,7 +168,7 @@ public class UserLogin extends AppCompatActivity  {
                     @Override
                     public void onError(FacebookException e) {
                         info.setText("Login attempt failed.");
-                        Log.e("Failed: ",e.toString());
+                        Log.e("Failed: ", e.toString());
                     }
                 }
         );
@@ -162,6 +179,8 @@ public class UserLogin extends AppCompatActivity  {
     protected void onActivityResult(int requestCode,int resultCode,Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         callbackManager.onActivityResult(requestCode, resultCode, data);
+        LoginManager.getInstance().logOut();
+
 
     }
 

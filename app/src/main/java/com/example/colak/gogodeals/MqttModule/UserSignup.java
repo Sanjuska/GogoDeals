@@ -92,7 +92,7 @@ public class UserSignup extends AppCompatActivity implements MqttCallback {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.user_signup);
+        setContentView(R.layout.newuser_signup);
 
         email = (EditText) findViewById(R.id.email);
         password = (EditText) findViewById(R.id.password);
@@ -124,6 +124,7 @@ public class UserSignup extends AppCompatActivity implements MqttCallback {
                     Toast.makeText(getApplicationContext(), "Confirm Password: " + newUserConfirmPassword, Toast.LENGTH_SHORT).show();
                 }
                 break;
+
 
         }
     }
