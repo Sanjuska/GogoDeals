@@ -1,3 +1,4 @@
+/*
 package com.example.colak.gogodeals.MqttModule;
 
 import android.os.Bundle;
@@ -21,7 +22,7 @@ import org.eclipse.paho.client.mqttv3.MqttMessage;
 
 /**
  * Created by Nikos on 12/11/2016.
- */
+ *//*
 public class UserSignup extends AppCompatActivity implements MqttCallback {
 
     EditText email;
@@ -143,4 +144,4 @@ public class UserSignup extends AppCompatActivity implements MqttCallback {
     public void deliveryComplete(IMqttDeliveryToken token) {
 
     }
-}
+}*/

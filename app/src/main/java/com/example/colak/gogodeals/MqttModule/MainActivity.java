@@ -42,14 +42,20 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     }
 
+
+
     @Override
+
+    //Temporary main screen where user can sign in, sign up
     public void onClick(View v) {
         switch (v.getId()) {
+            //login for facebook users
             case R.id.mainLogin:
                 Intent gogoApp1 = new Intent(MainActivity.this, UserLogin.class);
                 startActivity(gogoApp1);
-
                 break;
+
+            //registration for non facebook users
             case R.id.mainsignup:
                 Intent gogoApp2 = new Intent(MainActivity.this, newUserSignup.class);
                 startActivity(gogoApp2);

@@ -39,44 +39,18 @@ public class UserLogin extends AppCompatActivity {
 
     private String Name;
     private String Email;
-    public static String UserName;
-    public static String UserEmail;
-    public static String idfb;
-    public int test;
-
-
 
 
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        //i assume that this method was for retrieving a hash key through log?
-        /* try {
-            PackageInfo info = getPackageManager().getPackageInfo(
-                    "com.example.colak.gogodeals",
-                    PackageManager.GET_SIGNATURES);
-            for (Signature signature : info.signatures) {
-                MessageDigest md = MessageDigest.getInstance("SHA");
-                md.update(signature.toByteArray());
-                Log.d("KeyHash:", Base64.encodeToString(md.digest(), Base64.DEFAULT));
-            }
-        } catch (PackageManager.NameNotFoundException e) {
-
-        } catch (NoSuchAlgorithmException e) {
-
-        }*/
-        // ---------------------------------
-
         FacebookSdk.sdkInitialize(getApplicationContext());
         AppEventsLogger.activateApp(this);
         callbackManager = CallbackManager.Factory.create();
-        test = 2;
+
         setContentView(R.layout.mainactivity);
         //shows the user which data gets accessed when log in through fb app
-
-
-
 
         info = (TextView)findViewById(R.
                 id.info);
@@ -85,11 +59,11 @@ public class UserLogin extends AppCompatActivity {
 
         LoginManager.getInstance().logInWithReadPermissions(this,
                 Arrays.asList("public_profile", "email"));
+
         //when fb responds to loginresult, next step is executed by invoking one of the methods below
         //keep user logged in to app
         //loginButton.registerCallback(callbackManager,
         //new FacebookCallback<LoginResult>() {
-
 
         LoginManager.getInstance().registerCallback(callbackManager,
                 new FacebookCallback<LoginResult>() {
@@ -101,20 +75,11 @@ public class UserLogin extends AppCompatActivity {
                     @Override
                     public void onSuccess(LoginResult loginResult) {
 
-                        //AccessToken accessToken = loginResult.getAccessToken();
-                        //Profile profile = Profile.getCurrentProfile();
-                        //Log.d("fbusername : ", fbusername);
+                        //when fb credentials are correct, user logins to gogodeals
                         startActivity(gogoApp);
-                        newUserSignup firstLogin = new newUserSignup();
-                        //newstuff
-                        String topic = "deal/gogodeals/user/new";
-                        String payload = "{\"id\":\"1\",\"data\":{\"username\":\""
-                                + Name+"\",\"password\": \""+(Math.random()+Math.random())+"\",\"email\": \""+Email+"\"},}";
 
 
-                        //newstuff
-
-                        //Facebook user data
+                        //Fetching facebook user data: username and email to store it into our db
                         GraphRequest request = GraphRequest.newMeRequest(
                                 loginResult.getAccessToken(),
                                 new GraphRequest.GraphJSONObjectCallback() {
@@ -125,12 +90,11 @@ public class UserLogin extends AppCompatActivity {
                                         Log.i("LoginActivity Response ", response.toString());
 
                                         try {
-                                            //idfb = object.getString("public_profile");
+
                                             Name = object.getString("name");
-                                            UserName = Name;
-                                            //Birthday = object.getString("birthday");
+                                            //UserName = Name;
                                             Email = object.getString("email");
-                                            UserEmail = Email;
+                                            //UserEmail = Email;
                                             Log.d("Email = ", " " + Email);
 
                                             //Name1 = Name +"test";
@@ -149,8 +113,8 @@ public class UserLogin extends AppCompatActivity {
                         parameters.putString("fields", "name,email");
                         request.setParameters(parameters);
                         request.executeAsync();
-                        //if (test==4) {
-                        //firstLogin.publish(topic, payload);}
+
+                        //when user press back, he goes to main screen in order to login again etc.
                         LoginManager.getInstance().logOut();
                         finish();
 

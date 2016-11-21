@@ -1,4 +1,4 @@
-
+/*
 package com.example.colak.gogodeals.MqttModule;
 
 import android.os.Bundle;
@@ -28,7 +28,7 @@ import java.util.Locale;
 /**
  * Created by colak on 06/10/16.
  */
-
+/*
 public class ConnectionMqtt extends AppCompatActivity implements MqttCallback {
     // Variables used in the class
     private static final String TAG = "ConnectionMqtt";
@@ -220,3 +220,4 @@ public class ConnectionMqtt extends AppCompatActivity implements MqttCallback {
 
 
 
+*/
