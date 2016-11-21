@@ -158,7 +158,7 @@ public class MapsActivity extends FragmentActivity implements
             // in a raw resource file.
             boolean success = mMap.setMapStyle(
                     MapStyleOptions.loadRawResourceStyle(
-                            this, R.raw.grey));
+                            this, R.raw.whitegrey));
 
             if (!success) {
                 Log.e("MapsActivityRaw", "Style parsing failed.");
@@ -299,7 +299,19 @@ public class MapsActivity extends FragmentActivity implements
             public void run() {
 
                 String publishTopic = "deal/gogodeals/deal/fetch";
-                String payload = "{\n" +
+
+                  String payload =   "{ \"id\": \"12345678-1011-M012-N210-112233445566\"," +
+                          " \"data\": " +
+                          "{ \"longitude\": "+mMap.getCameraPosition().target.longitude +"," +
+                          " \"latitude\": " +mMap.getCameraPosition().target.latitude + "," +
+                          " \"filters\":" +
+                          " \"fika, alcohol\"," +
+                          " \"deals\": \"33333333-1011-M012-N210-112233445566\"},}";
+
+                    String subscribeTopic = "deal/gogodeals/database/deals";
+                dealMqqt.publish(payload,publishTopic);
+                dealMqqt.subscribe(subscribeTopic,2);
+                payload = "{\n" +
                         "      “id”: “12345678-1011-M012-N210-112233445566”,\n" +
                         "      “data”: {\n" +
                         "\t“longitude”:" + mMap.getCameraPosition().target.longitude + " ,\n" +
@@ -309,11 +321,11 @@ public class MapsActivity extends FragmentActivity implements
                         "},\n" +
                         "}\n";
 
-                String subscribeTopic = "deal/gogodeals/database/deals";
+                 subscribeTopic = "deal/gogodeals/database/deals";
                 dealMqqt.publish(payload, publishTopic);
                 dealMqqt.subscribe(subscribeTopic, 2);
 
-                fetchDeals();
+               // fetchDeals();
             }
         }, 5000);
     }
@@ -506,19 +518,20 @@ public class MapsActivity extends FragmentActivity implements
         LatLng icon3 = new LatLng(latitude3,longitude3);
 
 
-        mMap.addMarker(new MarkerOptions()
+
+        Marker testMarker = mMap.addMarker(new MarkerOptions()
                 .position(icon1)
                 .title("user")
                 .icon(BitmapDescriptorFactory.fromResource(R.drawable.burger)));
 
-        mMap.addMarker(new MarkerOptions()
+        Marker testMarker2 = mMap.addMarker(new MarkerOptions()
                 .title("user")
                 .position(icon2)
                 .icon(BitmapDescriptorFactory.fromResource(R.drawable.beer)));
 
-        mMap.addMarker(new MarkerOptions()
+        Marker testMarker3 = mMap.addMarker(new MarkerOptions()
                 .position(icon3)
-                .title("user    ")
+                .title("user")
                 .icon(BitmapDescriptorFactory.fromResource(R.drawable.shirt)));
 
 
@@ -536,6 +549,7 @@ public class MapsActivity extends FragmentActivity implements
         }
 
         mPositionMarker.hideInfoWindow();
+
         animateMarker(mPositionMarker, location); // Helper method for smooth
         // animation
 

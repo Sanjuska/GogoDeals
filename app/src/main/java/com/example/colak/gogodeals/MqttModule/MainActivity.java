@@ -1,31 +1,17 @@
 package com.example.colak.gogodeals.MqttModule;
 
 import android.content.Intent;
-import android.content.pm.PackageInfo;
-import android.content.pm.PackageManager;
-import android.content.pm.Signature;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Base64;
-import android.util.Log;
+import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.example.colak.gogodeals.R;
 import com.facebook.CallbackManager;
-import com.facebook.FacebookCallback;
-import com.facebook.FacebookException;
-import com.facebook.FacebookSdk;
-import com.facebook.appevents.AppEventsLogger;
-import com.facebook.login.LoginManager;
-import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
 
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
-import java.util.Arrays;
-
-public class MainActivity extends AppCompatActivity  {
+public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
     private TextView info;
 
@@ -33,70 +19,47 @@ public class MainActivity extends AppCompatActivity  {
 
     private CallbackManager callbackManager;
 
+    private Button mainLogin;
+    private Button mainsignup;
+    private Button gogoProfile;
+
+    private TextView welcometext;
+
 
     @Override
-    protected void onCreate(final Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.main_screen);
 
-        try {
-            PackageInfo info = getPackageManager().getPackageInfo(
-                    "com.example.colak.gogodeals",
-                    PackageManager.GET_SIGNATURES);
-            for (Signature signature : info.signatures) {
-                MessageDigest md = MessageDigest.getInstance("SHA");
-                md.update(signature.toByteArray());
-                Log.d("KeyHash:", Base64.encodeToString(md.digest(), Base64.DEFAULT));
-            }
-        } catch (PackageManager.NameNotFoundException e) {
+        welcometext = (TextView)findViewById(R.id.welcometext);
+        mainLogin = (Button) findViewById(R.id.mainLogin);
+        mainsignup = (Button)findViewById(R.id.mainsignup);
+        gogoProfile = (Button)findViewById(R.id.gogoProfile);
 
-        } catch (NoSuchAlgorithmException e) {
-
-        }
-
-        FacebookSdk.sdkInitialize(getApplicationContext());
-        AppEventsLogger.activateApp(this);
-        callbackManager = CallbackManager.Factory.create();
-
-        //shows the user which data gets accessed when log in through fb app
-        LoginManager.getInstance().logInWithReadPermissions(this,
-                Arrays.asList("public_profile", "email"));
-
-        setContentView(R.layout.mainactivity);
-        info = (TextView)findViewById(R.
-                id.info);
-
-        loginButton = (LoginButton)findViewById(R.id.login_button);
+        mainLogin.setOnClickListener(this);
+        mainsignup.setOnClickListener(this);
 
 
-        //when fb responds to loginresult, next step is executed by invoking one of the methods below
-        //keep user logged in to app
-        LoginManager.getInstance().registerCallback(callbackManager,
-                new FacebookCallback<LoginResult>() {
-
-                    Intent gogoApp = new Intent(MainActivity.this, MapsActivity.class);
-
-                    @Override
-                    public void onSuccess(LoginResult loginResult) {
-                        startActivity(gogoApp);
-                    }
-
-                    @Override
-                    public void onCancel() {
-                        Toast.makeText(MainActivity.this, "Login canceled", Toast.LENGTH_SHORT).show();
-                    }
-
-                    @Override
-                    public void onError(FacebookException e) {
-                        info.setText("Login attempt failed.");
-                        Log.e("Failed: ",e.toString());
-                    }
-                }
-        );
     }
 
+
+
     @Override
-    protected void onActivityResult(int requestCode,int resultCode,Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        callbackManager.onActivityResult(requestCode, resultCode, data);
+
+    //Temporary main screen where user can sign in, sign up
+    public void onClick(View v) {
+        switch (v.getId()) {
+            //login for facebook users
+            case R.id.mainLogin:
+                Intent gogoApp1 = new Intent(MainActivity.this, UserLogin.class);
+                startActivity(gogoApp1);
+                break;
+
+            //registration for non facebook users
+            case R.id.mainsignup:
+                Intent gogoApp2 = new Intent(MainActivity.this, newUserSignup.class);
+                startActivity(gogoApp2);
+                break;
+        }
     }
 }
