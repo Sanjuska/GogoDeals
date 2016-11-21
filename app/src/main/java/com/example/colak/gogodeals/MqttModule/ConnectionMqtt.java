@@ -1,8 +1,10 @@
 
 package com.example.colak.gogodeals.MqttModule;
 
+
 import android.app.Activity;
 import android.util.Log;
+import android.view.View;
 
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
@@ -17,8 +19,6 @@ import org.eclipse.paho.client.mqttv3.MqttClient;
 import org.eclipse.paho.client.mqttv3.MqttException;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
 
-import java.io.UnsupportedEncodingException;
-
 import static com.example.colak.gogodeals.MqttModule.MapsActivity.mMap;
 
 
@@ -27,6 +27,7 @@ import static com.example.colak.gogodeals.MqttModule.MapsActivity.mMap;
  */
 
 public class ConnectionMqtt extends Activity implements MqttCallback {
+
     // Variables used in the class
     private static final String TAG = "ConnectionMqtt";
 
@@ -67,38 +68,19 @@ public ConnectionMqtt(Activity activity){
 
     }
     // Publishing messages in the -topic- by clicking button
-    public void publish(String payload, String topic){
+
+    public void publish(String payload, String topic) {
         byte[] encodedPayload = new byte[0];
-        try {
-            encodedPayload = payload.getBytes("UTF-8");
-            MqttMessage message = new MqttMessage(encodedPayload);
-            client.publish(topic, message);
-        } catch (UnsupportedEncodingException | MqttException e) {
-            e.printStackTrace();
-        }
     }
-    // Subscribing on a topic and getting messages from the publisher
-    public static void subscribe(String topic, int qos){
-        try {
-            IMqttToken subToken = client.subscribe(topic, qos);
-            subToken.setActionCallback(new IMqttActionListener() {
-                @Override
-                public void onSuccess(IMqttToken asyncActionToken) {
-                    // The message was published
-                }
 
-                @Override
-                public void onFailure(IMqttToken asyncActionToken,
-                                      Throwable exception) {
-                    // The subscription could not be performed, maybe the user was not
-                    // authorized to subscribe on the specified topic e.g. using wildcards
+    public void publishButtonClicked(View v) {
 
-                }
+    }
 
-            });
-        } catch (MqttException e) {
-            e.printStackTrace();
-        }
+
+
+
+    public static void subscribe(String topic, int qos) {
     }
 
     public void connectionLost(Throwable cause){
@@ -159,8 +141,4 @@ public ConnectionMqtt(Activity activity){
 
 
 }
-
-
-
-
 

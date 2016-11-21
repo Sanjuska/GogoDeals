@@ -28,6 +28,23 @@ package="com.example.colak.gogodeals">
         </intent-filter>
     </activity>
     <activity android:name=".MqttModule.MainActivity">
+
+    </activity>
+
+    <activity android:name=".MqttModule.UserLogin">
+
+    </activity>
+
+    <activity android:name=".MqttModule.UserSignup">
+
+    </activity>
+
+    <activity android:name=".MqttModule.ConnectionMqtt">
+
+    </activity>
+
+    <activity android:name=".MqttModule.newUserSignup">
+
     </activity>
 
     <meta-data android:name="com.facebook.sdk.ApplicationId"
