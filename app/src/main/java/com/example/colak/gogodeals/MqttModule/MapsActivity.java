@@ -21,6 +21,7 @@ import android.view.View;
 import android.view.animation.Interpolator;
 import android.view.animation.LinearInterpolator;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
@@ -71,11 +72,17 @@ public class MapsActivity extends FragmentActivity implements
     Marker lastOpened = null;
 
 
+    boolean isClickedPop = true;
+
     PopupWindow popupMessage;
     LocationRequest locationRequest;
 
 
-    Button popupButton;
+    PopupWindow filterPopup;
+    PopupWindow myDealsPopup;
+    PopupWindow profilePopup;
+    PopupWindow optionsPopup;
+
     LinearLayout mainLayout;
 
     // Creating an instance of MarkerOptions to set position
@@ -85,12 +92,13 @@ public class MapsActivity extends FragmentActivity implements
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         popupMessage = new PopupWindow(this);
-
+        optionsPopup = new PopupWindow(this);
+        profilePopup = new PopupWindow(this);
+        myDealsPopup = new PopupWindow(this);
+        filterPopup = new PopupWindow(this);
         mainLayout = new LinearLayout(this);
-        //Olle, map needs to be initialized :D
         //also changed the version of google play services on gradle.app from 9.6.1 to
         //7.5.0 cause of compatibility.
-        //Also, on manifest we just need one main launcher for the whole app :D
         MapsInitializer.initialize(getApplicationContext());
         setContentView(R.layout.activity_maps);
 
@@ -139,7 +147,6 @@ public class MapsActivity extends FragmentActivity implements
 
     }
 
-    //Olle, adding Gothenburg marker on the map
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
@@ -233,8 +240,57 @@ public class MapsActivity extends FragmentActivity implements
                     }
                 });
 
+        //Initializing the Options List button and setting an onClick listener to it.
+        final ImageButton hamburgerButton = (ImageButton) findViewById(R.id.optionslistbutton);
+        hamburgerButton.setOnClickListener(new View.OnClickListener()
+        {
 
+            //Function which handles the user pressing the Options List button. If the button is clicked already the popup will be dismissed instead of appearing again.
+            //Populating the content view with options_list_popup and shows it on top of the main layout in the centre.
+            //Dismisses all other popups when called. While open it handles the options lists buttons by switch case which calls the appropriate function when pressed.
+            //Boolean isClickedPop is used to ensure that the Options List popup is dismissed if the Options List button is pressed while the popup is open and vice versa.
+            public void onClick(View v) {
+                if (isClickedPop == true) {
+                    isClickedPop = false;
+
+                    View optPop = getLayoutInflater().inflate(R.layout.options_list_popup, null);
+                    optionsPopup.setContentView(optPop);
+                    optionsPopup.showAtLocation(mainLayout, Gravity.CENTER, 0, 0);
+                    optionsPopup.update(700, 620);
+                    profilePopup.dismiss();
+                    myDealsPopup.dismiss();
+                    filterPopup.dismiss();
+
+                    switch (v.getId()) {
+                        case R.id.profileButton:
+                            profileButtonPressed(v);
+                        case R.id.dealsButton:
+                            mydealsButtonPressed(v);
+                        case R.id.filterButton:
+                            filterButtonPressed(v);
+                        case R.id.profileBackButton:
+                            profileBackButtonPressed(v);
+                        case R.id.dealsBackButton:
+                            dealsBackButtonPressed(v);
+                        case R.id.filterBackButton:
+                            filterBackButtonPressed(v);
+                    break;
+                    }
+
+                }
+
+                else {
+                    isClickedPop = true;
+                    optionsPopup.dismiss();
+                    profilePopup.dismiss();
+                    myDealsPopup.dismiss();
+                    filterPopup.dismiss();
+
+                }
+            }
+        });
     }
+
 
     private void fetchDeals() {
         fetchHandler = new Handler();
@@ -255,11 +311,66 @@ public class MapsActivity extends FragmentActivity implements
                     String subscribeTopic = "deal/gogodeals/database/deals";
                 dealMqqt.publish(payload,publishTopic);
                 dealMqqt.subscribe(subscribeTopic,2);
+                payload = "{\n" +
+                        "      “id”: “12345678-1011-M012-N210-112233445566”,\n" +
+                        "      “data”: {\n" +
+                        "\t“longitude”:" + mMap.getCameraPosition().target.longitude + " ,\n" +
+                        " \t\t“latitude”:" + mMap.getCameraPosition().target.latitude + ",\n" +
+                        "\t“filters”: “fika, alcohol, ”,\n" +
+                        "\t“deals”: “ 33333333-1011-M012-N210-112233445566”\n" +
+                        "},\n" +
+                        "}\n";
+
+                 subscribeTopic = "deal/gogodeals/database/deals";
+                dealMqqt.publish(payload, publishTopic);
+                dealMqqt.subscribe(subscribeTopic, 2);
 
                // fetchDeals();
             }
-        },5000);
+        }, 5000);
     }
+
+    //Function called by the switch case when back button on My Profile is pressed which dismisses the My Profile popup.
+    public void profileBackButtonPressed(View v){
+        profilePopup.dismiss();
+    }
+    //Function called by the switch case when back button on My Deals is pressed which dismisses the My Deals popup.
+    public void dealsBackButtonPressed(View v){
+        myDealsPopup.dismiss();
+    }
+    //Function called by the switch case when back button on Deal Filters is pressed which dismisses the Deal Filters popup.
+    public void filterBackButtonPressed(View v){
+        filterPopup.dismiss();
+    }
+    // Opens the popup with My Profile on click.
+    public void profileButtonPressed(View v){
+        View profPop = getLayoutInflater().inflate(R.layout.myprofile, null);
+        profilePopup.setContentView(profPop);
+        profilePopup.showAtLocation(mainLayout, Gravity.CENTER, 0, 0);
+        profilePopup.update(700, 620);
+    }
+
+    // Opens the popup with My Deals on click.
+    public void mydealsButtonPressed(View v){
+        View myDealsPop = getLayoutInflater().inflate(R.layout.mydeals, null);
+        myDealsPopup.setContentView(myDealsPop);
+        myDealsPopup.showAtLocation(mainLayout, Gravity.CENTER, 0, 0);
+        myDealsPopup.update(700, 620);
+    }
+
+    // Opens the popup with Deal Filters on click.
+    public void filterButtonPressed(View v){
+        View filtersPop = getLayoutInflater().inflate(R.layout.filterslist, null);
+        filterPopup.setContentView(filtersPop);
+        filterPopup.showAtLocation(mainLayout, Gravity.CENTER, 0 ,0);
+        filterPopup.update(700, 620);
+    }
+
+   /* public void logoutButtonPressed(View v) {
+
+    }*/
+
+
 
 
     @Override

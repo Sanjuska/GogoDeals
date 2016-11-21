@@ -5,5 +5,14 @@
     android:name="com.google.android.gms.maps.SupportMapFragment"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.example.colak.gogodeals.MqttModule.MapsActivity"
-    tools:layout="@layout/activity_maps" />
+    tools:context="com.example.colak.gogodeals.MqttModule.MapsActivity">
+        <ImageButton
+            android:layout_height="wrap_content"
+            android:layout_gravity="left|top"
+            android:src="@drawable/hamburger_iconold"
+            android:layout_marginTop="10dp"
+            android:layout_marginLeft="10dp"
+            android:id="@+id/optionslistbutton"
+            android:background="@null"
+            android:layout_width="wrap_content" />
+    </fragment>

@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical" android:layout_width="250dp"
+    android:layout_height="400dp"
+    android:layout_gravity="center"
+    android:focusable="false"
+    android:focusableInTouchMode="false"
+    android:weightSum="1"
+    android:background="#648B79">
+
+    <TextView
+        android:text="My Profile"
+        android:layout_width="match_parent"
+        android:layout_height="25dp"
+        android:id="@+id/textView10"
+        android:textSize="18sp"
+        android:layout_weight="0.24"
+        android:textStyle="normal|bold"
+        android:textAlignment="center"
+        android:elevation="16dp"
+        android:gravity="center" />
+
+    <CheckBox
+        android:text="Food"
+        android:layout_width="match_parent"
+        android:id="@+id/checkBox2"
+        android:elevation="24dp"
+        android:textSize="18sp"
+        android:layout_height="40dp"
+        style="@android:style/Widget.Holo.Light.CompoundButton.CheckBox" />
+
+    <CheckBox
+        android:text="Drugs"
+        android:layout_width="match_parent"
+        android:id="@+id/checkBox6"
+        android:elevation="24dp"
+        android:textSize="18sp"
+        android:layout_height="40dp"
+        style="@android:style/Widget.Holo.Light.CompoundButton.CheckBox" />
+
+    <CheckBox
+        android:text="Clothes"
+        android:layout_width="match_parent"
+        android:id="@+id/checkBox4"
+        android:elevation="24dp"
+        android:textSize="18sp"
+        android:layout_height="40dp"
+        style="@android:style/Widget.Holo.Light.CompoundButton.CheckBox" />
+
+    <CheckBox
+        android:text="Activites"
+        android:layout_width="match_parent"
+        android:id="@+id/checkBox5"
+        android:elevation="24dp"
+        android:textSize="18sp"
+        android:layout_height="40dp"
+        style="@android:style/Widget.Holo.Light.CompoundButton.CheckBox" />
+
+    <CheckBox
+        android:text="Drinks"
+        android:layout_width="match_parent"
+        android:id="@+id/checkBox3"
+        android:elevation="24dp"
+        android:textSize="18sp"
+        android:layout_height="40dp"
+        style="@android:style/Widget.Holo.Light.CompoundButton.CheckBox" />
+
+    <Button
+        android:text="Back"
+        android:layout_width="wrap_content"
+        android:id="@+id/filterBackButton"
+        android:layout_marginLeft="150dp"
+        android:elevation="24dp"
+        android:layout_height="wrap_content"
+        android:onClick="filterBackButtonPressed"
+        android:layout_gravity="right" />
+
+
+</LinearLayout>
