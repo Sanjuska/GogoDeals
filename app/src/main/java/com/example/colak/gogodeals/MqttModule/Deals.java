@@ -3,6 +3,7 @@ package com.example.colak.gogodeals.MqttModule;
 import android.app.Activity;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.widget.Button;
 
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
@@ -44,6 +45,7 @@ public class Deals extends AppCompatActivity implements
     public String company;
 
     Activity parent;
+    Button cancelButton;
 
 
     //Constructor
@@ -91,7 +93,22 @@ public class Deals extends AppCompatActivity implements
             subToken.setActionCallback(new IMqttActionListener() {
                 @Override
                 public void onSuccess(IMqttToken asyncActionToken) {
+                    Log.i("TAG", "HERE");
 
+                    String company = ":TestCompany";
+                    String description = ":TestDescription";
+                    String price = ":200";
+                    String units = ":5";
+                    String duration = ":1";
+
+                    //Finding position of the deal on the map
+                    LatLng dealPosition = new LatLng(57.70776, 11.938287);
+
+                    //Deal marker on the map including popup
+                    Marker deal = mMap.addMarker(new MarkerOptions()
+                            .position(dealPosition)
+                            .title(company)
+                            .snippet(description + ";" + price + ";" + units + ";" + duration + ";"));
                 }
 
                 // The subscription could not be performed, maybe the user was not
@@ -159,9 +176,17 @@ public class Deals extends AppCompatActivity implements
     }
 
     // publish grab messages
-    public void sendGrab(String grabTopic, String dealID){
+    public void sendGrab(String grabTopic, String dealPayload){
         String topic = grabTopic;
-        String payload = dealID;
+        //String payload = dealPayload;
+        String payload = "{" +
+                "“id”: “33333333-1011-M012-N210-112233445566”," +
+                "“data”: {" +
+                        "“id”: ““12345678-1011-M012-N210-112233445566”," +
+                        "“deals”: “11111111-1011-M012-N210-112233445566," +
+                        "22222222-1011-M012-N210-112233445566, 33333333-1011-M012-N210-112233445566”" +
+                        "},"+
+                "}";
         byte[] encodedPayload = new byte[0];
         try {
             encodedPayload = payload.getBytes("UTF-8");
@@ -170,7 +195,6 @@ public class Deals extends AppCompatActivity implements
         } catch (UnsupportedEncodingException | MqttException e) {
             e.printStackTrace();
         }
-
     }
 
 }

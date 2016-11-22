@@ -3,7 +3,6 @@ package com.example.colak.gogodeals.MqttModule;
 import android.Manifest;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.drawable.ColorDrawable;
 import android.location.Location;
 import android.location.LocationManager;
@@ -13,11 +12,11 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.content.ContextCompat;
-import android.util.Base64;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
@@ -66,6 +65,7 @@ public class MapsActivity extends FragmentActivity implements
     PopupWindow popupMessage;
     Button grabButton;
     ImageView grabbedView;
+    ImageButton closePopUpButton;
     LocationRequest locationRequest;
 
 
@@ -80,6 +80,7 @@ public class MapsActivity extends FragmentActivity implements
         super.onCreate(savedInstanceState);
         popupMessage = new PopupWindow(this);
         mainLayout = new LinearLayout(this);
+
         //Olle, map needs to be initialized :D
         //also changed the version of google play services on gradle.app from 9.6.1 to
         //7.5.0 cause of compatibility.
@@ -214,15 +215,16 @@ public class MapsActivity extends FragmentActivity implements
     }
 
     public void buttonPressed(View v) {
-       // grabButton = ((Button) v.findViewById(R.id.grabButton));
+        grabButton = ((Button) v.findViewById(R.id.grabButton));
             grabButton.setVisibility(View.INVISIBLE);
             grabbedView.setVisibility(View.VISIBLE);
-            deals.sendGrab("topic","test Bubca");
+            deals.sendGrab("deal/gogodeals/deal/save", "test Bubca");
+        closePopUpButton = (ImageButton) v.findViewById(R.id.cancelButton);
+
         }
-
-
-
-
+public void  closeButtonClicked(View v){
+    popupMessage.dismiss();
+}
 
     public View getContent(Marker marker) {
 
@@ -251,13 +253,13 @@ public class MapsActivity extends FragmentActivity implements
         duration.setText(components[3].split(":")[0]);
         //Log.d("InfoWindow description:", components[1]);
 
-        ImageView dealPicture = (ImageView) v.findViewById(R.id.dealPicture);
+        //ImageView dealPicture = (ImageView) v.findViewById(R.id.dealPicture);
         // Converting String byte picture to an ImageView
-        String base = components[4].split(",")[1];
-        byte[] decodedString = Base64.decode(base, Base64.DEFAULT);
-        Bitmap decodedByte = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
-        dealPicture.setImageBitmap(decodedByte);
-        Log.d("InfoWindow picture:", components[4]);
+        //String base = components[4].split(",")[1];
+        //byte[] decodedString = Base64.decode(base, Base64.DEFAULT);
+        //Bitmap decodedByte = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
+        //dealPicture.setImageBitmap(decodedByte);
+        //Log.d("InfoWindow picture:", components[4]);
 
         grabbedView = (ImageView) v.findViewById(R.id.grabbedView);
         int icon;
