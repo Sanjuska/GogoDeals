@@ -297,15 +297,15 @@ public class MapsActivity extends FragmentActivity implements
             @Override
             public void run() {
                 String subscribeTopic = "deal/gogodeals/database/deals";
-
                 dealMqqt.subscribe(subscribeTopic,2);
-                  String payload =   "{ \"id\": \"12345678-1011-M012-N210-112233445566\"," +
-                          " \"data\": " +
-                          "{ \"longitude\": "+mMap.getCameraPosition().target.longitude +"," +
-                          " \"latitude\": " +mMap.getCameraPosition().target.latitude + "," +
-                          " \"filters\":" +
-                          " \"fika\"," +
-                          " \"deals\": \"33333333-1011-M012-N210-112233445566\"},}";
+
+
+                String payload =   "{ \"id\": \"12345678-1011-M012-N210-112233445566\"," +
+                        " \"data\": {" +
+                        " \"longitude\": " + mMap.getCameraPosition().target.longitude + "," +
+                        " \"latitude\": " +mMap.getCameraPosition().target.latitude + "," +
+                        " \"filters\": \"fika\"," +
+                        " \"deals\": \"33333333-1011-M012-N210-112233445566\"},}";
 
                 String publishTopic = "deal/gogodeals/deal/fetch";
                 dealMqqt.publish(payload,publishTopic);
