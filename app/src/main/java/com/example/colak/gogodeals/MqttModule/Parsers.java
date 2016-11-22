@@ -6,6 +6,9 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import org.eclipse.paho.client.mqttv3.MqttMessage;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import static com.example.colak.gogodeals.MqttModule.MapsActivity.mMap;
 
@@ -35,13 +38,40 @@ public class Parsers {
         Log.i("subscribe in parser",message.toString());
         String messageString = new String(message.getPayload());
 
-        String[] messComponents = messageString.split("data"); //Split the payload message on pieces ;
+        String[] messComponents = messageString.split(""); //Split the payload message on pieces ;
+
+        String msg = new String(message.getPayload());
+        String type;
+        JSONArray json = null;
+        JSONObject jsonObj = null;
+        String lat = "";
+        try {
+            json = new JSONArray(msg);
+        } catch (JSONException e) {
+            e.printStackTrace();
+            Log.i("json array no work",e.toString());
+        }
+
+        for (int i = 0; i<= json.length();i++){
+            try {
+                jsonObj = json.getJSONObject(i);
+            } catch (JSONException e) {
+                e.printStackTrace();
+                Log.i("json object no work",e.toString());
+            }
+            try {
+                lat = jsonObj.get("latitude").toString();
+
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+        Log.i("json",lat+"");
 
         for (String str : messComponents){
-            Log.i("subscribe split",str);
+            Log.i("subscribe split1",str);
             String[] dealComponents = messageString.split(",");
             for (String str2 : dealComponents){
-                Log.i("subscribe split",str2);
             }
 
             String company = dealComponents[0].split(":")[1];
