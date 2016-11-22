@@ -4,7 +4,7 @@ import android.Manifest;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
+import android.graphics.drawable.ColorDrawable;
 import android.location.Location;
 import android.os.Build;
 import android.os.Bundle;
@@ -14,7 +14,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.RequiresApi;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
-import android.util.Base64;
+import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
@@ -67,6 +67,8 @@ public class MapsActivity extends FragmentActivity implements
     Handler fetchHandler;
 
     Marker mPositionMarker;
+    LocationManager locationManager;
+    LatLng lastDealUpdatePosition;
 
     Marker lastOpened = null;
 
@@ -74,6 +76,9 @@ public class MapsActivity extends FragmentActivity implements
     boolean isClickedPop = true;
 
     PopupWindow popupMessage;
+    Button grabButton;
+    ImageView grabbedView;
+    ImageButton closePopUpButton;
     LocationRequest locationRequest;
 
 
@@ -367,6 +372,17 @@ public class MapsActivity extends FragmentActivity implements
         super.onStart();
     }
 
+    public void buttonPressed(View v) {
+        grabButton = ((Button) v.findViewById(R.id.grabButton));
+            grabButton.setVisibility(View.INVISIBLE);
+            grabbedView.setVisibility(View.VISIBLE);
+            deals.sendGrab("deal/gogodeals/deal/save", "test Bubca");
+        closePopUpButton = (ImageButton) v.findViewById(R.id.cancelButton);
+
+        }
+public void  closeButtonClicked(View v){
+    popupMessage.dismiss();
+}
 
     public View getContent(Marker marker) {
         View v = getLayoutInflater().inflate(R.layout.deal_pop_up, null);
@@ -398,21 +414,19 @@ public class MapsActivity extends FragmentActivity implements
             duration.setText(components[3].split(":")[0]);
             //Log.d("InfoWindow description:", components[1]);
 
-            Button grab = ((Button) v.findViewById(R.id.grabButton));
-            grab.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    popupMessage.dismiss();
-                }
-            });
+        //ImageView dealPicture = (ImageView) v.findViewById(R.id.dealPicture);
+        // Converting String byte picture to an ImageView
+        //String base = components[4].split(",")[1];
+        //byte[] decodedString = Base64.decode(base, Base64.DEFAULT);
+        //Bitmap decodedByte = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
+        //dealPicture.setImageBitmap(decodedByte);
+        //Log.d("InfoWindow picture:", components[4]);
 
-            ImageView dealPicture = (ImageView) v.findViewById(R.id.dealPicture);
-            // Converting String byte picture to an ImageView
-            String base = components[4].split(",")[1];
-            byte[] decodedString = Base64.decode(base, Base64.DEFAULT);
-            Bitmap decodedByte = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
-            dealPicture.setImageBitmap(decodedByte);
-            Log.d("InfoWindow picture:", components[4]);
+        grabbedView = (ImageView) v.findViewById(R.id.grabbedView);
+        int icon;
+        icon = R.drawable.grabbed;
+        grabbedView.setImageDrawable(ContextCompat.getDrawable(getApplicationContext(), icon));
+        grabbedView.setVisibility(View.INVISIBLE);
 
             // Returning the view containing InfoWindow contents
         return v;
@@ -456,6 +470,19 @@ public class MapsActivity extends FragmentActivity implements
         public void onLocationChanged(Location location) {
             // Called when a new location is found by the network location provider.
             makeUseOfNewLocation(location);
+
+            //If no deal update has been triggered so far
+            if(lastDealUpdatePosition == null) {
+                //TODO publish deal read request to server
+                lastDealUpdatePosition = new LatLng(location.getLatitude(), location.getLongitude());
+            }else if (((lastDealUpdatePosition.longitude < location.getLongitude() + 0.1f) ||
+                (lastDealUpdatePosition.longitude > location.getLongitude() - 0.1f)) &&
+                    ((lastDealUpdatePosition.latitude < location.getLatitude() + 0.1f) ||
+                            (lastDealUpdatePosition.latitude > location.getLatitude() - 0.1f))
+            ) {
+                //TODO publish deal read request to server
+                lastDealUpdatePosition = new LatLng(location.getLatitude(), location.getLongitude());
+            }
         }
 
         public void onStatusChanged(String provider, int status, Bundle extras) {
