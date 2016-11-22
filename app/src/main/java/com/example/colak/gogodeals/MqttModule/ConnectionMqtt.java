@@ -49,10 +49,8 @@ public ConnectionMqtt(Activity activity){
                 @Override
                 public void onSuccess(IMqttToken asyncActionToken) {
                     // We are connected
-                    Log.d(TAG, "onSuccess");
-
-
-
+                    Log.d(TAG, "onSuccess Bubca");
+                    parsers.debugDealOnMap();
                 }
 
                 @Override
@@ -68,7 +66,7 @@ public ConnectionMqtt(Activity activity){
 
     }
     // Publishing messages in the -topic- by clicking button
-    public void publish(String payload, String topic){
+    public static void publish(String payload, String topic){
         byte[] encodedPayload = new byte[0];
         try {
             encodedPayload = payload.getBytes("UTF-8");

@@ -107,8 +107,6 @@ public class Parsers {
             String tempString = null;
             tempString = coordinates.split(",")[0];
             String latitude = tempString.substring(14, tempString.length());
-
-
             tempString = null;
             tempString = coordinates.split(",")[1];
             String longitude = tempString.substring(1, tempString.length() - 1);
@@ -125,6 +123,30 @@ public class Parsers {
             Log.i("deal added" ,messageString);
 
         }
+
+    }
+
+    // A Debug method which places a deal on map. Uncomment the correct position depending on where
+    // you want to place the deal
+    public void debugDealOnMap() {
+        String company = ":TestCompany";
+        String description = ":TestDescription";
+        String price = ":200";
+        String units = ":5";
+        String duration = ":1";
+
+        //Finding position of the deal on the map
+
+        //Lindholmen
+        //LatLng dealPosition = new LatLng(57.70776, 11.938287);
+        //Rimfrostgatan
+        LatLng dealPosition = new LatLng(57.7306506, 11.891138100000035);
+
+        //Deal marker on the map including popup
+        mMap.addMarker(new MarkerOptions()
+                .position(dealPosition)
+                .title(company)
+                .snippet(description + ";" + price + ";" + units + ";" + duration + ";"));
 
     }
 }

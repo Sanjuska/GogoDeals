@@ -4,7 +4,6 @@ import android.Manifest;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
-import android.graphics.drawable.ColorDrawable;
 import android.location.Location;
 import android.os.Build;
 import android.os.Bundle;
@@ -26,6 +25,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.TextView;
+
 import com.example.colak.gogodeals.R;
 import com.google.android.gms.appindexing.AppIndex;
 import com.google.android.gms.common.ConnectionResult;
@@ -55,24 +55,14 @@ public class MapsActivity extends FragmentActivity implements
         GoogleApiClient.OnConnectionFailedListener {
 
     public Deals deals;
-
     ConnectionMqtt dealMqqt;
-
     public static GoogleMap mMap;
-
     GoogleApiClient mGoogleApiClient;
-
     Location mLastLocation;
-
     Handler fetchHandler;
-
     Marker mPositionMarker;
-    LocationManager locationManager;
     LatLng lastDealUpdatePosition;
-
     Marker lastOpened = null;
-
-
     boolean isClickedPop = true;
 
     PopupWindow popupMessage;
@@ -80,13 +70,10 @@ public class MapsActivity extends FragmentActivity implements
     ImageView grabbedView;
     ImageButton closePopUpButton;
     LocationRequest locationRequest;
-
-
     PopupWindow filterPopup;
     PopupWindow myDealsPopup;
     PopupWindow profilePopup;
     PopupWindow optionsPopup;
-
     LinearLayout mainLayout;
 
     // Creating an instance of MarkerOptions to set position
@@ -112,9 +99,7 @@ public class MapsActivity extends FragmentActivity implements
         mapFragment.getMapAsync(this);
 
         // Create MQTT connection and create listeners to new messages
-        deals = new Deals(this);
-
-
+        //deals = new Deals(this);
 
         // ATTENTION: This was auto-generated to implement the App Indexing API.
         // See https://g.co/AppIndexing/AndroidStudio for more information.
@@ -137,7 +122,6 @@ public class MapsActivity extends FragmentActivity implements
                     .build();
         }
 
-
         // Acquire a reference to the system Location Manager
         locationRequest = LocationRequest.create();
         locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
@@ -153,7 +137,7 @@ public class MapsActivity extends FragmentActivity implements
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
 
-        fetchDeals();
+        //fetchDeals();
 
         try {
             // Customise the styling of the base map using a JSON object defined
@@ -169,13 +153,10 @@ public class MapsActivity extends FragmentActivity implements
             Log.e("MapsActivityRaw", "Can't find style.", e);
         }
 
-        // Add a marker in Gothenburg and move the camera
 
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             return;
         }
-
-
 
         //GoogleMap settings
         mMap.setMyLocationEnabled(false);
@@ -187,56 +168,38 @@ public class MapsActivity extends FragmentActivity implements
         mMap.setMinZoomPreference(16.0f);
         mMap.setMaxZoomPreference(19.0f);
 
-
-
-
-
-
         // GoogleMap marker settings
         mMap.setOnMarkerClickListener(
                 new GoogleMap.OnMarkerClickListener() {
-
-
                     boolean doNotMoveCameraToCenterMarker = true;
-
                     public boolean onMarkerClick(Marker marker) {
-
                         if (marker.getTitle().equals("user")){
-
                         }else{
-
-                        // Check if there is an open info window
-                        if (lastOpened != null) {
-                            // Close the info window
-                            lastOpened.hideInfoWindow();
-
-                            // Is the marker the same marker that was already open
-                            if (lastOpened.equals(marker)) {
-                                // Nullify the lastOpenned object
-                                lastOpened = null;
-                                // Return so that the info window isn't openned again
-                                return true;
+                            // Check if there is an open info window
+                            if (lastOpened != null) {
+                                // Close the info window
+                                lastOpened.hideInfoWindow();
+                                // Is the marker the same marker that was already open
+                                if (lastOpened.equals(marker)) {
+                                    // Nullify the lastOpenned object
+                                    lastOpened = null;
+                                    // Return so that the info window isn't openned again
+                                    return true;
+                                }
                             }
+                            Bitmap icon;
+                            //BitmapDescriptor deal = BitmapDescriptorFactory.fromResource(R.drawable.deal);
+                            BitmapDescriptor deal = BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_MAGENTA);
+                            marker.setIcon(deal);
 
+                            View popup = getContent(marker);
+                            popupMessage.setContentView(popup);
+                            popupMessage.showAtLocation(mainLayout, Gravity.CENTER, 0, 0);
+                            popupMessage.update(700, 620);
 
-                        }
-                        Bitmap icon;
-
-                        //BitmapDescriptor deal = BitmapDescriptorFactory.fromResource(R.drawable.deal);
-                        BitmapDescriptor deal = BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_MAGENTA);
-                        marker.setIcon(deal);
-
-
-                        View popup = getContent(marker);
-                        popupMessage.setContentView(popup);
-                        popupMessage.showAtLocation(mainLayout, Gravity.CENTER, 0, 0);
-                        popupMessage.update(700, 620);
-
-
-
-                        //marker.showInfoWindow();
-                        // Re-assign the last openned such that we can close it later
-                        lastOpened = marker;
+                            //marker.showInfoWindow();
+                            // Re-assign the last openned such that we can close it later
+                            lastOpened = marker;
                         }
                         return doNotMoveCameraToCenterMarker;
                     }
@@ -246,7 +209,6 @@ public class MapsActivity extends FragmentActivity implements
         final ImageButton hamburgerButton = (ImageButton) findViewById(R.id.optionslistbutton);
         hamburgerButton.setOnClickListener(new View.OnClickListener()
         {
-
             //Function which handles the user pressing the Options List button. If the button is clicked already the popup will be dismissed instead of appearing again.
             //Populating the content view with options_list_popup and shows it on top of the main layout in the centre.
             //Dismisses all other popups when called. While open it handles the options lists buttons by switch case which calls the appropriate function when pressed.
@@ -276,18 +238,16 @@ public class MapsActivity extends FragmentActivity implements
                             dealsBackButtonPressed(v);
                         case R.id.filterBackButton:
                             filterBackButtonPressed(v);
-                    break;
+                            break;
                     }
 
                 }
-
                 else {
                     isClickedPop = true;
                     optionsPopup.dismiss();
                     profilePopup.dismiss();
                     myDealsPopup.dismiss();
                     filterPopup.dismiss();
-
                 }
             }
         });
@@ -304,7 +264,6 @@ public class MapsActivity extends FragmentActivity implements
                 String subscribeTopic = "deal/gogodeals/database/deals";
                 dealMqqt.subscribe(subscribeTopic,2);
 
-
                 String payload =   "{ \"id\": \"12345678-1011-M012-N210-112233445566\"," +
                         " \"data\": {" +
                         " \"longitude\": " + mMap.getCameraPosition().target.longitude + "," +
@@ -316,9 +275,7 @@ public class MapsActivity extends FragmentActivity implements
                 dealMqqt.publish(payload,publishTopic);
 
                 Log.i("Sent subscribe",subscribeTopic);
-
-
-               // fetchDeals();
+                // fetchDeals();
             }
         }, 5000);
     }
@@ -342,7 +299,6 @@ public class MapsActivity extends FragmentActivity implements
         profilePopup.showAtLocation(mainLayout, Gravity.CENTER, 0, 0);
         profilePopup.update(700, 620);
     }
-
     // Opens the popup with My Deals on click.
     public void mydealsButtonPressed(View v){
         View myDealsPop = getLayoutInflater().inflate(R.layout.mydeals, null);
@@ -350,7 +306,6 @@ public class MapsActivity extends FragmentActivity implements
         myDealsPopup.showAtLocation(mainLayout, Gravity.CENTER, 0, 0);
         myDealsPopup.update(700, 620);
     }
-
     // Opens the popup with Deal Filters on click.
     public void filterButtonPressed(View v){
         View filtersPop = getLayoutInflater().inflate(R.layout.filterslist, null);
@@ -358,13 +313,8 @@ public class MapsActivity extends FragmentActivity implements
         filterPopup.showAtLocation(mainLayout, Gravity.CENTER, 0 ,0);
         filterPopup.update(700, 620);
     }
-
    /* public void logoutButtonPressed(View v) {
-
     }*/
-
-
-
 
     @Override
     public void onStart() {
@@ -372,47 +322,34 @@ public class MapsActivity extends FragmentActivity implements
         super.onStart();
     }
 
-    public void buttonPressed(View v) {
-        grabButton = ((Button) v.findViewById(R.id.grabButton));
-            grabButton.setVisibility(View.INVISIBLE);
-            grabbedView.setVisibility(View.VISIBLE);
-            deals.sendGrab("deal/gogodeals/deal/save", "test Bubca");
-        closePopUpButton = (ImageButton) v.findViewById(R.id.cancelButton);
-
-        }
-public void  closeButtonClicked(View v){
-    popupMessage.dismiss();
-}
+    public void  closeButtonClicked(View v){
+        popupMessage.dismiss();
+    }
 
     public View getContent(Marker marker) {
         View v = getLayoutInflater().inflate(R.layout.deal_pop_up, null);
+        // Getting view from the layout file info_window_layout
+        String[] components = marker.getSnippet().split(";");
 
+        TextView description = (TextView) v.findViewById(R.id.description);
+        description.setText(components[0].split(":")[1]);
+        Log.d("InfoWindow description:", components[0]);
 
+        TextView price = ((TextView) v.findViewById(R.id.price));
+        price.setText(components[1].split(":")[1]);
+        Log.d("InfoWindow description:", components[1]);
 
-            // Getting view from the layout file info_window_layout
+        TextView units = ((TextView) v.findViewById(R.id.units));
+        units.setText(components[2].split(":")[1]);
+        Log.d("InfoWindow description:", components[0]);
 
+        //Chronometer duration = ((Chronometer) v.findViewById(R.id.duration));
+        //String dur = components[3].split(":")[1];
+        //Log.d("InfoWindow description:", dur);
 
-            String[] components = marker.getSnippet().split(";");
-
-            TextView description = (TextView) v.findViewById(R.id.description);
-            description.setText(components[0].split(":")[1]);
-            Log.d("InfoWindow description:", components[0]);
-
-            TextView price = ((TextView) v.findViewById(R.id.price));
-            price.setText(components[1].split(":")[1]);
-            Log.d("InfoWindow description:", components[1]);
-
-            TextView units = ((TextView) v.findViewById(R.id.units));
-            units.setText(components[2].split(":")[1]);
-            Log.d("InfoWindow description:", components[0]);
-
-            //Chronometer duration = ((Chronometer) v.findViewById(R.id.duration));
-            //String dur = components[3].split(":")[1];
-            //Log.d("InfoWindow description:", dur);
-
-            TextView duration = ((TextView) v.findViewById(R.id.duration));
-            duration.setText(components[3].split(":")[0]);
-            //Log.d("InfoWindow description:", components[1]);
+        TextView duration = ((TextView) v.findViewById(R.id.duration));
+        duration.setText(components[3].split(":")[0]);
+        //Log.d("InfoWindow description:", components[1]);
 
         //ImageView dealPicture = (ImageView) v.findViewById(R.id.dealPicture);
         // Converting String byte picture to an ImageView
@@ -428,11 +365,9 @@ public void  closeButtonClicked(View v){
         grabbedView.setImageDrawable(ContextCompat.getDrawable(getApplicationContext(), icon));
         grabbedView.setVisibility(View.INVISIBLE);
 
-            // Returning the view containing InfoWindow contents
+        // Returning the view containing InfoWindow contents
         return v;
-        }
-
-
+    }
 
     @Override
     public void onStop() {
@@ -450,7 +385,6 @@ public void  closeButtonClicked(View v){
                 mGoogleApiClient);
         makeUseOfNewLocation(mLastLocation);
         startLocationUpdates();
-
     }
 
     @Override
@@ -461,9 +395,6 @@ public void  closeButtonClicked(View v){
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
     }
 
-
-
-
     // Define a listener that responds to location updates
     LocationListener locationListener = new LocationListener() {
         @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
@@ -471,26 +402,23 @@ public void  closeButtonClicked(View v){
             // Called when a new location is found by the network location provider.
             makeUseOfNewLocation(location);
 
-            //If no deal update has been triggered so far
+            /*//If no deal update has been triggered so far
             if(lastDealUpdatePosition == null) {
                 //TODO publish deal read request to server
                 lastDealUpdatePosition = new LatLng(location.getLatitude(), location.getLongitude());
             }else if (((lastDealUpdatePosition.longitude < location.getLongitude() + 0.1f) ||
-                (lastDealUpdatePosition.longitude > location.getLongitude() - 0.1f)) &&
+                    (lastDealUpdatePosition.longitude > location.getLongitude() - 0.1f)) &&
                     ((lastDealUpdatePosition.latitude < location.getLatitude() + 0.1f) ||
                             (lastDealUpdatePosition.latitude > location.getLatitude() - 0.1f))
-            ) {
+                    ) {
                 //TODO publish deal read request to server
                 lastDealUpdatePosition = new LatLng(location.getLatitude(), location.getLongitude());
-            }
+            }*/
         }
-
         public void onStatusChanged(String provider, int status, Bundle extras) {
         }
-
         public void onProviderEnabled(String provider) {
         }
-
         public void onProviderDisabled(String provider) {
         }
     };
@@ -521,7 +449,6 @@ public void  closeButtonClicked(View v){
         //locationListener.onLocationChanged(location);
         mMap.animateCamera(CameraUpdateFactory.newCameraPosition(myPosition));
 
-
         mMap.setLatLngBoundsForCameraTarget(new LatLngBounds(myLatLang,myLatLang));
         if (mPositionMarker == null) {
 
@@ -533,13 +460,9 @@ public void  closeButtonClicked(View v){
                     .title("user")
                     .position(myLatLang));
         }
-
         mPositionMarker.hideInfoWindow();
-
         animateMarker(mPositionMarker, location); // Helper method for smooth
         // animation
-
-
     }
 
     public void animateMarker(final Marker marker, final Location location) {
@@ -547,7 +470,6 @@ public void  closeButtonClicked(View v){
         final long start = SystemClock.uptimeMillis();
         final LatLng startLatLng = marker.getPosition();
         final long duration = 500;
-
         final Interpolator interpolator = new LinearInterpolator();
 
         handler.post(new Runnable() {
@@ -556,13 +478,10 @@ public void  closeButtonClicked(View v){
                 long elapsed = SystemClock.uptimeMillis() - start;
                 float t = interpolator.getInterpolation((float) elapsed
                         / duration);
-
                 double lng = t * location.getLongitude() + (1 - t)
                         * startLatLng.longitude;
                 double lat = t * location.getLatitude() + (1 - t)
                         * startLatLng.latitude;
-
-
                 marker.setPosition(new LatLng(lat, lng));
                 marker.setRotation(mMap.getCameraPosition().bearing);
 
@@ -572,5 +491,21 @@ public void  closeButtonClicked(View v){
                 }
             }
         });
+    }
+    public void buttonPressed(View v) {
+        grabButton = ((Button) v.findViewById(R.id.grabButton));
+        grabButton.setVisibility(View.INVISIBLE);
+        grabbedView.setVisibility(View.VISIBLE);
+        String payload = "{" +
+                "“id”: “33333333-1011-M012-N210-112233445566”," +
+                "“data”: {" +
+                "“id”: ““12345678-1011-M012-N210-112233445566”," +
+                "“deals”: “11111111-1011-M012-N210-112233445566," +
+                "22222222-1011-M012-N210-112233445566, 33333333-1011-M012-N210-112233445566”" +
+                "},"+
+                "}";
+        ConnectionMqtt.publish("deal/gogodeals/deal/save", payload);
+        closePopUpButton = (ImageButton) v.findViewById(R.id.cancelButton);
+
     }
 }
