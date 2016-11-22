@@ -49,6 +49,8 @@ package="com.example.colak.gogodeals">
 
     </activity>
 
+    <activity android:name=".MqttModule.ConnectionMqtt"/>
+
 </application>
 </manifest>
 

@@ -26,7 +26,6 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.TextView;
-
 import com.example.colak.gogodeals.R;
 import com.google.android.gms.appindexing.AppIndex;
 import com.google.android.gms.common.ConnectionResult;
@@ -110,8 +109,6 @@ public class MapsActivity extends FragmentActivity implements
         // Create MQTT connection and create listeners to new messages
         deals = new Deals(this);
 
-
-        dealMqqt = new ConnectionMqtt(this);
 
 
         // ATTENTION: This was auto-generated to implement the App Indexing API.
@@ -294,36 +291,27 @@ public class MapsActivity extends FragmentActivity implements
 
     private void fetchDeals() {
         fetchHandler = new Handler();
+        dealMqqt = new ConnectionMqtt(this);
+        dealMqqt.open();
         fetchHandler.postDelayed(new Runnable() {
             @Override
             public void run() {
+                String subscribeTopic = "deal/gogodeals/database/deals";
 
-                String publishTopic = "deal/gogodeals/deal/fetch";
-
+                dealMqqt.subscribe(subscribeTopic,2);
                   String payload =   "{ \"id\": \"12345678-1011-M012-N210-112233445566\"," +
                           " \"data\": " +
                           "{ \"longitude\": "+mMap.getCameraPosition().target.longitude +"," +
                           " \"latitude\": " +mMap.getCameraPosition().target.latitude + "," +
                           " \"filters\":" +
-                          " \"fika, alcohol\"," +
+                          " \"fika\"," +
                           " \"deals\": \"33333333-1011-M012-N210-112233445566\"},}";
 
-                    String subscribeTopic = "deal/gogodeals/database/deals";
+                String publishTopic = "deal/gogodeals/deal/fetch";
                 dealMqqt.publish(payload,publishTopic);
-                dealMqqt.subscribe(subscribeTopic,2);
-                payload = "{\n" +
-                        "      “id”: “12345678-1011-M012-N210-112233445566”,\n" +
-                        "      “data”: {\n" +
-                        "\t“longitude”:" + mMap.getCameraPosition().target.longitude + " ,\n" +
-                        " \t\t“latitude”:" + mMap.getCameraPosition().target.latitude + ",\n" +
-                        "\t“filters”: “fika, alcohol, ”,\n" +
-                        "\t“deals”: “ 33333333-1011-M012-N210-112233445566”\n" +
-                        "},\n" +
-                        "}\n";
 
-                 subscribeTopic = "deal/gogodeals/database/deals";
-                dealMqqt.publish(payload, publishTopic);
-                dealMqqt.subscribe(subscribeTopic, 2);
+                Log.i("Sent subscribe",subscribeTopic);
+
 
                // fetchDeals();
             }
@@ -460,6 +448,8 @@ public class MapsActivity extends FragmentActivity implements
     }
 
 
+
+
     // Define a listener that responds to location updates
     LocationListener locationListener = new LocationListener() {
         @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
@@ -503,37 +493,6 @@ public class MapsActivity extends FragmentActivity implements
                 target(myLatLang).zoom(mMap.getCameraPosition().zoom).bearing(mMap.getCameraPosition().bearing).build();
         //locationListener.onLocationChanged(location);
         mMap.animateCamera(CameraUpdateFactory.newCameraPosition(myPosition));
-
-
-        double  latitude1 = mMap.getCameraPosition().target.latitude + 0.0005;
-        double  longitude1 = mMap.getCameraPosition().target.longitude + 0.0005;
-        LatLng icon1 = new LatLng(latitude1,longitude1);
-
-        double  latitude2 = mMap.getCameraPosition().target.latitude - 0.0005;
-        double  longitude2 = mMap.getCameraPosition().target.longitude - 0.0005;
-        LatLng icon2 = new LatLng(latitude2,longitude2);
-
-        double  latitude3 = mMap.getCameraPosition().target.latitude - 0.0005;
-        double  longitude3 = mMap.getCameraPosition().target.longitude + 0.0005;
-        LatLng icon3 = new LatLng(latitude3,longitude3);
-
-
-
-        Marker testMarker = mMap.addMarker(new MarkerOptions()
-                .position(icon1)
-                .title("user")
-                .icon(BitmapDescriptorFactory.fromResource(R.drawable.burger)));
-
-        Marker testMarker2 = mMap.addMarker(new MarkerOptions()
-                .title("user")
-                .position(icon2)
-                .icon(BitmapDescriptorFactory.fromResource(R.drawable.beer)));
-
-        Marker testMarker3 = mMap.addMarker(new MarkerOptions()
-                .position(icon3)
-                .title("user")
-                .icon(BitmapDescriptorFactory.fromResource(R.drawable.shirt)));
-
 
 
         mMap.setLatLngBoundsForCameraTarget(new LatLngBounds(myLatLang,myLatLang));
