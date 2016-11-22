@@ -40,6 +40,8 @@ public class UserLogin extends AppCompatActivity {
     private String Name;
     private String Email;
 
+    public static boolean loggedIn = false;
+
 
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
@@ -52,13 +54,14 @@ public class UserLogin extends AppCompatActivity {
         setContentView(R.layout.mainactivity);
         //shows the user which data gets accessed when log in through fb app
 
-        info = (TextView)findViewById(R.
+        info = (TextView) findViewById(R.
                 id.info);
 
-        loginButton = (LoginButton)findViewById(R.id.login_button);
+        loginButton = (LoginButton) findViewById(R.id.login_button);
 
         LoginManager.getInstance().logInWithReadPermissions(this,
                 Arrays.asList("public_profile", "email"));
+        //loggedIn = true;
 
         //when fb responds to loginresult, next step is executed by invoking one of the methods below
         //keep user logged in to app
@@ -77,7 +80,6 @@ public class UserLogin extends AppCompatActivity {
 
                         //when fb credentials are correct, user logins to gogodeals
                         startActivity(gogoApp);
-
 
                         //Fetching facebook user data: username and email to store it into our db
                         GraphRequest request = GraphRequest.newMeRequest(
@@ -140,13 +142,11 @@ public class UserLogin extends AppCompatActivity {
 
 
     @Override
-    protected void onActivityResult(int requestCode,int resultCode,Intent data) {
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         callbackManager.onActivityResult(requestCode, resultCode, data);
         LoginManager.getInstance().logOut();
 
 
     }
-
-
 }

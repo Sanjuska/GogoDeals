@@ -7,6 +7,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.colak.gogodeals.R;
@@ -28,8 +29,14 @@ public class newUserSignup extends AppCompatActivity implements MqttCallback {
     private static final String TAG = "ConnectionMqtt";
     EditText regUsername;
     EditText regEmail;
+    EditText regEmailConfirmation;
     EditText regPassword;
+    EditText regPasswordConfirmation;
+
+    TextView checkUserName;
+
     Button gogosignup;
+    Button button2;
 
     static MqttAndroidClient client;
 
@@ -43,8 +50,13 @@ public class newUserSignup extends AppCompatActivity implements MqttCallback {
 
         regUsername = (EditText) findViewById(R.id.regUsername);
         regEmail = (EditText) findViewById(R.id.regEmail);
+        regEmailConfirmation = (EditText) findViewById(R.id.regEmailConfirmation);
         regPassword = (EditText) findViewById(R.id.regPassword);
+        regPasswordConfirmation = (EditText) findViewById(R.id.regPasswordConfirmation);
         gogosignup = (Button) findViewById(R.id.gogosignup);
+        button2 = (Button) findViewById(R.id.button2);
+
+        checkUserName = (TextView) findViewById(R.id.checkUserName);
 
 
         // Set locale;
@@ -90,20 +102,23 @@ public class newUserSignup extends AppCompatActivity implements MqttCallback {
         String regUser = regUsername.getText().toString();
         String regMail = regEmail.getText().toString();
         String regPass = regPassword.getText().toString();
+        String regMailConf = regEmailConfirmation.getText().toString();
+        String regPassConf = regPasswordConfirmation.getText().toString();
 
         String topic = "deal/gogodeals/user/new";
 
         //guards for empty fields, username have to be different than password or email
-        if (regUser.isEmpty() || regMail.isEmpty() || regPass.isEmpty()){
+        if (regUser.isEmpty() || regMail.isEmpty() || regPass.isEmpty() || regMailConf.isEmpty() || regPassConf.isEmpty()){
             Toast.makeText(getApplicationContext(), "Credential fields cannot be empty", Toast.LENGTH_SHORT).show();}
 
-            if (regUser.equals(regPass)){
-                Toast.makeText(getApplicationContext(), "Username cannot be the same as password", Toast.LENGTH_SHORT).show();
-            }
+        if (regUser.equals(regPass)){
+            Toast.makeText(getApplicationContext(), "Username cannot be the same as password", Toast.LENGTH_SHORT).show();
+        }
 
-        else if ((!regUser.isEmpty() && !regPass.isEmpty() && !regMail.isEmpty())){
+        //user fills all the fields properly register is successfull
+        else if ((!regUser.isEmpty() && !regPass.isEmpty() && !regMail.isEmpty() && !regMailConf.isEmpty() && !regPassConf.isEmpty())){
             if ((!regUser.equals(regPass) && !regMail.equals(regPass)
-                    && !regUser.equals(regMail.toString()))) {
+                    && !regUser.equals(regMail) && regMail.equals(regMailConf) && regPass.equals(regPassConf))) {
                 Toast.makeText(getApplicationContext(), "Welcome:" + regUser, Toast.LENGTH_SHORT).show();
 
 
@@ -121,6 +136,8 @@ public class newUserSignup extends AppCompatActivity implements MqttCallback {
                     regUsername.getText().clear();
                     regPassword.getText().clear();
                     regEmail.getText().clear();
+                    regEmailConfirmation.getText().clear();
+                    regPasswordConfirmation.getText().clear();
 
                     //finish activity and login instantly to app
                     finish();
@@ -130,7 +147,38 @@ public class newUserSignup extends AppCompatActivity implements MqttCallback {
                     e.printStackTrace();
                 }
             }
-    }}
+        }}
+
+    public void checkUsername(View V){
+
+        String topic = "deal/gogodeals/user/info";
+
+        int qos = 1;
+        try {
+            IMqttToken subToken = client.subscribe(topic, qos);
+            subToken.setActionCallback(new IMqttActionListener() {
+
+                @Override
+                public void onSuccess(IMqttToken asyncActionToken) {
+                    // The message was published
+
+                }
+
+                @Override
+                public void onFailure(IMqttToken asyncActionToken,
+                                      Throwable exception) {
+                    // The subscription could not be performed, maybe the user was not
+                    // authorized to subscribe on the specified topic e.g. using wildcards
+
+                }
+
+            });
+        } catch (MqttException e) {
+            e.printStackTrace();
+        }
+
+
+    }
 
     //Called when publish has been completed and accepted by broker.
     public void deliveryComplete(IMqttDeliveryToken token){
@@ -144,6 +192,10 @@ public class newUserSignup extends AppCompatActivity implements MqttCallback {
 
     // When message from publisher arrived, show it in the text v¢iew.
     public void messageArrived (String topic, MqttMessage message) throws MqttException{
+
+        String text = checkUserName.getText().toString();
+        text = text + "\n" + new String (message.getPayload());
+        checkUserName.setText(text);
 
     }
 
