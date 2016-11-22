@@ -1,3 +1,5 @@
 [user]
-	name = Johan Laptop
+	name = blondiejohan
 	email = johan.johansson.swe@gmail.com
+[push]
+	default = simple
