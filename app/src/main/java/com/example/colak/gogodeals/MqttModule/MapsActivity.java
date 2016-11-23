@@ -10,6 +10,7 @@ import android.location.Location;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.SystemClock;
 import android.support.annotation.NonNull;
 import android.support.annotation.RequiresApi;
 import android.support.v4.app.ActivityCompat;
@@ -18,6 +19,8 @@ import android.util.Log;
 import android.view.Display;
 import android.view.Gravity;
 import android.view.View;
+import android.view.animation.Interpolator;
+import android.view.animation.LinearInterpolator;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.ImageButton;
@@ -34,13 +37,16 @@ import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.location.LocationSettingsRequest;
+import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.MapStyleOptions;
 import com.google.android.gms.maps.model.Marker;
 
@@ -59,7 +65,9 @@ public class MapsActivity extends FragmentActivity implements
     public static GoogleMap mMap;
     GoogleApiClient mGoogleApiClient;
     Location mLastLocation;
+
     Handler fetchHandler;
+
     Marker mPositionMarker;
     LatLng lastDealUpdatePosition;
     Marker lastOpened = null;
@@ -202,6 +210,7 @@ public class MapsActivity extends FragmentActivity implements
         mMap.setOnMarkerClickListener(
                 new GoogleMap.OnMarkerClickListener() {
                     boolean doNotMoveCameraToCenterMarker = true;
+
                     public boolean onMarkerClick(Marker marker) {
 
                         if (marker.getTitle().equals("user")) {
@@ -247,7 +256,6 @@ public class MapsActivity extends FragmentActivity implements
         //Initializing the Options List button and setting an onClick listener to it.
         final ImageButton hamburgerButton = (ImageButton) findViewById(R.id.optionslistbutton);
         hamburgerButton.setOnClickListener(new View.OnClickListener() {
-
             //Function which handles the user pressing the Options List button. If the button is clicked already the popup will be dismissed instead of appearing again.
             //Populating the content view with options_list_popup and shows it on top of the main layout in the centre.
             //Dismisses all other popups when called. While open it handles the options lists buttons by switch case which calls the appropriate function when pressed.
