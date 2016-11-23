@@ -4,7 +4,10 @@ import android.Manifest;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
+
 import android.graphics.BitmapFactory;
+import android.graphics.Point;
+
 import android.location.Location;
 import android.os.Build;
 import android.os.Bundle;
@@ -14,18 +17,19 @@ import android.support.annotation.NonNull;
 import android.support.annotation.RequiresApi;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
-import android.util.Base64;
 import android.util.Log;
+import android.view.Display;
 import android.view.Gravity;
 import android.view.View;
 import android.view.animation.Interpolator;
 import android.view.animation.LinearInterpolator;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.TextView;
+
 import com.example.colak.gogodeals.R;
 import com.google.android.gms.appindexing.AppIndex;
 import com.google.android.gms.common.ConnectionResult;
@@ -48,6 +52,8 @@ import com.google.android.gms.maps.model.MapStyleOptions;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import java.util.ArrayList;
+
 
 public class MapsActivity extends FragmentActivity implements
         OnMapReadyCallback,
@@ -56,7 +62,7 @@ public class MapsActivity extends FragmentActivity implements
 
     public Deals deals;
 
-    ConnectionMqtt dealMqqt;
+    static ConnectionMqtt dealMqtt;
 
     public static GoogleMap mMap;
 
@@ -69,6 +75,15 @@ public class MapsActivity extends FragmentActivity implements
     Marker mPositionMarker;
 
     Marker lastOpened = null;
+
+    CheckBox food;
+    CheckBox clothes;
+    CheckBox activities;
+    CheckBox stuff;
+    CheckBox random;
+
+    ArrayList<String> filterList;
+    boolean fetched = false;
 
 
     boolean isClickedPop = true;
@@ -96,6 +111,18 @@ public class MapsActivity extends FragmentActivity implements
         myDealsPopup = new PopupWindow(this);
         filterPopup = new PopupWindow(this);
         mainLayout = new LinearLayout(this);
+        filterList = new ArrayList<>();
+
+        food = (CheckBox) findViewById(R.id.checkBoxFood);
+        clothes = (CheckBox) findViewById(R.id.checkBoxClothes);
+        activities = (CheckBox) findViewById(R.id.checkBoxActivites);
+        stuff = (CheckBox) findViewById(R.id.checkBoxStuff);
+        random = (CheckBox) findViewById(R.id.checkBoxRandom);
+        
+
+
+
+
         //also changed the version of google play services on gradle.app from 9.6.1 to
         //7.5.0 cause of compatibility.
         MapsInitializer.initialize(getApplicationContext());
@@ -108,7 +135,6 @@ public class MapsActivity extends FragmentActivity implements
 
         // Create MQTT connection and create listeners to new messages
         deals = new Deals(this);
-
 
 
         // ATTENTION: This was auto-generated to implement the App Indexing API.
@@ -142,13 +168,15 @@ public class MapsActivity extends FragmentActivity implements
                 .addLocationRequest(locationRequest);
         builder.setAlwaysShow(true);
 
+
+
     }
+
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
 
-        fetchDeals();
 
         try {
             // Customise the styling of the base map using a JSON object defined
@@ -171,7 +199,6 @@ public class MapsActivity extends FragmentActivity implements
         }
 
 
-
         //GoogleMap settings
         mMap.setMyLocationEnabled(false);
         mMap.getUiSettings().setScrollGesturesEnabled(false);
@@ -183,10 +210,6 @@ public class MapsActivity extends FragmentActivity implements
         mMap.setMaxZoomPreference(19.0f);
 
 
-
-
-
-
         // GoogleMap marker settings
         mMap.setOnMarkerClickListener(
                 new GoogleMap.OnMarkerClickListener() {
@@ -196,42 +219,41 @@ public class MapsActivity extends FragmentActivity implements
 
                     public boolean onMarkerClick(Marker marker) {
 
-                        if (marker.getTitle().equals("user")){
+                        if (marker.getTitle().equals("user")) {
 
-                        }else{
+                        } else {
 
-                        // Check if there is an open info window
-                        if (lastOpened != null) {
-                            // Close the info window
-                            lastOpened.hideInfoWindow();
+                            // Check if there is an open info window
+                            if (lastOpened != null) {
+                                // Close the info window
+                                lastOpened.hideInfoWindow();
 
-                            // Is the marker the same marker that was already open
-                            if (lastOpened.equals(marker)) {
-                                // Nullify the lastOpenned object
-                                lastOpened = null;
-                                // Return so that the info window isn't openned again
-                                return true;
+                                // Is the marker the same marker that was already open
+                                if (lastOpened.equals(marker)) {
+                                    // Nullify the lastOpenned object
+                                    lastOpened = null;
+                                    // Return so that the info window isn't openned again
+                                    return true;
+                                }
+
+
                             }
+                            Bitmap icon;
+
+                            //BitmapDescriptor deal = BitmapDescriptorFactory.fromResource(R.drawable.deal);
+                            BitmapDescriptor deal = BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_MAGENTA);
+                            marker.setIcon(deal);
 
 
-                        }
-                        Bitmap icon;
-
-                        //BitmapDescriptor deal = BitmapDescriptorFactory.fromResource(R.drawable.deal);
-                        BitmapDescriptor deal = BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_MAGENTA);
-                        marker.setIcon(deal);
+                            View popup = getContent(marker);
+                            popupMessage.setContentView(popup);
+                            popupMessage.showAtLocation(mainLayout, Gravity.CENTER, 0, 0);
+                            popupMessage.update(700, 620);
 
 
-                        View popup = getContent(marker);
-                        popupMessage.setContentView(popup);
-                        popupMessage.showAtLocation(mainLayout, Gravity.CENTER, 0, 0);
-                        popupMessage.update(700, 620);
-
-
-
-                        //marker.showInfoWindow();
-                        // Re-assign the last openned such that we can close it later
-                        lastOpened = marker;
+                            //marker.showInfoWindow();
+                            // Re-assign the last openned such that we can close it later
+                            lastOpened = marker;
                         }
                         return doNotMoveCameraToCenterMarker;
                     }
@@ -239,8 +261,7 @@ public class MapsActivity extends FragmentActivity implements
 
         //Initializing the Options List button and setting an onClick listener to it.
         final ImageButton hamburgerButton = (ImageButton) findViewById(R.id.optionslistbutton);
-        hamburgerButton.setOnClickListener(new View.OnClickListener()
-        {
+        hamburgerButton.setOnClickListener(new View.OnClickListener() {
 
             //Function which handles the user pressing the Options List button. If the button is clicked already the popup will be dismissed instead of appearing again.
             //Populating the content view with options_list_popup and shows it on top of the main layout in the centre.
@@ -250,10 +271,17 @@ public class MapsActivity extends FragmentActivity implements
                 if (isClickedPop == true) {
                     isClickedPop = false;
 
+                    Display display = getWindowManager().getDefaultDisplay();
+                    Point size = new Point();
+                    display.getSize(size);
+                    int screenWidth = size.x;
+                    int screenHeight = size.y;
+
                     View optPop = getLayoutInflater().inflate(R.layout.options_list_popup, null);
                     optionsPopup.setContentView(optPop);
                     optionsPopup.showAtLocation(mainLayout, Gravity.CENTER, 0, 0);
-                    optionsPopup.update(700, 620);
+                    optionsPopup.update(screenWidth - 50, screenHeight / 2);
+
                     profilePopup.dismiss();
                     myDealsPopup.dismiss();
                     filterPopup.dismiss();
@@ -271,12 +299,10 @@ public class MapsActivity extends FragmentActivity implements
                             dealsBackButtonPressed(v);
                         case R.id.filterBackButton:
                             filterBackButtonPressed(v);
-                    break;
+                            break;
                     }
 
-                }
-
-                else {
+                } else {
                     isClickedPop = true;
                     optionsPopup.dismiss();
                     profilePopup.dismiss();
@@ -289,33 +315,38 @@ public class MapsActivity extends FragmentActivity implements
     }
 
 
-    private void fetchDeals() {
+    private void loopFetchDeals() {
         fetchHandler = new Handler();
-        dealMqqt = new ConnectionMqtt(this);
-        dealMqqt.open();
         fetchHandler.postDelayed(new Runnable() {
             @Override
             public void run() {
-                String subscribeTopic = "deal/gogodeals/database/deals";
-                dealMqqt.subscribe(subscribeTopic,2);
+                fetchDeals();
+                loopFetchDeals();
+            }
+        }, 5000);
+    }
+
+    public void fetchDeals() {
+
+        dealMqtt = new ConnectionMqtt(this);
+
+        String subscribeTopic = "deal/gogodeals/database/deals";
+
 
 
                 String payload =   "{ \"id\": \"12345678-1011-M012-N210-112233445566\"," +
                         " \"data\": {" +
-                        " \"longitude\": " + mMap.getCameraPosition().target.longitude + "," +
-                        " \"latitude\": " +mMap.getCameraPosition().target.latitude + "," +
-                        " \"filters\": \"fika\"," +
-                        " \"deals\": \"33333333-1011-M012-N210-112233445566\"},}";
+                        " \"longitude\": " + mLastLocation.getLongitude() + "," +
+                        " \"latitude\": " + mLastLocation.getLatitude() + "," +
+                        " \"filters\": \"food\"}}";
 
                 String publishTopic = "deal/gogodeals/deal/fetch";
-                dealMqqt.publish(payload,publishTopic);
 
-                Log.i("Sent subscribe",subscribeTopic);
+                dealMqtt.sendMqtt(payload,publishTopic,subscribeTopic,2);
 
 
-               // fetchDeals();
-            }
-        }, 5000);
+                fetched = true;
+
     }
 
     //Function called by the switch case when back button on My Profile is pressed which dismisses the My Profile popup.
@@ -330,33 +361,100 @@ public class MapsActivity extends FragmentActivity implements
     public void filterBackButtonPressed(View v){
         filterPopup.dismiss();
     }
+
     // Opens the popup with My Profile on click.
     public void profileButtonPressed(View v){
+
+        Display display = getWindowManager().getDefaultDisplay();
+        Point size = new Point();
+        display.getSize(size);
+        int screenWidth = size.x;
+        int screenHeight = size.y;
+
         View profPop = getLayoutInflater().inflate(R.layout.myprofile, null);
         profilePopup.setContentView(profPop);
         profilePopup.showAtLocation(mainLayout, Gravity.CENTER, 0, 0);
-        profilePopup.update(700, 620);
+        profilePopup.update(screenWidth - 50, screenHeight / 2);
     }
 
     // Opens the popup with My Deals on click.
     public void mydealsButtonPressed(View v){
+
+        Display display = getWindowManager().getDefaultDisplay();
+        Point size = new Point();
+        display.getSize(size);
+        int screenWidth = size.x;
+        int screenHeight = size.y;
+
         View myDealsPop = getLayoutInflater().inflate(R.layout.mydeals, null);
         myDealsPopup.setContentView(myDealsPop);
         myDealsPopup.showAtLocation(mainLayout, Gravity.CENTER, 0, 0);
-        myDealsPopup.update(700, 620);
+        myDealsPopup.update(screenWidth - 50, screenHeight / 2);
     }
 
     // Opens the popup with Deal Filters on click.
     public void filterButtonPressed(View v){
+
+        Display display = getWindowManager().getDefaultDisplay();
+        Point size = new Point();
+        display.getSize(size);
+        int screenWidth = size.x;
+        int screenHeight = size.y;
+
         View filtersPop = getLayoutInflater().inflate(R.layout.filterslist, null);
         filterPopup.setContentView(filtersPop);
         filterPopup.showAtLocation(mainLayout, Gravity.CENTER, 0 ,0);
-        filterPopup.update(700, 620);
+        filterPopup.update(screenWidth - 50, screenHeight / 2);
     }
 
-   /* public void logoutButtonPressed(View v) {
 
-    }*/
+    public void onCheckboxClicked (View v){
+
+        switch(v.getId()) {
+            case R.id.checkBoxFood:
+                if(food.isChecked()){
+                    filterList.add("food");
+                }
+                else{
+                    filterList.remove(filterList.indexOf("food"));
+                }
+
+            case R.id.checkBoxClothes:
+                if(clothes.isChecked()){
+                    filterList.add("clothes");
+                }
+                else{
+                    filterList.remove(filterList.indexOf("clothes"));
+                }
+
+            case R.id.checkBoxActivites:
+                if(activities.isChecked()){
+                    filterList.add("activities");
+                }
+                else{
+                    filterList.remove(filterList.indexOf("activities"));
+                }
+
+            case R.id.checkBoxStuff:
+                if(stuff.isChecked()){
+                    filterList.add("stuff");
+                }
+                else{
+                    filterList.remove(filterList.indexOf("stuff"));
+                }
+
+            case R.id.checkBoxRandom:
+                if(random.isChecked()){
+                    filterList.add("random");
+                }
+                else{
+                    filterList.remove(filterList.indexOf("random"));
+                }
+
+        break;
+        }
+    }
+
 
 
 
@@ -377,18 +475,18 @@ public class MapsActivity extends FragmentActivity implements
 
 
             String[] components = marker.getSnippet().split(";");
+            Log.i("json getsnippet ",marker.getSnippet().toString());
 
             TextView description = (TextView) v.findViewById(R.id.description);
-            description.setText(components[0].split(":")[1]);
-            Log.d("InfoWindow description:", components[0]);
+            description.setText(components[0]);
 
             TextView price = ((TextView) v.findViewById(R.id.price));
-            price.setText(components[1].split(":")[1]);
-            Log.d("InfoWindow description:", components[1]);
+            price.setText(components[1]);
+
 
             TextView units = ((TextView) v.findViewById(R.id.units));
-            units.setText(components[2].split(":")[1]);
-            Log.d("InfoWindow description:", components[0]);
+            units.setText(components[2]);
+
 
             //Chronometer duration = ((Chronometer) v.findViewById(R.id.duration));
             //String dur = components[3].split(":")[1];
@@ -406,14 +504,14 @@ public class MapsActivity extends FragmentActivity implements
                 }
             });
 
-            ImageView dealPicture = (ImageView) v.findViewById(R.id.dealPicture);
+           /* ImageView dealPicture = (ImageView) v.findViewById(R.id.dealPicture);
             // Converting String byte picture to an ImageView
-            String base = components[4].split(",")[1];
+            String base = components[4];
             byte[] decodedString = Base64.decode(base, Base64.DEFAULT);
             Bitmap decodedByte = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
             dealPicture.setImageBitmap(decodedByte);
             Log.d("InfoWindow picture:", components[4]);
-
+*/
             // Returning the view containing InfoWindow contents
         return v;
         }
@@ -456,6 +554,7 @@ public class MapsActivity extends FragmentActivity implements
         public void onLocationChanged(Location location) {
             // Called when a new location is found by the network location provider.
             makeUseOfNewLocation(location);
+
         }
 
         public void onStatusChanged(String provider, int status, Bundle extras) {
@@ -493,6 +592,11 @@ public class MapsActivity extends FragmentActivity implements
                 target(myLatLang).zoom(mMap.getCameraPosition().zoom).bearing(mMap.getCameraPosition().bearing).build();
         //locationListener.onLocationChanged(location);
         mMap.animateCamera(CameraUpdateFactory.newCameraPosition(myPosition));
+
+
+        if (!fetched){
+            fetchDeals();
+        }
 
 
         mMap.setLatLngBoundsForCameraTarget(new LatLngBounds(myLatLang,myLatLang));
