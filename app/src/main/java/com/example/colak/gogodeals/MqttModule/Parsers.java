@@ -40,7 +40,7 @@ public class Parsers {
 
 
     public void fetchDealParser(MqttMessage message) throws JSONException {
-    public void 
+    public void
 
         String jsonString = new String(message.getPayload());
         Log.i("json payload parser",jsonString);
