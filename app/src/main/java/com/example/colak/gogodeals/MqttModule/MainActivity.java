@@ -8,11 +8,13 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.example.colak.gogodeals.R;
+import com.facebook.AccessToken;
 import com.facebook.CallbackManager;
 import com.facebook.login.widget.LoginButton;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
+    private static final String TAG = "";
     private TextView info;
 
     private LoginButton loginButton;
@@ -24,6 +26,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private Button gogoProfile;
 
     private TextView welcometext;
+    private AccessToken accessToken;
 
 
     @Override
@@ -31,19 +34,22 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main_screen);
 
-        welcometext = (TextView)findViewById(R.id.welcometext);
+        welcometext = (TextView) findViewById(R.id.welcometext);
         mainLogin = (Button) findViewById(R.id.mainLogin);
-        mainsignup = (Button)findViewById(R.id.mainsignup);
-        gogoProfile = (Button)findViewById(R.id.gogoProfile);
+        mainsignup = (Button) findViewById(R.id.mainsignup);
+        gogoProfile = (Button) findViewById(R.id.gogoProfile);
 
         mainLogin.setOnClickListener(this);
         mainsignup.setOnClickListener(this);
 
-        //prompts facebook logged in user to app
-        Intent onProfile = new Intent(MainActivity.this, UserLogin.class);
-        startActivity(onProfile);
-
+        //if user is logged in mapsactivity opens
+        if (UserLogin.loggedIn = true){
+        Intent gogoMain = new Intent(MainActivity.this, UserLogin.class);
+        startActivity(gogoMain);
+        }
     }
+
+
 
 
 

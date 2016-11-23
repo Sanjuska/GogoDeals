@@ -20,6 +20,7 @@ import org.eclipse.paho.client.mqttv3.MqttCallback;
 import org.eclipse.paho.client.mqttv3.MqttClient;
 import org.eclipse.paho.client.mqttv3.MqttException;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
+import org.json.JSONException;
 
 import java.io.UnsupportedEncodingException;
 import java.util.Locale;
@@ -149,36 +150,7 @@ public class newUserSignup extends AppCompatActivity implements MqttCallback {
             }
         }}
 
-    public void checkUsername(View V){
 
-        String topic = "deal/gogodeals/user/info";
-
-        int qos = 1;
-        try {
-            IMqttToken subToken = client.subscribe(topic, qos);
-            subToken.setActionCallback(new IMqttActionListener() {
-
-                @Override
-                public void onSuccess(IMqttToken asyncActionToken) {
-                    // The message was published
-
-                }
-
-                @Override
-                public void onFailure(IMqttToken asyncActionToken,
-                                      Throwable exception) {
-                    // The subscription could not be performed, maybe the user was not
-                    // authorized to subscribe on the specified topic e.g. using wildcards
-
-                }
-
-            });
-        } catch (MqttException e) {
-            e.printStackTrace();
-        }
-
-
-    }
 
     //Called when publish has been completed and accepted by broker.
     public void deliveryComplete(IMqttDeliveryToken token){
@@ -191,13 +163,23 @@ public class newUserSignup extends AppCompatActivity implements MqttCallback {
     }
 
     // When message from publisher arrived, show it in the text v¢iew.
-    public void messageArrived (String topic, MqttMessage message) throws MqttException{
+    public void messageArrived (String topic, MqttMessage message) throws MqttException, JSONException {
 
-        String text = checkUserName.getText().toString();
-        text = text + "\n" + new String (message.getPayload());
-        checkUserName.setText(text);
+        //String text = checkUserName.getText().toString();
+        //text = text + "\n" + new String (message.getPayload());
+        //checkUserName.setText(text);
 
-    }
+            //String messageString = new String(message.getPayload());
+            //JSONArray jsonarray = new JSONArray(messageString);
+            //for (int i = 0; i < jsonarray.length(); i++) {
+                //JSONObject jsonobject = jsonarray.getJSONObject(i);
+                //String email = jsonobject.getString("email");
+                //Log.v(TAG, "MEGATEST: " + email + "");
+            }
 
-}
+        }
+
+
+
+
 

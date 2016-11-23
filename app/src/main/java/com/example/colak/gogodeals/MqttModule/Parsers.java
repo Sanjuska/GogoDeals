@@ -27,9 +27,25 @@ public class Parsers {
             case "deal/gogodeals/user/info":
                 break;
 
+            //check users on database
+            case "deal/gogodeals/user/new":
+                //checkUsername(message);
+                break;
+
             default:
                 break;
         }
+    }
+
+    public void checkUsername(MqttMessage message) throws JSONException {
+
+        String messageString = new String(message.getPayload());
+        //JSONArray jsonarray = new JSONArray(messageString);
+        //for (int i = 0; i < jsonarray.length(); i++) {
+            //JSONObject jsonobject = jsonarray.getJSONObject(i);
+            //String email = jsonobject.getString("email");
+
+
     }
 
 
