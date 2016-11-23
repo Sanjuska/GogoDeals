@@ -1,6 +1,7 @@
 package com.example.colak.gogodeals.MqttModule;
 
 import android.util.Log;
+import android.view.View;
 
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
@@ -29,6 +30,7 @@ public class Parsers {
 
             case "deal/gogodeals/user/info":
 
+                grabbedDealParser(message);
                 break;
 
             default:
@@ -38,6 +40,7 @@ public class Parsers {
 
 
     public void fetchDealParser(MqttMessage message) throws JSONException {
+    public void 
 
         String jsonString = new String(message.getPayload());
         Log.i("json payload parser",jsonString);
@@ -79,6 +82,57 @@ public class Parsers {
 
         }
         MapsActivity.dealMqtt.close();
+    }
+
+    }
+    private void grabbedDealParser(MqttMessage message) {
+        // message template according to RFC
+        /*{
+            “id”: “33333333-1011-M012-N210-112233445566”,
+            “data”: {
+            “count”: 99,
+            “id”: “24818880316702720”
+        },
+        }*/
+        String dealID;
+        int count;
+        String verificationID;
+
+        String messageString = new String(message.getPayload());
+        // Split upp messageString into components
+
+
+        MapsActivity.grabbedView.setVisibility(View.VISIBLE);
+        // update unit in popup
+        // add deal to list
+        // add code to deal in list
+        MapsActivity.mProgressDlg.dismiss();
+
+
+    }
+
+    // A Debug method which places a deal on map. Uncomment the correct position depending on where
+    // you want to place the deal
+    public void debugDealOnMap() {
+        String company = ":TestCompany";
+        String description = ":TestDescription";
+        String price = ":200";
+        String units = ":5";
+        String duration = ":1";
+
+        //Finding position of the deal on the map
+
+        //Lindholmen
+        LatLng dealPosition = new LatLng(57.70776, 11.938287);
+        //Rimfrostgatan
+        //LatLng dealPosition = new LatLng(57.7306506, 11.891138100000035);
+
+        //Deal marker on the map including popup
+        mMap.addMarker(new MarkerOptions()
+                .position(dealPosition)
+                .title(company)
+                .snippet(description + ";" + price + ";" + units + ";" + duration + ";"));
+
     }
 
 }

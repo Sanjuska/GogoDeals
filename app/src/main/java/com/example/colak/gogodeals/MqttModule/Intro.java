@@ -10,7 +10,7 @@ import com.example.colak.gogodeals.R;
 
 
     //Sanja
-//This class loads the splash screen and switches over to BluetoothActivity after 2 seconds.
+//This class loads the splash screen and switches over to Main Activity after 2 seconds.
     public class Intro extends Activity {
         private final int SPLASH_DISPLAY_DURATION = 2000;
         @Override
