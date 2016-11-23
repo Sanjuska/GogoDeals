@@ -14,7 +14,6 @@ import org.eclipse.paho.client.mqttv3.MqttException;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
 
 import java.io.UnsupportedEncodingException;
-import java.util.List;
 
 
 /**
@@ -28,13 +27,34 @@ public class ConnectionMqtt extends Activity implements MqttCallback {
 
     static MqttAndroidClient client;
     Activity parent;
-    List dealList;
     Parsers parsers;
-
+    String payload;
+    String sendTopic;
+    String receiveTopic;
+    int qot;
 public ConnectionMqtt(Activity activity){
     this.parent = activity;
     parsers = new Parsers();
 }
+
+
+
+    public void sendMqtt(String payload, String topic){
+        open();
+        this.payload = payload;
+        this.sendTopic = topic;
+        this.receiveTopic ="";
+        this.qot = 0;
+    }
+
+    public void sendMqtt(String payload, String sendTopic, String receiveTopic, int qot){
+        open();
+        this.payload = payload;
+        this.sendTopic = sendTopic;
+        this.receiveTopic = receiveTopic;
+        this.qot = qot;
+    }
+
 
     //create and establish an MQTT-ConnectionMqtt
     public void open() {
@@ -50,6 +70,11 @@ public ConnectionMqtt(Activity activity){
                 public void onSuccess(IMqttToken asyncActionToken) {
                     // We are connected
                     Log.d(TAG, "onSuccess");
+                    if (receiveTopic.equals("")){
+                        publish(payload,sendTopic);
+                    }else{
+                        subscribe(receiveTopic,qot);
+                    }
 
 
 
@@ -79,14 +104,15 @@ public ConnectionMqtt(Activity activity){
         }
     }
     // Subscribing on a topic and getting messages from the publisher
-    public static void subscribe(final String topic, int qos){
+    public void subscribe(final String topic, int qos){
         try {
             IMqttToken subToken = client.subscribe(topic, qos);
             subToken.setActionCallback(new IMqttActionListener() {
                 @Override
                 public void onSuccess(IMqttToken asyncActionToken) {
                     // The message was published
-                    Log.i("subscribed to ",topic);
+                    Log.i("json subscribed to ",topic);
+                    publish(payload,sendTopic);
 
 
                 }
@@ -109,6 +135,15 @@ public ConnectionMqtt(Activity activity){
         Log.d(TAG, "connection lost");
     }
 
+    public void close(){
+        try {
+            client.disconnect();
+            Log.i("disconnected","");
+        } catch (MqttException e) {
+            Log.i("disconnect failed",e.toString());
+            e.printStackTrace();
+        }
+    }
 
     // When message from publisher arrived, show the deal on the map.
     public void messageArrived(String topic, MqttMessage message) throws MqttException {

@@ -4,7 +4,6 @@ import android.Manifest;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.location.Location;
 import android.os.Build;
 import android.os.Bundle;
@@ -14,7 +13,6 @@ import android.support.annotation.NonNull;
 import android.support.annotation.RequiresApi;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
-import android.util.Base64;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
@@ -22,10 +20,10 @@ import android.view.animation.Interpolator;
 import android.view.animation.LinearInterpolator;
 import android.widget.Button;
 import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.TextView;
+
 import com.example.colak.gogodeals.R;
 import com.google.android.gms.appindexing.AppIndex;
 import com.google.android.gms.common.ConnectionResult;
@@ -56,7 +54,7 @@ public class MapsActivity extends FragmentActivity implements
 
     public Deals deals;
 
-    ConnectionMqtt dealMqqt;
+    static ConnectionMqtt dealMqtt;
 
     public static GoogleMap mMap;
 
@@ -289,16 +287,21 @@ public class MapsActivity extends FragmentActivity implements
     }
 
 
-    private void fetchDeals() {
+    private void loopFetchDeals(){
         fetchHandler = new Handler();
-        dealMqqt = new ConnectionMqtt(this);
-        dealMqqt.open();
         fetchHandler.postDelayed(new Runnable() {
             @Override
             public void run() {
-                String subscribeTopic = "deal/gogodeals/database/deals";
-                dealMqqt.subscribe(subscribeTopic,2);
+                fetchDeals();
+            }
+        }, 5000);
+}
 
+    public void fetchDeals() {
+
+        dealMqtt = new ConnectionMqtt(this);
+
+                String subscribeTopic = "deal/gogodeals/database/deals";
 
                 String payload =   "{ \"id\": \"12345678-1011-M012-N210-112233445566\"," +
                         " \"data\": {" +
@@ -308,14 +311,12 @@ public class MapsActivity extends FragmentActivity implements
                         " \"deals\": \"33333333-1011-M012-N210-112233445566\"},}";
 
                 String publishTopic = "deal/gogodeals/deal/fetch";
-                dealMqqt.publish(payload,publishTopic);
 
-                Log.i("Sent subscribe",subscribeTopic);
+                dealMqtt.sendMqtt(payload,publishTopic,subscribeTopic,2);
 
 
-               // fetchDeals();
-            }
-        }, 5000);
+
+
     }
 
     //Function called by the switch case when back button on My Profile is pressed which dismisses the My Profile popup.
@@ -377,18 +378,18 @@ public class MapsActivity extends FragmentActivity implements
 
 
             String[] components = marker.getSnippet().split(";");
+            Log.i("json getsnippet ",marker.getSnippet().toString());
 
             TextView description = (TextView) v.findViewById(R.id.description);
-            description.setText(components[0].split(":")[1]);
-            Log.d("InfoWindow description:", components[0]);
+            description.setText(components[0]);
 
             TextView price = ((TextView) v.findViewById(R.id.price));
-            price.setText(components[1].split(":")[1]);
-            Log.d("InfoWindow description:", components[1]);
+            price.setText(components[1]);
+
 
             TextView units = ((TextView) v.findViewById(R.id.units));
-            units.setText(components[2].split(":")[1]);
-            Log.d("InfoWindow description:", components[0]);
+            units.setText(components[2]);
+
 
             //Chronometer duration = ((Chronometer) v.findViewById(R.id.duration));
             //String dur = components[3].split(":")[1];
@@ -406,14 +407,14 @@ public class MapsActivity extends FragmentActivity implements
                 }
             });
 
-            ImageView dealPicture = (ImageView) v.findViewById(R.id.dealPicture);
+           /* ImageView dealPicture = (ImageView) v.findViewById(R.id.dealPicture);
             // Converting String byte picture to an ImageView
-            String base = components[4].split(",")[1];
+            String base = components[4];
             byte[] decodedString = Base64.decode(base, Base64.DEFAULT);
             Bitmap decodedByte = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
             dealPicture.setImageBitmap(decodedByte);
             Log.d("InfoWindow picture:", components[4]);
-
+*/
             // Returning the view containing InfoWindow contents
         return v;
         }
