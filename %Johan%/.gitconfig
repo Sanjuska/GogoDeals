@@ -3,3 +3,5 @@
 	email = johan.johansson.swe@gmail.com
 [push]
 	default = simple
+[credential]
+	helper = wincred
