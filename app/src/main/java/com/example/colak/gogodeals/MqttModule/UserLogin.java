@@ -73,7 +73,7 @@ public class UserLogin extends AppCompatActivity {
 
 
                     Intent gogoApp = new Intent(UserLogin.this, MapsActivity.class);
-
+                    Intent gogoAppMainscreen = new Intent(UserLogin.this, MainActivity.class);
 
                     @Override
                     public void onSuccess(LoginResult loginResult) {
@@ -127,6 +127,7 @@ public class UserLogin extends AppCompatActivity {
                     @Override
                     public void onCancel() {
                         LoginManager.getInstance().logOut();
+                        startActivity(gogoAppMainscreen);
                         Toast.makeText(UserLogin.this, "Login canceled", Toast.LENGTH_SHORT).show();
 
                     }

@@ -39,6 +39,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         mainLogin.setOnClickListener(this);
         mainsignup.setOnClickListener(this);
 
+        //prompts facebook logged in user to app
+        Intent onProfile = new Intent(MainActivity.this, UserLogin.class);
+        startActivity(onProfile);
 
     }
 
