@@ -68,6 +68,8 @@ public class MapsActivity extends FragmentActivity implements
 
     Marker lastOpened = null;
 
+    boolean fetched = false;
+
 
     boolean isClickedPop = true;
 
@@ -108,7 +110,6 @@ public class MapsActivity extends FragmentActivity implements
         deals = new Deals(this);
 
 
-
         // ATTENTION: This was auto-generated to implement the App Indexing API.
         // See https://g.co/AppIndexing/AndroidStudio for more information.
         client = new GoogleApiClient.Builder(this).addApi(AppIndex.API).build();
@@ -146,7 +147,6 @@ public class MapsActivity extends FragmentActivity implements
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
 
-        fetchDeals();
 
         try {
             // Customise the styling of the base map using a JSON object defined
@@ -169,7 +169,6 @@ public class MapsActivity extends FragmentActivity implements
         }
 
 
-
         //GoogleMap settings
         mMap.setMyLocationEnabled(false);
         mMap.getUiSettings().setScrollGesturesEnabled(false);
@@ -181,10 +180,6 @@ public class MapsActivity extends FragmentActivity implements
         mMap.setMaxZoomPreference(19.0f);
 
 
-
-
-
-
         // GoogleMap marker settings
         mMap.setOnMarkerClickListener(
                 new GoogleMap.OnMarkerClickListener() {
@@ -194,42 +189,41 @@ public class MapsActivity extends FragmentActivity implements
 
                     public boolean onMarkerClick(Marker marker) {
 
-                        if (marker.getTitle().equals("user")){
+                        if (marker.getTitle().equals("user")) {
 
-                        }else{
+                        } else {
 
-                        // Check if there is an open info window
-                        if (lastOpened != null) {
-                            // Close the info window
-                            lastOpened.hideInfoWindow();
+                            // Check if there is an open info window
+                            if (lastOpened != null) {
+                                // Close the info window
+                                lastOpened.hideInfoWindow();
 
-                            // Is the marker the same marker that was already open
-                            if (lastOpened.equals(marker)) {
-                                // Nullify the lastOpenned object
-                                lastOpened = null;
-                                // Return so that the info window isn't openned again
-                                return true;
+                                // Is the marker the same marker that was already open
+                                if (lastOpened.equals(marker)) {
+                                    // Nullify the lastOpenned object
+                                    lastOpened = null;
+                                    // Return so that the info window isn't openned again
+                                    return true;
+                                }
+
+
                             }
+                            Bitmap icon;
+
+                            //BitmapDescriptor deal = BitmapDescriptorFactory.fromResource(R.drawable.deal);
+                            BitmapDescriptor deal = BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_MAGENTA);
+                            marker.setIcon(deal);
 
 
-                        }
-                        Bitmap icon;
-
-                        //BitmapDescriptor deal = BitmapDescriptorFactory.fromResource(R.drawable.deal);
-                        BitmapDescriptor deal = BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_MAGENTA);
-                        marker.setIcon(deal);
+                            View popup = getContent(marker);
+                            popupMessage.setContentView(popup);
+                            popupMessage.showAtLocation(mainLayout, Gravity.CENTER, 0, 0);
+                            popupMessage.update(700, 620);
 
 
-                        View popup = getContent(marker);
-                        popupMessage.setContentView(popup);
-                        popupMessage.showAtLocation(mainLayout, Gravity.CENTER, 0, 0);
-                        popupMessage.update(700, 620);
-
-
-
-                        //marker.showInfoWindow();
-                        // Re-assign the last openned such that we can close it later
-                        lastOpened = marker;
+                            //marker.showInfoWindow();
+                            // Re-assign the last openned such that we can close it later
+                            lastOpened = marker;
                         }
                         return doNotMoveCameraToCenterMarker;
                     }
@@ -237,8 +231,7 @@ public class MapsActivity extends FragmentActivity implements
 
         //Initializing the Options List button and setting an onClick listener to it.
         final ImageButton hamburgerButton = (ImageButton) findViewById(R.id.optionslistbutton);
-        hamburgerButton.setOnClickListener(new View.OnClickListener()
-        {
+        hamburgerButton.setOnClickListener(new View.OnClickListener() {
 
             //Function which handles the user pressing the Options List button. If the button is clicked already the popup will be dismissed instead of appearing again.
             //Populating the content view with options_list_popup and shows it on top of the main layout in the centre.
@@ -269,12 +262,10 @@ public class MapsActivity extends FragmentActivity implements
                             dealsBackButtonPressed(v);
                         case R.id.filterBackButton:
                             filterBackButtonPressed(v);
-                    break;
+                            break;
                     }
 
-                }
-
-                else {
+                } else {
                     isClickedPop = true;
                     optionsPopup.dismiss();
                     profilePopup.dismiss();
@@ -287,35 +278,37 @@ public class MapsActivity extends FragmentActivity implements
     }
 
 
-    private void loopFetchDeals(){
+    private void loopFetchDeals() {
         fetchHandler = new Handler();
         fetchHandler.postDelayed(new Runnable() {
             @Override
             public void run() {
                 fetchDeals();
+                loopFetchDeals();
             }
         }, 5000);
-}
+    }
 
     public void fetchDeals() {
 
         dealMqtt = new ConnectionMqtt(this);
 
-                String subscribeTopic = "deal/gogodeals/database/deals";
+        String subscribeTopic = "deal/gogodeals/database/deals";
+
+
 
                 String payload =   "{ \"id\": \"12345678-1011-M012-N210-112233445566\"," +
                         " \"data\": {" +
-                        " \"longitude\": " + mMap.getCameraPosition().target.longitude + "," +
-                        " \"latitude\": " +mMap.getCameraPosition().target.latitude + "," +
-                        " \"filters\": \"fika\"," +
-                        " \"deals\": \"33333333-1011-M012-N210-112233445566\"},}";
+                        " \"longitude\": " + mLastLocation.getLongitude() + "," +
+                        " \"latitude\": " + mLastLocation.getLatitude() + "," +
+                        " \"filters\": \"food\"}}";
 
                 String publishTopic = "deal/gogodeals/deal/fetch";
 
                 dealMqtt.sendMqtt(payload,publishTopic,subscribeTopic,2);
 
 
-
+                fetched = true;
 
     }
 
@@ -457,6 +450,7 @@ public class MapsActivity extends FragmentActivity implements
         public void onLocationChanged(Location location) {
             // Called when a new location is found by the network location provider.
             makeUseOfNewLocation(location);
+
         }
 
         public void onStatusChanged(String provider, int status, Bundle extras) {
@@ -494,6 +488,11 @@ public class MapsActivity extends FragmentActivity implements
                 target(myLatLang).zoom(mMap.getCameraPosition().zoom).bearing(mMap.getCameraPosition().bearing).build();
         //locationListener.onLocationChanged(location);
         mMap.animateCamera(CameraUpdateFactory.newCameraPosition(myPosition));
+
+
+        if (!fetched){
+            fetchDeals();
+        }
 
 
         mMap.setLatLngBoundsForCameraTarget(new LatLngBounds(myLatLang,myLatLang));

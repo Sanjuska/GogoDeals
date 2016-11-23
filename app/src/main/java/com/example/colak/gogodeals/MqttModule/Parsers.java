@@ -78,6 +78,7 @@ public class Parsers {
             Log.i("deal added" ,marker.toString());
 
         }
+        MapsActivity.dealMqtt.close();
     }
 
 }
