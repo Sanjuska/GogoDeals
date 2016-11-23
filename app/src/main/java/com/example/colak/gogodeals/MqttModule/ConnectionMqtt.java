@@ -66,7 +66,8 @@ public ConnectionMqtt(Activity activity){
 
     }
     // Publishing messages in the -topic- by clicking button
-    public static void publish(String payload, String topic){
+    public void publish(String payload, String topic){
+        Log.d(TAG, topic);
         byte[] encodedPayload = new byte[0];
         try {
             encodedPayload = payload.getBytes("UTF-8");
@@ -110,6 +111,7 @@ public ConnectionMqtt(Activity activity){
 
     // When message from publisher arrived, show the deal on the map.
     public void messageArrived(String topic, MqttMessage message) throws MqttException {
+        Log.d(TAG, topic);
         parsers.parse(topic,message);
 
     }

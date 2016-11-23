@@ -1,6 +1,7 @@
 package com.example.colak.gogodeals.MqttModule;
 
 import android.Manifest;
+import android.app.ProgressDialog;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
@@ -13,7 +14,6 @@ import android.support.annotation.NonNull;
 import android.support.annotation.RequiresApi;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
-import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
@@ -54,7 +54,6 @@ public class MapsActivity extends FragmentActivity implements
         GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener {
 
-    public Deals deals;
     ConnectionMqtt dealMqqt;
     public static GoogleMap mMap;
     GoogleApiClient mGoogleApiClient;
@@ -64,10 +63,11 @@ public class MapsActivity extends FragmentActivity implements
     LatLng lastDealUpdatePosition;
     Marker lastOpened = null;
     boolean isClickedPop = true;
+    public static ProgressDialog mProgressDlg;
 
     PopupWindow popupMessage;
     Button grabButton;
-    ImageView grabbedView;
+    static ImageView grabbedView;
     ImageButton closePopUpButton;
     LocationRequest locationRequest;
     PopupWindow filterPopup;
@@ -88,6 +88,10 @@ public class MapsActivity extends FragmentActivity implements
         myDealsPopup = new PopupWindow(this);
         filterPopup = new PopupWindow(this);
         mainLayout = new LinearLayout(this);
+
+        dealMqqt = new ConnectionMqtt(this);
+        dealMqqt.open();
+
         //also changed the version of google play services on gradle.app from 9.6.1 to
         //7.5.0 cause of compatibility.
         MapsInitializer.initialize(getApplicationContext());
@@ -98,8 +102,6 @@ public class MapsActivity extends FragmentActivity implements
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
 
-        // Create MQTT connection and create listeners to new messages
-        //deals = new Deals(this);
 
         // ATTENTION: This was auto-generated to implement the App Indexing API.
         // See https://g.co/AppIndexing/AndroidStudio for more information.
@@ -136,6 +138,7 @@ public class MapsActivity extends FragmentActivity implements
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
+        Log.d("MapsActivity", "Map Ready Bubca");
 
         //fetchDeals();
 
@@ -360,10 +363,10 @@ public class MapsActivity extends FragmentActivity implements
         //Log.d("InfoWindow picture:", components[4]);
 
         grabbedView = (ImageView) v.findViewById(R.id.grabbedView);
-        int icon;
+        /*int icon;
         icon = R.drawable.grabbed;
         grabbedView.setImageDrawable(ContextCompat.getDrawable(getApplicationContext(), icon));
-        grabbedView.setVisibility(View.INVISIBLE);
+        grabbedView.setVisibility(View.INVISIBLE);*/
 
         // Returning the view containing InfoWindow contents
         return v;
@@ -493,9 +496,10 @@ public class MapsActivity extends FragmentActivity implements
         });
     }
     public void buttonPressed(View v) {
+        dealMqqt.subscribe("deal/gogodeals/user/info", 0);
         grabButton = ((Button) v.findViewById(R.id.grabButton));
         grabButton.setVisibility(View.INVISIBLE);
-        grabbedView.setVisibility(View.VISIBLE);
+        //grabbedView.setVisibility(View.VISIBLE);
         String payload = "{" +
                 "“id”: “33333333-1011-M012-N210-112233445566”," +
                 "“data”: {" +
@@ -504,8 +508,11 @@ public class MapsActivity extends FragmentActivity implements
                 "22222222-1011-M012-N210-112233445566, 33333333-1011-M012-N210-112233445566”" +
                 "},"+
                 "}";
-        ConnectionMqtt.publish("deal/gogodeals/deal/save", payload);
-        closePopUpButton = (ImageButton) v.findViewById(R.id.cancelButton);
-
+        dealMqqt.publish(payload, "deal/gogodeals/deal/save");
+        //closePopUpButton = (ImageButton) v.findViewById(R.id.cancelButton);
+        mProgressDlg = new ProgressDialog(this);
+        mProgressDlg.setMessage("Grabbing deal");
+        mProgressDlg.setCancelable(false);
+        mProgressDlg.show();
     }
 }

@@ -2,7 +2,7 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="700dp"
+    android:layout_width="390dp"
     android:weightSum="1"
     android:baselineAligned="false"
     android:gravity="center_vertical|center_horizontal"
@@ -42,12 +42,6 @@
                 android:onClick="buttonPressed"
                 android:visibility="visible"
                 style="@drawable/bordershape"/>
-
-            <ImageView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:id="@+id/grabbedView"
-                android:visibility="invisible" />
 
         </LinearLayout>
 
@@ -97,17 +91,7 @@
                     style="@style/TextViewStyle"
                     android:layout_marginLeft="5dp"
                     android:layout_marginRight="5dp" />
-                <ImageButton
 
-                    android:layout_width="100dp"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/cancelButton"
-                    android:onClick="closeButtonClicked"
-                    android:layout_marginBottom="10dp"
-                    android:layout_marginRight="100dp"
-                    android:layout_marginLeft="50dp"
-                    android:visibility="invisible"
-                    app:srcCompat="@drawable/com_facebook_close" />
             </LinearLayout>
 
             <LinearLayout
@@ -180,7 +164,16 @@
             </LinearLayout>
 
         </LinearLayout>
+
     </GridLayout>
+
+    <ImageView
+        android:layout_width="390dp"
+        android:layout_height="300dp"
+        android:id="@+id/grabbedView"
+        android:visibility="invisible"
+        android:background="@drawable/grabbed"
+        android:layout_weight="47.10" />
 
 
     <!--  </android.support.constraint.ConstraintLayout>-->
