@@ -12,6 +12,8 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import static com.example.colak.gogodeals.MqttModule.MapsActivity.mMap;
+
 /**
  * Created by Johan Laptop on 2016-11-21.
  */
@@ -40,7 +42,6 @@ public class Parsers {
 
 
     public void fetchDealParser(MqttMessage message) throws JSONException {
-    public void
 
         String jsonString = new String(message.getPayload());
         Log.i("json payload parser",jsonString);
@@ -74,7 +75,7 @@ public class Parsers {
             LatLng latlng = new LatLng(latitude,longitude);
 
             //Deal marker on the map including popup
-            Marker marker = MapsActivity.mMap.addMarker(new MarkerOptions()
+            Marker marker = mMap.addMarker(new MarkerOptions()
                     .position(latlng)
                     .title(name)
                     .snippet(description + ";" + price + ";" + count + ";" + duration + ";" + picture));
@@ -84,7 +85,7 @@ public class Parsers {
         MapsActivity.dealMqtt.close();
     }
 
-    }
+
     private void grabbedDealParser(MqttMessage message) {
         // message template according to RFC
         /*{

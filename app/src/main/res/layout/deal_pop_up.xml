@@ -32,7 +32,7 @@
                 android:text="Grab"
                 android:layout_width="match_parent"
                 android:layout_height="37dp"
-                android:id="@+id/grabButton"
+                android:id="@+id/grabKuracButoncic"
                 android:background="@color/grabDeal"
                 android:layout_marginBottom="10dp"
                 android:layout_marginRight="100dp"

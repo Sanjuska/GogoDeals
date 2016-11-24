@@ -49,6 +49,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.MapStyleOptions;
 import com.google.android.gms.maps.model.Marker;
+import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.util.ArrayList;
 
@@ -63,13 +64,15 @@ public class MapsActivity extends FragmentActivity implements
     static ConnectionMqtt dealMqtt;
 
     public static GoogleMap mMap;
+
     GoogleApiClient mGoogleApiClient;
+
     Location mLastLocation;
 
     Handler fetchHandler;
 
     Marker mPositionMarker;
-    LatLng lastDealUpdatePosition;
+
     Marker lastOpened = null;
 
     CheckBox food;
@@ -81,20 +84,22 @@ public class MapsActivity extends FragmentActivity implements
     ArrayList<String> filterList;
     boolean fetched = false;
 
-
     boolean isClickedPop = true;
     public static ProgressDialog mProgressDlg;
 
     PopupWindow popupMessage;
     Button grabButton;
     static ImageView grabbedView;
-    ImageButton closePopUpButton;
     LocationRequest locationRequest;
+
+
     PopupWindow filterPopup;
     PopupWindow myDealsPopup;
     PopupWindow profilePopup;
     PopupWindow optionsPopup;
+
     LinearLayout mainLayout;
+
 
     // Creating an instance of MarkerOptions to set position
     private GoogleApiClient client;
@@ -155,6 +160,7 @@ public class MapsActivity extends FragmentActivity implements
                     .build();
         }
 
+
         // Acquire a reference to the system Location Manager
         locationRequest = LocationRequest.create();
         locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
@@ -173,7 +179,6 @@ public class MapsActivity extends FragmentActivity implements
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
 
-        //fetchDeals();
 
         try {
             // Customise the styling of the base map using a JSON object defined
@@ -189,6 +194,7 @@ public class MapsActivity extends FragmentActivity implements
             Log.e("MapsActivityRaw", "Can't find style.", e);
         }
 
+        // Add a marker in Gothenburg and move the camera
 
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             return;
@@ -209,6 +215,8 @@ public class MapsActivity extends FragmentActivity implements
         // GoogleMap marker settings
         mMap.setOnMarkerClickListener(
                 new GoogleMap.OnMarkerClickListener() {
+
+
                     boolean doNotMoveCameraToCenterMarker = true;
 
                     public boolean onMarkerClick(Marker marker) {
@@ -256,6 +264,7 @@ public class MapsActivity extends FragmentActivity implements
         //Initializing the Options List button and setting an onClick listener to it.
         final ImageButton hamburgerButton = (ImageButton) findViewById(R.id.optionslistbutton);
         hamburgerButton.setOnClickListener(new View.OnClickListener() {
+
             //Function which handles the user pressing the Options List button. If the button is clicked already the popup will be dismissed instead of appearing again.
             //Populating the content view with options_list_popup and shows it on top of the main layout in the centre.
             //Dismisses all other popups when called. While open it handles the options lists buttons by switch case which calls the appropriate function when pressed.
@@ -301,6 +310,7 @@ public class MapsActivity extends FragmentActivity implements
                     profilePopup.dismiss();
                     myDealsPopup.dismiss();
                     filterPopup.dismiss();
+
                 }
             }
         });
@@ -325,18 +335,19 @@ public class MapsActivity extends FragmentActivity implements
         String subscribeTopic = "deal/gogodeals/database/deals";
 
 
-                String payload =   "{ \"id\": \"12345678-1011-M012-N210-112233445566\"," +
-                        " \"data\": {" +
-                        " \"longitude\": " + mLastLocation.getLongitude() + "," +
-                        " \"latitude\": " + mLastLocation.getLatitude() + "," +
-                        " \"filters\": \"food\"}}";
 
-                String publishTopic = "deal/gogodeals/deal/fetch";
+        String payload =   "{ \"id\": \"12345678-1011-M012-N210-112233445566\"," +
+                " \"data\": {" +
+                " \"longitude\": " + mLastLocation.getLongitude() + "," +
+                " \"latitude\": " + mLastLocation.getLatitude() + "," +
+                " \"filters\": \"food\"}}";
 
-                dealMqtt.sendMqtt(payload,publishTopic,subscribeTopic,2);
+        String publishTopic = "deal/gogodeals/deal/fetch";
+
+        dealMqtt.sendMqtt(payload,publishTopic,subscribeTopic,2);
 
 
-                fetched = true;
+        fetched = true;
 
     }
 
@@ -367,6 +378,7 @@ public class MapsActivity extends FragmentActivity implements
         profilePopup.showAtLocation(mainLayout, Gravity.CENTER, 0, 0);
         profilePopup.update(screenWidth - 50, screenHeight / 2);
     }
+
     // Opens the popup with My Deals on click.
     public void mydealsButtonPressed(View v){
 
@@ -381,6 +393,7 @@ public class MapsActivity extends FragmentActivity implements
         myDealsPopup.showAtLocation(mainLayout, Gravity.CENTER, 0, 0);
         myDealsPopup.update(screenWidth - 50, screenHeight / 2);
     }
+
     // Opens the popup with Deal Filters on click.
     public void filterButtonPressed(View v){
 
@@ -440,7 +453,7 @@ public class MapsActivity extends FragmentActivity implements
                     filterList.remove(filterList.indexOf("random"));
                 }
 
-        break;
+                break;
         }
     }
 
@@ -454,30 +467,27 @@ public class MapsActivity extends FragmentActivity implements
         super.onStart();
     }
 
-    public void  closeButtonClicked(View v){
-        popupMessage.dismiss();
-    }
 
     public View getContent(Marker marker) {
         View v = getLayoutInflater().inflate(R.layout.deal_pop_up, null);
 
 
 
-            // Getting view from the layout file info_window_layout
+        // Getting view from the layout file info_window_layout
 
 
-            String[] components = marker.getSnippet().split(";");
-            Log.i("json getsnippet ",marker.getSnippet().toString());
+        String[] components = marker.getSnippet().split(";");
+        Log.i("json getsnippet ",marker.getSnippet().toString());
 
-            TextView description = (TextView) v.findViewById(R.id.description);
-            description.setText(components[0]);
+        TextView description = (TextView) v.findViewById(R.id.description);
+        description.setText(components[0]);
 
-            TextView price = ((TextView) v.findViewById(R.id.price));
-            price.setText(components[1]);
+        TextView price = ((TextView) v.findViewById(R.id.price));
+        price.setText(components[1]);
 
 
-            TextView units = ((TextView) v.findViewById(R.id.units));
-            units.setText(components[2]);
+        TextView units = ((TextView) v.findViewById(R.id.units));
+        units.setText(components[2]);
 
 
         //Chronometer duration = ((Chronometer) v.findViewById(R.id.duration));
@@ -488,23 +498,6 @@ public class MapsActivity extends FragmentActivity implements
         duration.setText(components[3].split(":")[0]);
         //Log.d("InfoWindow description:", components[1]);
 
-            Button grab = ((Button) v.findViewById(R.id.grabButton));
-            grab.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    popupMessage.dismiss();
-                }
-            });
-
-           /* ImageView dealPicture = (ImageView) v.findViewById(R.id.dealPicture);
-            // Converting String byte picture to an ImageView
-            String base = components[4];
-            byte[] decodedString = Base64.decode(base, Base64.DEFAULT);
-            Bitmap decodedByte = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
-            dealPicture.setImageBitmap(decodedByte);
-            Log.d("InfoWindow picture:", components[4]);
-*/
-            // Returning the view containing InfoWindow contents
         //ImageView dealPicture = (ImageView) v.findViewById(R.id.dealPicture);
         // Converting String byte picture to an ImageView
         //String base = components[4].split(",")[1];
@@ -541,6 +534,7 @@ public class MapsActivity extends FragmentActivity implements
                 mGoogleApiClient);
         makeUseOfNewLocation(mLastLocation);
         startLocationUpdates();
+
     }
 
     @Override
@@ -551,6 +545,9 @@ public class MapsActivity extends FragmentActivity implements
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
     }
 
+
+
+
     // Define a listener that responds to location updates
     LocationListener locationListener = new LocationListener() {
         @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
@@ -560,23 +557,12 @@ public class MapsActivity extends FragmentActivity implements
 
         }
 
-            /*//If no deal update has been triggered so far
-            if(lastDealUpdatePosition == null) {
-                //TODO publish deal read request to server
-                lastDealUpdatePosition = new LatLng(location.getLatitude(), location.getLongitude());
-            }else if (((lastDealUpdatePosition.longitude < location.getLongitude() + 0.1f) ||
-                    (lastDealUpdatePosition.longitude > location.getLongitude() - 0.1f)) &&
-                    ((lastDealUpdatePosition.latitude < location.getLatitude() + 0.1f) ||
-                            (lastDealUpdatePosition.latitude > location.getLatitude() - 0.1f))
-                    ) {
-                //TODO publish deal read request to server
-                lastDealUpdatePosition = new LatLng(location.getLatitude(), location.getLongitude());
-            }*/
-        }
         public void onStatusChanged(String provider, int status, Bundle extras) {
         }
+
         public void onProviderEnabled(String provider) {
         }
+
         public void onProviderDisabled(String provider) {
         }
     };
@@ -624,9 +610,13 @@ public class MapsActivity extends FragmentActivity implements
                     .title("user")
                     .position(myLatLang));
         }
+
         mPositionMarker.hideInfoWindow();
+
         animateMarker(mPositionMarker, location); // Helper method for smooth
         // animation
+
+
     }
 
     public void animateMarker(final Marker marker, final Location location) {
@@ -634,6 +624,7 @@ public class MapsActivity extends FragmentActivity implements
         final long start = SystemClock.uptimeMillis();
         final LatLng startLatLng = marker.getPosition();
         final long duration = 500;
+
         final Interpolator interpolator = new LinearInterpolator();
 
         handler.post(new Runnable() {
@@ -642,10 +633,13 @@ public class MapsActivity extends FragmentActivity implements
                 long elapsed = SystemClock.uptimeMillis() - start;
                 float t = interpolator.getInterpolation((float) elapsed
                         / duration);
+
                 double lng = t * location.getLongitude() + (1 - t)
                         * startLatLng.longitude;
                 double lat = t * location.getLatitude() + (1 - t)
                         * startLatLng.latitude;
+
+
                 marker.setPosition(new LatLng(lat, lng));
                 marker.setRotation(mMap.getCameraPosition().bearing);
 
@@ -656,9 +650,10 @@ public class MapsActivity extends FragmentActivity implements
             }
         });
     }
+
     public void buttonPressed(View v) {
-        dealMqqt.subscribe("deal/gogodeals/user/info", 0);
-        grabButton = ((Button) v.findViewById(R.id.grabButton));
+        dealMqtt.subscribe("deal/gogodeals/user/info", 0);
+        grabButton = ((Button) v.findViewById(R.id.grabKuracButoncic));
         grabButton.setVisibility(View.INVISIBLE);
         //grabbedView.setVisibility(View.VISIBLE);
         String payload = "{" +
@@ -669,7 +664,7 @@ public class MapsActivity extends FragmentActivity implements
                 "22222222-1011-M012-N210-112233445566, 33333333-1011-M012-N210-112233445566”" +
                 "},"+
                 "}";
-        dealMqqt.publish(payload, "deal/gogodeals/deal/save");
+        dealMqtt.publish(payload, "deal/gogodeals/deal/save");
         //closePopUpButton = (ImageButton) v.findViewById(R.id.cancelButton);
         mProgressDlg = new ProgressDialog(this);
         mProgressDlg.setMessage("Grabbing deal");
