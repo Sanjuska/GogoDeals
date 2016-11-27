@@ -81,6 +81,7 @@ public class newUserSignup extends AppCompatActivity{
         String regPassConf = regPasswordConfirmation.getText().toString();
 
 
+        //topic and payload which will add user to database
         String topic = "deal/gogodeals/user/new";
         String payload = "{\"id\":\"1\",\"data\":{\"username\":\""
                 + regUser + "\",\"password\": \"" + regPass + "\",\"email\": \"" + regMail + "\"},}";
@@ -115,13 +116,8 @@ public class newUserSignup extends AppCompatActivity{
 
                     Toast.makeText(getApplicationContext(), "Welcome:" + regUser, Toast.LENGTH_SHORT).show();
 
-                    //opens mqtt connection
+                    //opens mqtt connection and sends data to database
                     connection1.sendMqtt1(topic, payload);
-
-                    //publish on topic with current payload to add user to database
-                    topic = "deal/gogodeals/user/new";
-                    payload = "{\"id\":\"1\",\"data\":{\"username\":\"" + regUser + "\",\"password\": \""
-                            + regPass + "\",\"email\": \"" + regMail + "\"},}";
 
                     Log.i("topic payload ", topic + " " + payload);
 
@@ -131,9 +127,7 @@ public class newUserSignup extends AppCompatActivity{
                     regEmail.getText().clear();
                     regEmailConfirmation.getText().clear();
                     regPasswordConfirmation.getText().clear();
-                    //finish activity and login instantly to app
-                    //finish();
-                    //startActivity(new Intent(this, MapsActivity.class));
+
                 }
             }
         }
