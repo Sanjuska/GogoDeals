@@ -31,7 +31,7 @@ import java.util.Arrays;
 public class UserLogin extends AppCompatActivity {
 
 
-    private static final String TAG = "" ;
+    private static final String TAG = "Test@ " ;
     private TextView info;
 
     private LoginButton loginButton;
@@ -41,46 +41,35 @@ public class UserLogin extends AppCompatActivity {
     private String Name;
     private String Email;
 
-    public static boolean loggedIn = false;
     public static AccessToken accessToken;
 
 
 
-        @Override
+    @Override
         protected void onCreate ( final Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
 
-            //AppEventsLogger.activateApp(this);
-
+            //facebook initialization
             FacebookSdk.sdkInitialize(this.getApplicationContext());
             callbackManager = CallbackManager.Factory.create();
             setContentView(R.layout.mainactivity);
 
-
-
-                Log.i(TAG, "tokenTest: " + accessToken);
-
                 info = (TextView) findViewById(R.id.info);
 
                 loginButton = (LoginButton) findViewById(R.id.login_button);
-                //shows the user which data gets accessed when log in through fb app
+
+        //shows the user which data gets accessed when log in through fb app
                 LoginManager.getInstance().logInWithReadPermissions(this,
                         Arrays.asList("public_profile", "email"));
-                //loggedIn = true;
 
                 //when fb responds to loginresult, next step is executed by invoking one of the methods below
-                //keep user logged in to app
-                //loginButton.registerCallback(callbackManager,
-                //new FacebookCallback<LoginResult>() {
-
+                //keeping user logged in to app
                 LoginManager.getInstance().registerCallback(callbackManager,
                          new FacebookCallback<LoginResult>() {
 
 
                             @Override
                             public void onSuccess(LoginResult loginResult) {
-
-                                loggedIn = true;
 
                                 //when fb credentials are correct, user logins to gogodeals
                                 Intent gogoApp = new Intent(UserLogin.this, MapsActivity.class);
@@ -104,12 +93,9 @@ public class UserLogin extends AppCompatActivity {
                                                     //UserEmail = Email;
                                                     Log.d("Email = ", " " + Email);
 
-                                                    //Name1 = Name +"test";
                                                     Toast.makeText(getApplicationContext(), "Name: " + Name, Toast.LENGTH_LONG).show();
                                                     Toast.makeText(getApplicationContext(), "Email: " + Email, Toast.LENGTH_SHORT).show();
-                                                    //Toast.makeText(getApplicationContext(), "age: " + Birthday, Toast.LENGTH_SHORT).show();
-                                                    //Toast.makeText(getApplicationContext(), "" + Name1, Toast.LENGTH_SHORT).show();
-                                                    //loginity();
+
                                                 } catch (JSONException e) {
                                                     e.printStackTrace();
                                                 }
@@ -132,7 +118,7 @@ public class UserLogin extends AppCompatActivity {
 
                             @Override
                             public void onCancel() {
-                                loggedIn = false;
+
                                 LoginManager.getInstance().logOut();
                                 Intent gogoAppMainscreen = new Intent(UserLogin.this, MainActivity.class);
                                 startActivity(gogoAppMainscreen);
@@ -155,13 +141,10 @@ public class UserLogin extends AppCompatActivity {
 
             }
 
-
         @Override
         protected void onActivityResult ( int requestCode, int resultCode, Intent data){
         super.onActivityResult(requestCode, resultCode, data);
         callbackManager.onActivityResult(requestCode, resultCode, data);
-        //LoginManager.getInstance().logOut();
-        //Intent gogoAppMainscreen = new Intent(UserLogin.this, MainActivity.class);
-        //startActivity(gogoAppMainscreen);
+        }
     }
-}
+

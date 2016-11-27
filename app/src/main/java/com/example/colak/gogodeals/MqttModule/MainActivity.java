@@ -9,6 +9,7 @@ import android.widget.TextView;
 
 import com.example.colak.gogodeals.R;
 import com.facebook.AccessToken;
+import com.facebook.AccessTokenTracker;
 import com.facebook.CallbackManager;
 import com.facebook.login.widget.LoginButton;
 
@@ -27,6 +28,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private TextView welcometext;
     private AccessToken accessToken;
+    private AccessTokenTracker accessTokenTracker;
 
 
     @Override
@@ -43,14 +45,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         mainsignup.setOnClickListener(this);
 
         //if user is logged in mapsactivity opens
-        if (UserLogin.loggedIn = true){
-        Intent gogoMain = new Intent(MainActivity.this, UserLogin.class);
-        startActivity(gogoMain);
-        }
+
     }
-
-
-
 
 
     @Override
@@ -59,7 +55,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public void onClick(View v) {
         switch (v.getId()) {
             //login for facebook users
+
             case R.id.mainLogin:
+
                 Intent gogoApp1 = new Intent(MainActivity.this, UserLogin.class);
                 startActivity(gogoApp1);
                 break;
@@ -69,6 +67,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 Intent gogoApp2 = new Intent(MainActivity.this, newUserSignup.class);
                 startActivity(gogoApp2);
                 break;
+
+
+            }
         }
     }
-}

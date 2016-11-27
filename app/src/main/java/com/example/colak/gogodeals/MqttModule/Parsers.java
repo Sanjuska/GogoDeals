@@ -1,6 +1,7 @@
 package com.example.colak.gogodeals.MqttModule;
 
 import android.util.Log;
+import android.widget.Toast;
 
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
@@ -10,6 +11,8 @@ import org.eclipse.paho.client.mqttv3.MqttMessage;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import static com.facebook.FacebookSdk.getApplicationContext;
 
 /**
  * Created by Johan Laptop on 2016-11-21.
@@ -27,13 +30,17 @@ public class Parsers {
                 }
                 break;
 
+            //check users on database
             case "deal/gogodeals/user/info":
-
+                try {
+                    checkEmail(message);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
                 break;
 
-            //check users on database
+            //insert new user in databse
             case "deal/gogodeals/user/new":
-                //checkUsername(message);
                 break;
 
             default:
@@ -41,14 +48,13 @@ public class Parsers {
         }
     }
 
-    public void checkUsername(MqttMessage message) throws JSONException {
+    public static void checkEmail (MqttMessage message) throws JSONException {
 
         String messageString = new String(message.getPayload());
-        //JSONArray jsonarray = new JSONArray(messageString);
-        //for (int i = 0; i < jsonarray.length(); i++) {
-            //JSONObject jsonobject = jsonarray.getJSONObject(i);
-            //String email = jsonobject.getString("email");
-
+        JSONObject jsonEmail;
+        jsonEmail = new JSONObject(messageString);
+        String email = jsonEmail.getString("email");
+        Toast.makeText(getApplicationContext(), email, Toast.LENGTH_SHORT).show();
 
     }
 

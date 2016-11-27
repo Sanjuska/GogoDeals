@@ -1,6 +1,5 @@
 package com.example.colak.gogodeals.MqttModule;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -12,92 +11,67 @@ import android.widget.Toast;
 
 import com.example.colak.gogodeals.R;
 
-import org.eclipse.paho.android.service.MqttAndroidClient;
-import org.eclipse.paho.client.mqttv3.IMqttActionListener;
-import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken;
-import org.eclipse.paho.client.mqttv3.IMqttToken;
-import org.eclipse.paho.client.mqttv3.MqttCallback;
-import org.eclipse.paho.client.mqttv3.MqttClient;
-import org.eclipse.paho.client.mqttv3.MqttException;
-import org.eclipse.paho.client.mqttv3.MqttMessage;
-import org.json.JSONException;
+public class newUserSignup extends AppCompatActivity{
 
-import java.io.UnsupportedEncodingException;
-import java.util.Locale;
-
-public class newUserSignup extends AppCompatActivity implements MqttCallback {
     // Variables used in the class
-    private static final String TAG = "ConnectionMqtt";
+
     EditText regUsername;
     EditText regEmail;
     EditText regEmailConfirmation;
     EditText regPassword;
     EditText regPasswordConfirmation;
 
-    TextView checkUserName;
+    TextView signupTips;
 
     Button gogosignup;
-    Button button2;
 
-    static MqttAndroidClient client;
+    public String gogoUser;
+    //Button button2;
 
-
+    ConnectionMqtt connection1;
     @Override
 
     //Connect class with xml file
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.newuser_signup);
 
-        regUsername = (EditText) findViewById(R.id.regUsername);
-        regEmail = (EditText) findViewById(R.id.regEmail);
-        regEmailConfirmation = (EditText) findViewById(R.id.regEmailConfirmation);
-        regPassword = (EditText) findViewById(R.id.regPassword);
-        regPasswordConfirmation = (EditText) findViewById(R.id.regPasswordConfirmation);
-        gogosignup = (Button) findViewById(R.id.gogosignup);
-        button2 = (Button) findViewById(R.id.button2);
+            setContentView(R.layout.newuser_signup);
 
-        checkUserName = (TextView) findViewById(R.id.checkUserName);
+            connection1 = new ConnectionMqtt(this);
 
-
-        // Set locale;
-        Locale l = getResources().getConfiguration().locale;
-        mqttConnection();
-    }
+            regUsername = (EditText) findViewById(R.id.regUsername);
+            regEmail = (EditText) findViewById(R.id.regEmail);
+            regEmailConfirmation = (EditText) findViewById(R.id.regEmailConfirmation);
+            regPassword = (EditText) findViewById(R.id.regPassword);
+            regPasswordConfirmation = (EditText) findViewById(R.id.regPasswordConfirmation);
+            gogosignup = (Button) findViewById(R.id.gogosignup);
+            signupTips = (TextView) findViewById(R.id.signupTips);
+            //button2 = (Button) findViewById(R.id.button2);
 
 
-    //create and establish an MQTT-ConnectionMqtt
-    public void mqttConnection() {
-        String clientId = MqttClient.generateClientId();
-        client = new MqttAndroidClient(this.getApplicationContext(), "tcp://176.10.136.208:1883",
-                clientId);
-        client.setCallback(this);
+            //signup tips
+            signupTips.setText("Tips:");
 
-        try {
-            IMqttToken token = client.connect();
-            token.setActionCallback(new IMqttActionListener() {
-                @Override
-                public void onSuccess(IMqttToken asyncActionToken) {
-                    // We are connected
-                    Log.d(TAG, "onSuccess");
-                }
+            //define new line by append android system line separator
+            signupTips.append(System.getProperty("line.separator"));
+            signupTips.append("1. Username, email and password must not have same values");
+            signupTips.append(System.getProperty("line.separator"));
+            signupTips.append("2. Username cannot be less than 5 characters");
+            signupTips.append(System.getProperty("line.separator"));
+            signupTips.append("3. Password cannot be less than 8 characters");
+            signupTips.append(System.getProperty("line.separator"));
+            signupTips.append("4. No empty fields allowed");
 
-                @Override
-                public void onFailure(IMqttToken asyncActionToken, Throwable exception) {
-                    // Something went wrong e.g. ConnectionMqtt timeout or firewall problems
-                    Log.d(TAG, "onFailure");
-
+            //signup button
+            gogosignup.setOnClickListener(new View.OnClickListener() {
+                public void onClick(View V) {
+                    registerGogouser();
                 }
             });
-        } catch (MqttException e) {
-            e.printStackTrace();
         }
 
-    }
-
-
-    //Register user without facebook profile
-    public void registerGogouser(View V) {
+    //Register gogodeals user (without facebook)
+    private void registerGogouser() {
 
         //sign up text fields
         String regUser = regUsername.getText().toString();
@@ -106,32 +80,50 @@ public class newUserSignup extends AppCompatActivity implements MqttCallback {
         String regMailConf = regEmailConfirmation.getText().toString();
         String regPassConf = regPasswordConfirmation.getText().toString();
 
+
         String topic = "deal/gogodeals/user/new";
+        String payload = "{\"id\":\"1\",\"data\":{\"username\":\""
+                + regUser + "\",\"password\": \"" + regPass + "\",\"email\": \"" + regMail + "\"},}";
 
-        //guards for empty fields, username have to be different than password or email
-        if (regUser.isEmpty() || regMail.isEmpty() || regPass.isEmpty() || regMailConf.isEmpty() || regPassConf.isEmpty()){
-            Toast.makeText(getApplicationContext(), "Credential fields cannot be empty", Toast.LENGTH_SHORT).show();}
 
-        if (regUser.equals(regPass)){
-            Toast.makeText(getApplicationContext(), "Username cannot be the same as password", Toast.LENGTH_SHORT).show();
+        //if not every credential field is filled out, user must check tips on his screen
+        if (regUser.isEmpty() || regMail.isEmpty()
+                || regPass.isEmpty() || regMailConf.isEmpty() || regPassConf.isEmpty()) {
+            Toast.makeText(getApplicationContext(), "Check tips", Toast.LENGTH_SHORT).show();
         }
 
-        //user fills all the fields properly register is successfull
-        else if ((!regUser.isEmpty() && !regPass.isEmpty() && !regMail.isEmpty() && !regMailConf.isEmpty() && !regPassConf.isEmpty())){
-            if ((!regUser.equals(regPass) && !regMail.equals(regPass)
-                    && !regUser.equals(regMail) && regMail.equals(regMailConf) && regPass.equals(regPassConf))) {
-                Toast.makeText(getApplicationContext(), "Welcome:" + regUser, Toast.LENGTH_SHORT).show();
+        //if username, password and/or email have same values, user must check tips on his screen
+        else if (regUser.equals(regPass) || regUser.equals(regMail)
+                || regMail.equals(regPass) || regUser.length() < 5 || regPass.length() < 8) {
+            Toast.makeText(getApplicationContext(), "Check tips", Toast.LENGTH_SHORT).show();
+        }
+
+        //confirmation fields are not properly filled out
+        else if (!regMail.equals(regMailConf) || !regPass.equals(regPassConf)) {
+            Toast.makeText(getApplicationContext(), "Confirm email or password", Toast.LENGTH_SHORT).show();
+        }
+
+        //If credential fields are not empty, username, password, email are different between them
+        //and if username has more than 4 characters, password has more than 7 characters
+        //credential fields are filled out properly and user signs up
+        else if ((!regUser.isEmpty() && !regPass.isEmpty() &&
+                !regMail.isEmpty() && !regMailConf.isEmpty() && !regPassConf.isEmpty())) {
+            if (regUser.length() >= 5 && regPass.length() >= 8) {
+                if ((!regUser.equals(regPass) && !regMail.equals(regPass) &&
+                        !regUser.equals(regMail) && regMail.equals(regMailConf) && regPass.equals(regPassConf))) {
 
 
-                String payload = "{\"id\":\"1\",\"data\":{\"username\":\""
-                        + regUser + "\",\"password\": \"" + regPass + "\",\"email\": \"" + regMail + "\"},}";
+                    Toast.makeText(getApplicationContext(), "Welcome:" + regUser, Toast.LENGTH_SHORT).show();
 
+                    //opens mqtt connection
+                    connection1.sendMqtt1(topic, payload);
 
-                byte[] encodedPayload;
-                try {
-                    encodedPayload = payload.getBytes("UTF-8");
-                    MqttMessage message = new MqttMessage(encodedPayload);
-                    client.publish(topic, message);
+                    //publish on topic with current payload to add user to database
+                    topic = "deal/gogodeals/user/new";
+                    payload = "{\"id\":\"1\",\"data\":{\"username\":\"" + regUser + "\",\"password\": \""
+                            + regPass + "\",\"email\": \"" + regMail + "\"},}";
+
+                    Log.i("topic payload ", topic + " " + payload);
 
                     //clear fields
                     regUsername.getText().clear();
@@ -139,45 +131,18 @@ public class newUserSignup extends AppCompatActivity implements MqttCallback {
                     regEmail.getText().clear();
                     regEmailConfirmation.getText().clear();
                     regPasswordConfirmation.getText().clear();
-
                     //finish activity and login instantly to app
-                    finish();
-                    startActivity(new Intent(this, MapsActivity.class));
-
-                } catch (UnsupportedEncodingException | MqttException e) {
-                    e.printStackTrace();
+                    //finish();
+                    //startActivity(new Intent(this, MapsActivity.class));
                 }
             }
-        }}
-
-
-
-    //Called when publish has been completed and accepted by broker.
-    public void deliveryComplete(IMqttDeliveryToken token){
-
-    }
-
-    @Override
-    public void connectionLost(Throwable cause) {
-
-    }
-
-    // When message from publisher arrived, show it in the text v¢iew.
-    public void messageArrived (String topic, MqttMessage message) throws MqttException, JSONException {
-
-        //String text = checkUserName.getText().toString();
-        //text = text + "\n" + new String (message.getPayload());
-        //checkUserName.setText(text);
-
-            //String messageString = new String(message.getPayload());
-            //JSONArray jsonarray = new JSONArray(messageString);
-            //for (int i = 0; i < jsonarray.length(); i++) {
-                //JSONObject jsonobject = jsonarray.getJSONObject(i);
-                //String email = jsonobject.getString("email");
-                //Log.v(TAG, "MEGATEST: " + email + "");
-            }
-
         }
+    }
+
+
+    }
+
+
 
 
 
