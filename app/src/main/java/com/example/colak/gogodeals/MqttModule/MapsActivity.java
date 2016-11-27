@@ -329,7 +329,6 @@ public class MapsActivity extends FragmentActivity implements
     }
 
     public void fetchDeals() {
-
         dealMqtt = new ConnectionMqtt(this);
 
         String subscribeTopic = "deal/gogodeals/database/deals";
@@ -342,6 +341,7 @@ public class MapsActivity extends FragmentActivity implements
                 " \"latitude\": " + mLastLocation.getLatitude() + "," +
                 " \"filters\": \"food\"}}";
 
+        Log.d("Bubca debug", payload);
         String publishTopic = "deal/gogodeals/deal/fetch";
 
         dealMqtt.sendMqtt(payload,publishTopic,subscribeTopic,2);
@@ -512,6 +512,9 @@ public class MapsActivity extends FragmentActivity implements
         grabbedView.setImageDrawable(ContextCompat.getDrawable(getApplicationContext(), icon));
         grabbedView.setVisibility(View.INVISIBLE);*/
 
+        TextView id = ((TextView) v.findViewById(R.id.idTextView));
+        id.setText(components[5]);
+
         // Returning the view containing InfoWindow contents
         return v;
     }
@@ -652,19 +655,34 @@ public class MapsActivity extends FragmentActivity implements
     }
 
     public void buttonPressed(View v) {
-        dealMqtt.subscribe("deal/gogodeals/user/info", 0);
+
+        dealMqtt = new ConnectionMqtt(this);
+
+        String subscribeTopic = "deal/gogodeals/database/info";
+
         grabButton = ((Button) v.findViewById(R.id.grabKuracButoncic));
         grabButton.setVisibility(View.INVISIBLE);
         //grabbedView.setVisibility(View.VISIBLE);
-        String payload = "{" +
-                "“id”: “33333333-1011-M012-N210-112233445566”," +
-                "“data”: {" +
-                "“id”: ““12345678-1011-M012-N210-112233445566”," +
-                "“deals”: “11111111-1011-M012-N210-112233445566," +
-                "22222222-1011-M012-N210-112233445566, 33333333-1011-M012-N210-112233445566”" +
-                "},"+
-                "}";
-        dealMqtt.publish(payload, "deal/gogodeals/deal/save");
+
+        LinearLayout parentLayout = (LinearLayout) grabButton.getParent();
+
+        //extract deal id
+        TextView idTV = ((TextView) parentLayout.findViewById(R.id.idTextView));
+      //  id.setVisibility(View.VISIBLE);
+        String deal_id = (String) idTV.getText();
+
+        //String payload =   "{ \"id\": \"1307a946-b48d-11e6-862e-080027e93e17\"," +
+
+        String payload =   "{ \"id\":\"" + deal_id + "\"," +
+                " \"data\": {" +
+                " \"user_id\":\"1307a946-b48d-11e6-862e-080027e93e17\"}}";
+
+        Log.d("Bubca debug", payload);
+
+        String publishTopic = "deal/gogodeals/deal/save";
+
+        dealMqtt.sendMqtt(payload,publishTopic,subscribeTopic,2);
+
         //closePopUpButton = (ImageButton) v.findViewById(R.id.cancelButton);
         mProgressDlg = new ProgressDialog(this);
         mProgressDlg.setMessage("Grabbing deal");

@@ -75,9 +75,6 @@ public ConnectionMqtt(Activity activity){
                     }else{
                         subscribe(receiveTopic,qot);
                     }
-
-
-
                 }
 
                 @Override

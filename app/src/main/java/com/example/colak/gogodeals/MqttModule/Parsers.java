@@ -30,10 +30,10 @@ public class Parsers {
                 }
                 break;
 
-            case "deal/gogodeals/user/info":
-
+            case "deal/gogodeals/database/info":
                 grabbedDealParser(message);
                 break;
+
 
             default:
                 break;
@@ -78,8 +78,8 @@ public class Parsers {
             Marker marker = mMap.addMarker(new MarkerOptions()
                     .position(latlng)
                     .title(name)
-                    .snippet(description + ";" + price + ";" + count + ";" + duration + ";" + picture));
-            Log.i("deal added" ,marker.toString());
+                    .snippet(description + ";" + price + ";" + count + ";" + duration + ";" + picture + ";" + id));
+            Log.i("deal added" ,marker.getSnippet());
 
         }
         MapsActivity.dealMqtt.close();
@@ -109,7 +109,7 @@ public class Parsers {
         // add code to deal in list
         MapsActivity.mProgressDlg.dismiss();
 
-
+        MapsActivity.dealMqtt.close();
     }
 
     // A Debug method which places a deal on map. Uncomment the correct position depending on where

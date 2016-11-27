@@ -43,6 +43,13 @@
                 android:visibility="visible"
                 style="@drawable/bordershape"/>
 
+            <TextView
+                android:text="TextView"
+                android:layout_width="match_parent"
+                android:layout_height="100dp"
+                android:id="@+id/idTextView"
+                android:visibility="invisible" />
+
         </LinearLayout>
 
 
