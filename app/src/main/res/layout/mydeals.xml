@@ -26,7 +26,8 @@
         android:layout_width="match_parent"
         android:layout_height="198dp"
         android:elevation="24dp"
-        android:background="#648B79"/>
+        android:background="#648B79"
+        android:id="@+id/dealList" />
 
     <Button
         android:text="Back"

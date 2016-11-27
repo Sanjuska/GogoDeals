@@ -2,7 +2,9 @@ package com.example.colak.gogodeals.MqttModule;
 
 import android.util.Log;
 import android.view.View;
+import android.widget.TextView;
 
+import com.example.colak.gogodeals.R;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -31,7 +33,11 @@ public class Parsers {
                 break;
 
             case "deal/gogodeals/database/info":
-                grabbedDealParser(message);
+                try {
+                    grabbedDealParser(message);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
                 break;
 
 
@@ -86,7 +92,7 @@ public class Parsers {
     }
 
 
-    private void grabbedDealParser(MqttMessage message) {
+    private void grabbedDealParser(MqttMessage message) throws JSONException {
         // message template according to RFC
         /*{
             “id”: “33333333-1011-M012-N210-112233445566”,
@@ -96,45 +102,30 @@ public class Parsers {
         },
         }*/
         String dealID;
-        int count;
-        String verificationID;
+        int count = 0;
+        String verificationID = null;
 
-        String messageString = new String(message.getPayload());
         // Split upp messageString into components
-
+        String jsonString = new String(message.getPayload());
+        JSONObject jsonData;
+        jsonData  = new JSONObject(jsonString);
+        dealID = jsonData.getString("id");
+        jsonData = new JSONObject(jsonData.getString("data"));
+        count = jsonData.getInt("count");
+        verificationID = jsonData.getString("id");
 
         MapsActivity.grabbedView.setVisibility(View.VISIBLE);
         // update unit in popup
+        TextView units = ((TextView) MapsActivity.popupMessage.getContentView().findViewById(R.id.units));
+        units.setText(String.valueOf(count));
         // add deal to list
+        TextView company = (TextView) MapsActivity.popupMessage.getContentView().findViewById(R.id.company);
+        MapsActivity.dealArrayList.add((String)company.getText());
+
         // add code to deal in list
         MapsActivity.mProgressDlg.dismiss();
 
         MapsActivity.dealMqtt.close();
     }
-
-    // A Debug method which places a deal on map. Uncomment the correct position depending on where
-    // you want to place the deal
-    public void debugDealOnMap() {
-        String company = ":TestCompany";
-        String description = ":TestDescription";
-        String price = ":200";
-        String units = ":5";
-        String duration = ":1";
-
-        //Finding position of the deal on the map
-
-        //Lindholmen
-        LatLng dealPosition = new LatLng(57.70776, 11.938287);
-        //Rimfrostgatan
-        //LatLng dealPosition = new LatLng(57.7306506, 11.891138100000035);
-
-        //Deal marker on the map including popup
-        mMap.addMarker(new MarkerOptions()
-                .position(dealPosition)
-                .title(company)
-                .snippet(description + ";" + price + ";" + units + ";" + duration + ";"));
-
-    }
-
 }
 

@@ -21,11 +21,13 @@ import android.view.Gravity;
 import android.view.View;
 import android.view.animation.Interpolator;
 import android.view.animation.LinearInterpolator;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.PopupWindow;
 import android.widget.TextView;
 
@@ -52,14 +54,13 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.util.ArrayList;
+import java.util.List;
 
 
 public class MapsActivity extends FragmentActivity implements
         OnMapReadyCallback,
         GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener {
-
-    public Deals deals;
 
     static ConnectionMqtt dealMqtt;
 
@@ -87,7 +88,7 @@ public class MapsActivity extends FragmentActivity implements
     boolean isClickedPop = true;
     public static ProgressDialog mProgressDlg;
 
-    PopupWindow popupMessage;
+    static PopupWindow popupMessage;
     Button grabButton;
     static ImageView grabbedView;
     LocationRequest locationRequest;
@@ -95,6 +96,10 @@ public class MapsActivity extends FragmentActivity implements
 
     PopupWindow filterPopup;
     PopupWindow myDealsPopup;
+    ArrayAdapter<String> dealAdapter;
+    public static List<String> dealArrayList;
+    ListView dealListView;
+
     PopupWindow profilePopup;
     PopupWindow optionsPopup;
 
@@ -115,15 +120,15 @@ public class MapsActivity extends FragmentActivity implements
         mainLayout = new LinearLayout(this);
         filterList = new ArrayList<>();
 
+        //create list adapter for deal list
+        dealArrayList = new ArrayList<String>();
+        dealArrayList.add("Grabbed Deals");
+
         food = (CheckBox) findViewById(R.id.checkBoxFood);
         clothes = (CheckBox) findViewById(R.id.checkBoxClothes);
         activities = (CheckBox) findViewById(R.id.checkBoxActivites);
         stuff = (CheckBox) findViewById(R.id.checkBoxStuff);
         random = (CheckBox) findViewById(R.id.checkBoxRandom);
-
-
-
-
 
         //also changed the version of google play services on gradle.app from 9.6.1 to
         //7.5.0 cause of compatibility.
@@ -134,10 +139,6 @@ public class MapsActivity extends FragmentActivity implements
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
-
-        // Create MQTT connection and create listeners to new messages
-        deals = new Deals(this);
-
 
         // ATTENTION: This was auto-generated to implement the App Indexing API.
         // See https://g.co/AppIndexing/AndroidStudio for more information.
@@ -169,9 +170,6 @@ public class MapsActivity extends FragmentActivity implements
         LocationSettingsRequest.Builder builder = new LocationSettingsRequest.Builder()
                 .addLocationRequest(locationRequest);
         builder.setAlwaysShow(true);
-
-
-
     }
 
 
@@ -355,7 +353,7 @@ public class MapsActivity extends FragmentActivity implements
     public void profileBackButtonPressed(View v){
         profilePopup.dismiss();
     }
-    //Function called by the switch case when back button on My Deals is pressed which dismisses the My Deals popup.
+    //Function called by the switch case when back button on My Deal is pressed which dismisses the My Deal popup.
     public void dealsBackButtonPressed(View v){
         myDealsPopup.dismiss();
     }
@@ -379,9 +377,8 @@ public class MapsActivity extends FragmentActivity implements
         profilePopup.update(screenWidth - 50, screenHeight / 2);
     }
 
-    // Opens the popup with My Deals on click.
+    // Opens the popupwith My Deal on click.
     public void mydealsButtonPressed(View v){
-
         Display display = getWindowManager().getDefaultDisplay();
         Point size = new Point();
         display.getSize(size);
@@ -390,6 +387,9 @@ public class MapsActivity extends FragmentActivity implements
 
         View myDealsPop = getLayoutInflater().inflate(R.layout.mydeals, null);
         myDealsPopup.setContentView(myDealsPop);
+        dealAdapter = new ArrayAdapter<String>(MapsActivity.this,android.R.layout.simple_list_item_1, dealArrayList);
+        dealListView = ((ListView) myDealsPopup.getContentView().findViewById(R.id.dealList));
+        dealListView.setAdapter(dealAdapter);
         myDealsPopup.showAtLocation(mainLayout, Gravity.CENTER, 0, 0);
         myDealsPopup.update(screenWidth - 50, screenHeight / 2);
     }
@@ -474,8 +474,6 @@ public class MapsActivity extends FragmentActivity implements
 
 
         // Getting view from the layout file info_window_layout
-
-
         String[] components = marker.getSnippet().split(";");
         Log.i("json getsnippet ",marker.getSnippet().toString());
 
@@ -488,11 +486,6 @@ public class MapsActivity extends FragmentActivity implements
 
         TextView units = ((TextView) v.findViewById(R.id.units));
         units.setText(components[2]);
-
-
-        //Chronometer duration = ((Chronometer) v.findViewById(R.id.duration));
-        //String dur = components[3].split(":")[1];
-        //Log.d("InfoWindow description:", dur);
 
         TextView duration = ((TextView) v.findViewById(R.id.duration));
         duration.setText(components[3].split(":")[0]);
@@ -518,9 +511,6 @@ public class MapsActivity extends FragmentActivity implements
         // Returning the view containing InfoWindow contents
         return v;
     }
-
-
-
     @Override
     public void onStop() {
         mGoogleApiClient.disconnect();
@@ -547,9 +537,6 @@ public class MapsActivity extends FragmentActivity implements
     @Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
     }
-
-
-
 
     // Define a listener that responds to location updates
     LocationListener locationListener = new LocationListener() {
@@ -600,7 +587,6 @@ public class MapsActivity extends FragmentActivity implements
         if (!fetched){
             fetchDeals();
         }
-
 
         mMap.setLatLngBoundsForCameraTarget(new LatLngBounds(myLatLang,myLatLang));
         if (mPositionMarker == null) {
@@ -668,16 +654,12 @@ public class MapsActivity extends FragmentActivity implements
 
         //extract deal id
         TextView idTV = ((TextView) parentLayout.findViewById(R.id.idTextView));
-      //  id.setVisibility(View.VISIBLE);
         String deal_id = (String) idTV.getText();
-
-        //String payload =   "{ \"id\": \"1307a946-b48d-11e6-862e-080027e93e17\"," +
-
+        //TODO replace the fix user_id with the user_id currently active in the app
         String payload =   "{ \"id\":\"" + deal_id + "\"," +
                 " \"data\": {" +
-                " \"user_id\":\"1307a946-b48d-11e6-862e-080027e93e17\"}}";
-
-        Log.d("Bubca debug", payload);
+                " \"user_id\":\"feb00c2b-b4b6-11e6-862e-080027e93e17\"}}";
+                //" \"user_id\":\" + user_id + "\"}}";
 
         String publishTopic = "deal/gogodeals/deal/save";
 
