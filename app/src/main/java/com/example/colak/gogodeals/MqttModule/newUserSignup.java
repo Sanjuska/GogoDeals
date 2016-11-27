@@ -37,8 +37,10 @@ public class newUserSignup extends AppCompatActivity{
 
             setContentView(R.layout.newuser_signup);
 
+            //setting an mqtt connection from ConnectionMqtt class
             connection1 = new ConnectionMqtt(this);
 
+            //newuser_signup xml fields-buttons-text
             regUsername = (EditText) findViewById(R.id.regUsername);
             regEmail = (EditText) findViewById(R.id.regEmail);
             regEmailConfirmation = (EditText) findViewById(R.id.regEmailConfirmation);
@@ -49,7 +51,7 @@ public class newUserSignup extends AppCompatActivity{
             //button2 = (Button) findViewById(R.id.button2);
 
 
-            //signup tips
+            //signup tips on bottom of user screen
             signupTips.setText("Tips:");
 
             //define new line by append android system line separator
