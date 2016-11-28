@@ -13,8 +13,7 @@ import com.example.colak.gogodeals.R;
 
 public class newUserSignup extends AppCompatActivity{
 
-    // Variables used in the class
-
+    //xml gui elements
     EditText regUsername;
     EditText regEmail;
     EditText regEmailConfirmation;
@@ -25,8 +24,6 @@ public class newUserSignup extends AppCompatActivity{
 
     Button gogosignup;
 
-    public String gogoUser;
-    //Button button2;
 
     ConnectionMqtt connection1;
     @Override
@@ -35,20 +32,21 @@ public class newUserSignup extends AppCompatActivity{
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+            //opens newuser_signup layout screen
             setContentView(R.layout.newuser_signup);
 
             //setting an mqtt connection from ConnectionMqtt class
             connection1 = new ConnectionMqtt(this);
 
             //newuser_signup xml fields-buttons-text
-            regUsername = (EditText) findViewById(R.id.regUsername);
-            regEmail = (EditText) findViewById(R.id.regEmail);
-            regEmailConfirmation = (EditText) findViewById(R.id.regEmailConfirmation);
-            regPassword = (EditText) findViewById(R.id.regPassword);
-            regPasswordConfirmation = (EditText) findViewById(R.id.regPasswordConfirmation);
-            gogosignup = (Button) findViewById(R.id.gogosignup);
-            signupTips = (TextView) findViewById(R.id.signupTips);
-            //button2 = (Button) findViewById(R.id.button2);
+            regUsername = (EditText) findViewById(R.id.regUsername); //username field
+            regEmail = (EditText) findViewById(R.id.regEmail); //email field
+            regEmailConfirmation = (EditText) findViewById(R.id.regEmailConfirmation); //email confirmation field
+            regPassword = (EditText) findViewById(R.id.regPassword); //password field
+            regPasswordConfirmation = (EditText) findViewById(R.id.regPasswordConfirmation); //password confirmation field
+            gogosignup = (Button) findViewById(R.id.gogosignup); //signup button
+            signupTips = (TextView) findViewById(R.id.signupTips); //textview on bottom of screen
+
 
 
             //signup tips on bottom of user screen
@@ -75,7 +73,7 @@ public class newUserSignup extends AppCompatActivity{
     //Register gogodeals user (without facebook)
     private void registerGogouser() {
 
-        //sign up text fields
+        //sign up text fields variables to avoid long-writing check statements
         String regUser = regUsername.getText().toString();
         String regMail = regEmail.getText().toString();
         String regPass = regPassword.getText().toString();

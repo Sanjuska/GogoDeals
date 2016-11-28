@@ -12,7 +12,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.colak.gogodeals.R;
-import com.facebook.AccessToken;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
@@ -41,9 +40,6 @@ public class UserLogin extends AppCompatActivity {
     private String Name;
     private String Email;
 
-    public static AccessToken accessToken;
-
-
 
     @Override
         protected void onCreate ( final Bundle savedInstanceState) {
@@ -56,9 +52,10 @@ public class UserLogin extends AppCompatActivity {
 
                 info = (TextView) findViewById(R.id.info);
 
+                //facebook login button
                 loginButton = (LoginButton) findViewById(R.id.login_button);
 
-        //shows the user which data gets accessed when log in through fb app
+                //shows the user which data gets accessed when log in through fb app
                 LoginManager.getInstance().logInWithReadPermissions(this,
                         Arrays.asList("public_profile", "email"));
 
@@ -75,7 +72,7 @@ public class UserLogin extends AppCompatActivity {
                                 Intent gogoApp = new Intent(UserLogin.this, MapsActivity.class);
                                 startActivity(gogoApp);
 
-                                //Fetching facebook user data: username and email to store it into our db
+                                //Fetching facebook user data through JSON object: username and email to store it into our db
                                 GraphRequest request = GraphRequest.newMeRequest(
                                         loginResult.getAccessToken(),
                                         new GraphRequest.GraphJSONObjectCallback() {
@@ -91,7 +88,6 @@ public class UserLogin extends AppCompatActivity {
                                                     //UserName = Name;
                                                     Email = object.getString("email");
                                                     //UserEmail = Email;
-                                                    Log.d("Email = ", " " + Email);
 
                                                     Toast.makeText(getApplicationContext(), "Name: " + Name, Toast.LENGTH_LONG).show();
                                                     Toast.makeText(getApplicationContext(), "Email: " + Email, Toast.LENGTH_SHORT).show();
@@ -101,7 +97,7 @@ public class UserLogin extends AppCompatActivity {
                                                 }
                                             }
                                         });
-
+                                //bundle which parses the values we need to acquire from logged in user
                                 Bundle parameters = new Bundle();
                                 parameters.putString("fields", "name,email");
                                 request.setParameters(parameters);
@@ -148,3 +144,7 @@ public class UserLogin extends AppCompatActivity {
         }
     }
 
+    /*String topic = "deal/gogodeals/user/new";
+    String payload = "{\"id\":\"1\",\"data\":{\"username\":\""
+            + regUser + "\",\"password\": \"" + regPass + "\",\"email\": \"" + regMail + "\"},}";
+            connection1.sendMqtt1(topic, payload);*/
