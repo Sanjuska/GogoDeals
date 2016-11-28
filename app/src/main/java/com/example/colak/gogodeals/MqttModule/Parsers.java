@@ -61,8 +61,8 @@ public class Parsers {
             String picture = jsonObject.getString("picture");
             String description = jsonObject.getString("description");
             double longitude = jsonObject.getDouble("longitude");
-            double latitude = jsonObject.getDouble("latitude");
-            //String filters = jsonObject.getString("filters");
+            double latitude = jsonObject.getDouble("latitude");/*
+            //String filters = jsonObject.getString("filters");*/
             String duration = jsonObject.getString("duration");
             int count = jsonObject.getInt("count");
             String client_id = jsonObject.getString("client_id");

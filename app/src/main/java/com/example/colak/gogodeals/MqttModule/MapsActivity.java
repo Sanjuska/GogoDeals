@@ -21,10 +21,8 @@ import android.view.View;
 import android.view.animation.Interpolator;
 import android.view.animation.LinearInterpolator;
 import android.widget.Button;
-import android.widget.CheckBox;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
-import android.widget.ListView;
 import android.widget.PopupWindow;
 import android.widget.TextView;
 
@@ -74,15 +72,11 @@ public class MapsActivity extends FragmentActivity implements
 
     Marker lastOpened = null;
 
-    CheckBox food;
-    CheckBox clothes;
-    CheckBox activities;
-    CheckBox stuff;
-    CheckBox random;
 
     String testString = "FoodClo";
     ArrayList<String> filterList;
     boolean fetched = false;
+
 
 
     boolean isClickedPop = true;
@@ -97,7 +91,6 @@ public class MapsActivity extends FragmentActivity implements
 
     LinearLayout mainLayout;
 
-    ListView testEr;
 
 
     // Creating an instance of MarkerOptions to set position
@@ -114,53 +107,6 @@ public class MapsActivity extends FragmentActivity implements
         myDealsPopup = new PopupWindow(this);
         filterPopup = new PopupWindow(this);
         mainLayout = new LinearLayout(this);
-        filterList = new ArrayList<>();
-        filterList.add("food");
-        filterList.add("clothes");
-        filterList.add("activities");
-        filterList.add("stuff");
-        filterList.add("random");
-
-
-        /*CheckBox food = (CheckBox) findViewById(R.id.checkBoxFood);
-        boolean checkedFood = PreferenceManager.getDefaultSharedPreferences(this)
-                .getBoolean("checkBoxFood", false);
-        food.setChecked(checkedFood);
-
-        CheckBox checkBoxClothes = (CheckBox) findViewById(R.id.checkBoxClothes);
-        boolean checkedClothes = PreferenceManager.getDefaultSharedPreferences(this)
-                .getBoolean("checkBoxClothes", false);
-        checkBoxClothes.setChecked(checkedClothes);
-
-        CheckBox checkBoxActivities = (CheckBox) findViewById(R.id.checkBoxActivites);
-        boolean checkedActivities = PreferenceManager.getDefaultSharedPreferences(this)
-                .getBoolean("checkBoxActivities", false);
-        checkBoxActivities.setChecked(checkedActivities);
-
-        CheckBox checkBoxStuff = (CheckBox) findViewById(R.id.checkBoxStuff);
-        boolean checkedStuff = PreferenceManager.getDefaultSharedPreferences(this)
-                .getBoolean("checkBoxStuff", false);
-        checkBoxStuff.setChecked(checkedStuff);
-
-        CheckBox checkBoxRandom = (CheckBox) findViewById(R.id.checkBoxRandom);
-        boolean checkedRandom = PreferenceManager.getDefaultSharedPreferences(this)
-                .getBoolean("checkBoxRandom", false);
-        checkBoxRandom.setChecked(checkedRandom);*/
-
-
-
-
-        /*food = (CheckBox) findViewById(R.id.checkBoxFood);
-        clothes = (CheckBox) findViewById(R.id.checkBoxClothes);
-        activities = (CheckBox) findViewById(R.id.checkBoxActivites);
-        stuff = (CheckBox) findViewById(R.id.checkBoxStuff);
-        random = (CheckBox) findViewById(R.id.checkBoxRandom);*/
-
-        /*addListenerOnFood();
-        addListenerOnClothes();
-        addListenerOnActivities();
-        addListenerOnStuff();
-        addListenerOnRandom();*/
 
 
 
@@ -369,9 +315,15 @@ public class MapsActivity extends FragmentActivity implements
         }, 5000);
     }
 
+
+    public ArrayList<String> getFilterList() {
+        return filterList;
+    }
+
     public void fetchDeals() {
 
         dealMqtt = new ConnectionMqtt(this);
+
 
         String subscribeTopic = "deal/gogodeals/database/deals";
 
@@ -381,7 +333,7 @@ public class MapsActivity extends FragmentActivity implements
                         " \"data\": {" +
                         " \"longitude\": " + mLastLocation.getLongitude() + "," +
                         " \"latitude\": " + mLastLocation.getLatitude() + "," +
-                        " \"filters\": \"food\"}}";
+                        " \"filters\": " + filterList.toString() + "}}";
 
                 String publishTopic = "deal/gogodeals/deal/fetch";
 
@@ -449,170 +401,6 @@ public class MapsActivity extends FragmentActivity implements
         filterPopup.showAtLocation(mainLayout, Gravity.CENTER, 0 ,0);
         filterPopup.update(screenWidth - 50, screenHeight / 2);
     }
-
-
-    /*public void onCheckboxClicked(View view) {
-        // Is the view now checked?
-        boolean checkedFood = ((CheckBox) view).isChecked();
-        boolean checkedClothes = ((CheckBox) view).isChecked();
-        boolean checkedActivities = ((CheckBox) view).isChecked();
-        boolean checkedStuff = ((CheckBox) view).isChecked();
-        boolean checkedRandom = ((CheckBox) view).isChecked();
-
-        switch (view.getId()) {
-            case R.id.checkBoxFood:
-                PreferenceManager.getDefaultSharedPreferences(this).edit()
-                        .putBoolean("checkBoxFood", checkedFood).apply();
-            case R.id.checkBoxClothes:
-                PreferenceManager.getDefaultSharedPreferences(this).edit()
-                        .putBoolean("checkBoxClothes", checkedClothes).apply();
-            case R.id.checkBoxActivites:
-                PreferenceManager.getDefaultSharedPreferences(this).edit()
-                        .putBoolean("checkBoxActivities", checkedActivities).apply();
-            case R.id.checkBoxStuff:
-                PreferenceManager.getDefaultSharedPreferences(this).edit()
-                        .putBoolean("checkBoxStuff", checkedStuff).apply();
-            case R.id.checkBoxRandom:
-                PreferenceManager.getDefaultSharedPreferences(this).edit()
-                        .putBoolean("checkBoxRandom", checkedRandom).apply();
-                break;
-        }
-    }*/
-
-
-/*
-    public void addListenerOnFood() {
-
-        food = (CheckBox) findViewById(R.id.checkBoxFood);
-
-        food.setOnClickListener(new View.OnClickListener() {
-
-            @Override
-            public void onClick(View v) {
-
-                if (food.isChecked()) {
-                    filterList.add("food");
-                    testString = "changed";
-                } else {
-                    filterList.remove(filterList.indexOf("food"));
-                    testString = "ChangedRemove";
-                }
-
-            }
-        });
-
-    }
-
-
-
-    public void addListenerOnClothes() {
-
-        clothes = (CheckBox) findViewById(R.id.checkBoxClothes);
-
-        clothes.setOnClickListener(new View.OnClickListener() {
-
-            @Override
-            public void onClick(View v) {
-
-                if (clothes.isChecked()) {
-                    filterList.add("clothes");
-                } else {
-                    filterList.remove(filterList.indexOf("clothes"));
-                }
-
-            }
-
-        });
-
-    }
-
-    public void addListenerOnActivities() {
-
-        activities = (CheckBox) findViewById(R.id.checkBoxActivites);
-
-        activities.setOnClickListener(new View.OnClickListener() {
-
-            @Override
-            public void onClick(View v) {
-
-                if (activities.isChecked()) {
-                    filterList.add("activities");
-                } else {
-                    filterList.remove(filterList.indexOf("activities"));
-                }
-
-            }
-        });
-
-    }
-
-    public void addListenerOnStuff() {
-
-        stuff = (CheckBox) findViewById(R.id.checkBoxStuff);
-
-        stuff.setOnClickListener(new View.OnClickListener() {
-
-            @Override
-            public void onClick(View v) {
-
-                if (stuff.isChecked()) {
-                    filterList.add("stuff");
-                } else {
-                    filterList.remove(filterList.indexOf("stuff"));
-                }
-
-            }
-        });
-
-    }*/
-
-
-
-
-    public void onCheckboxClicked(View v) {
-
-        switch (v.getId()) {
-            case R.id.checkBoxFood:
-
-                if (food.isChecked()) {
-                    filterList.add("food");
-                } else {
-                    filterList.remove(filterList.indexOf("food"));
-                }
-
-            case R.id.checkBoxClothes:
-                if (clothes.isChecked()) {
-                    filterList.add("clothes");
-                } else {
-                    filterList.remove(filterList.indexOf("clothes"));
-                }
-
-            case R.id.checkBoxActivites:
-                if (activities.isChecked()) {
-                    filterList.add("activities");
-                } else {
-                    filterList.remove(filterList.indexOf("activities"));
-                }
-
-            case R.id.checkBoxStuff:
-                if (stuff.isChecked()) {
-                    filterList.add("stuff");
-                } else {
-                    filterList.remove(filterList.indexOf("stuff"));
-                }
-
-            case R.id.checkBoxRandom:
-                if (random.isChecked()) {
-                    filterList.add("random");
-                } else {
-                    filterList.remove(filterList.indexOf("random"));
-                }
-
-                break;
-        }
-    }
-
-
 
 
 

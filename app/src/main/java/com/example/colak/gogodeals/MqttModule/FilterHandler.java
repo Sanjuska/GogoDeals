@@ -27,6 +27,7 @@ public class FilterHandler extends Activity implements CompoundButton.OnCheckedC
      */
     public FilterHandler(){
         filters = new ArrayList<>();
+        filters.add("food");
 
         food = (CheckBox) findViewById(R.id.checkBoxFood);
         clothes = (CheckBox) findViewById(R.id.checkBoxClothes);
