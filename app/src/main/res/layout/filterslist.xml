@@ -23,48 +23,58 @@
         android:gravity="center" />
 
     <CheckBox
-        android:text="Food"
+        android:text="Food &amp; Drinks"
         android:layout_width="match_parent"
-        android:id="@+id/checkBox2"
+        android:id="@+id/checkBoxFood"
         android:elevation="24dp"
         android:textSize="18sp"
         android:layout_height="40dp"
+        android:checked="true"
+        android:onClick="onCheckboxClicked"
         style="@android:style/Widget.Holo.Light.CompoundButton.CheckBox" />
 
     <CheckBox
-        android:text="Drugs"
+        android:text="Clothes &amp; Hats"
         android:layout_width="match_parent"
-        android:id="@+id/checkBox6"
+        android:id="@+id/checkBoxClothes"
         android:elevation="24dp"
         android:textSize="18sp"
         android:layout_height="40dp"
-        style="@android:style/Widget.Holo.Light.CompoundButton.CheckBox" />
-
-    <CheckBox
-        android:text="Clothes"
-        android:layout_width="match_parent"
-        android:id="@+id/checkBox4"
-        android:elevation="24dp"
-        android:textSize="18sp"
-        android:layout_height="40dp"
+        android:checked="true"
+        android:onClick="onCheckboxClicked"
         style="@android:style/Widget.Holo.Light.CompoundButton.CheckBox" />
 
     <CheckBox
         android:text="Activites"
         android:layout_width="match_parent"
-        android:id="@+id/checkBox5"
+        android:id="@+id/checkBoxActivites"
         android:elevation="24dp"
         android:textSize="18sp"
         android:layout_height="40dp"
+        android:checked="true"
+        android:onClick="onCheckboxClicked"
         style="@android:style/Widget.Holo.Light.CompoundButton.CheckBox" />
 
     <CheckBox
-        android:text="Drinks"
+        android:text="Stuff"
         android:layout_width="match_parent"
-        android:id="@+id/checkBox3"
+        android:id="@+id/checkBoxStuff"
         android:elevation="24dp"
         android:textSize="18sp"
         android:layout_height="40dp"
+        android:checked="true"
+        android:onClick="onCheckboxClicked"
+        style="@android:style/Widget.Holo.Light.CompoundButton.CheckBox" />
+
+    <CheckBox
+        android:text="Random"
+        android:layout_width="match_parent"
+        android:id="@+id/checkBoxRandom"
+        android:elevation="24dp"
+        android:textSize="18sp"
+        android:layout_height="40dp"
+        android:checked="true"
+        android:onClick="onCheckboxClicked"
         style="@android:style/Widget.Holo.Light.CompoundButton.CheckBox" />
 
     <Button

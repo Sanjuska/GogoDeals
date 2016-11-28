@@ -4,6 +4,10 @@ import android.Manifest;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
+
+import android.graphics.BitmapFactory;
+import android.graphics.Point;
+
 import android.location.Location;
 import android.os.Build;
 import android.os.Bundle;
@@ -14,11 +18,13 @@ import android.support.annotation.RequiresApi;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.util.Log;
+import android.view.Display;
 import android.view.Gravity;
 import android.view.View;
 import android.view.animation.Interpolator;
 import android.view.animation.LinearInterpolator;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
@@ -70,6 +76,13 @@ public class MapsActivity extends FragmentActivity implements
 
     Marker lastOpened = null;
 
+    CheckBox food;
+    CheckBox clothes;
+    CheckBox activities;
+    CheckBox stuff;
+    CheckBox random;
+
+    ArrayList<String> filterList;
     boolean fetched = false;
     ArrayList<String> filterList;
 
@@ -100,6 +113,18 @@ public class MapsActivity extends FragmentActivity implements
         myDealsPopup = new PopupWindow(this);
         filterPopup = new PopupWindow(this);
         mainLayout = new LinearLayout(this);
+        filterList = new ArrayList<>();
+
+        food = (CheckBox) findViewById(R.id.checkBoxFood);
+        clothes = (CheckBox) findViewById(R.id.checkBoxClothes);
+        activities = (CheckBox) findViewById(R.id.checkBoxActivites);
+        stuff = (CheckBox) findViewById(R.id.checkBoxStuff);
+        random = (CheckBox) findViewById(R.id.checkBoxRandom);
+        
+
+
+
+
         //also changed the version of google play services on gradle.app from 9.6.1 to
         //7.5.0 cause of compatibility.
         MapsInitializer.initialize(getApplicationContext());
@@ -145,7 +170,10 @@ public class MapsActivity extends FragmentActivity implements
                 .addLocationRequest(locationRequest);
         builder.setAlwaysShow(true);
 
+
+
     }
+
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
@@ -245,10 +273,17 @@ public class MapsActivity extends FragmentActivity implements
                 if (isClickedPop == true) {
                     isClickedPop = false;
 
+                    Display display = getWindowManager().getDefaultDisplay();
+                    Point size = new Point();
+                    display.getSize(size);
+                    int screenWidth = size.x;
+                    int screenHeight = size.y;
+
                     View optPop = getLayoutInflater().inflate(R.layout.options_list_popup, null);
                     optionsPopup.setContentView(optPop);
                     optionsPopup.showAtLocation(mainLayout, Gravity.CENTER, 0, 0);
-                    optionsPopup.update(700, 620);
+                    optionsPopup.update(screenWidth - 50, screenHeight / 2);
+
                     profilePopup.dismiss();
                     myDealsPopup.dismiss();
                     filterPopup.dismiss();
@@ -327,33 +362,100 @@ public class MapsActivity extends FragmentActivity implements
     public void filterBackButtonPressed(View v){
         filterPopup.dismiss();
     }
+
     // Opens the popup with My Profile on click.
     public void profileButtonPressed(View v){
+
+        Display display = getWindowManager().getDefaultDisplay();
+        Point size = new Point();
+        display.getSize(size);
+        int screenWidth = size.x;
+        int screenHeight = size.y;
+
         View profPop = getLayoutInflater().inflate(R.layout.myprofile, null);
         profilePopup.setContentView(profPop);
         profilePopup.showAtLocation(mainLayout, Gravity.CENTER, 0, 0);
-        profilePopup.update(700, 620);
+        profilePopup.update(screenWidth - 50, screenHeight / 2);
     }
 
     // Opens the popup with My Deals on click.
     public void mydealsButtonPressed(View v){
+
+        Display display = getWindowManager().getDefaultDisplay();
+        Point size = new Point();
+        display.getSize(size);
+        int screenWidth = size.x;
+        int screenHeight = size.y;
+
         View myDealsPop = getLayoutInflater().inflate(R.layout.mydeals, null);
         myDealsPopup.setContentView(myDealsPop);
         myDealsPopup.showAtLocation(mainLayout, Gravity.CENTER, 0, 0);
-        myDealsPopup.update(700, 620);
+        myDealsPopup.update(screenWidth - 50, screenHeight / 2);
     }
 
     // Opens the popup with Deal Filters on click.
     public void filterButtonPressed(View v){
+
+        Display display = getWindowManager().getDefaultDisplay();
+        Point size = new Point();
+        display.getSize(size);
+        int screenWidth = size.x;
+        int screenHeight = size.y;
+
         View filtersPop = getLayoutInflater().inflate(R.layout.filterslist, null);
         filterPopup.setContentView(filtersPop);
         filterPopup.showAtLocation(mainLayout, Gravity.CENTER, 0 ,0);
-        filterPopup.update(700, 620);
+        filterPopup.update(screenWidth - 50, screenHeight / 2);
     }
 
-   /* public void logoutButtonPressed(View v) {
 
-    }*/
+    public void onCheckboxClicked (View v){
+
+        switch(v.getId()) {
+            case R.id.checkBoxFood:
+                if(food.isChecked()){
+                    filterList.add("food");
+                }
+                else{
+                    filterList.remove(filterList.indexOf("food"));
+                }
+
+            case R.id.checkBoxClothes:
+                if(clothes.isChecked()){
+                    filterList.add("clothes");
+                }
+                else{
+                    filterList.remove(filterList.indexOf("clothes"));
+                }
+
+            case R.id.checkBoxActivites:
+                if(activities.isChecked()){
+                    filterList.add("activities");
+                }
+                else{
+                    filterList.remove(filterList.indexOf("activities"));
+                }
+
+            case R.id.checkBoxStuff:
+                if(stuff.isChecked()){
+                    filterList.add("stuff");
+                }
+                else{
+                    filterList.remove(filterList.indexOf("stuff"));
+                }
+
+            case R.id.checkBoxRandom:
+                if(random.isChecked()){
+                    filterList.add("random");
+                }
+                else{
+                    filterList.remove(filterList.indexOf("random"));
+                }
+
+        break;
+        }
+    }
+
 
 
 
