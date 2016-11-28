@@ -471,8 +471,6 @@ public class MapsActivity extends FragmentActivity implements
     public View getContent(Marker marker) {
         View v = getLayoutInflater().inflate(R.layout.deal_pop_up, null);
 
-
-
         // Getting view from the layout file info_window_layout
         String[] components = marker.getSnippet().split(";");
         Log.i("json getsnippet ",marker.getSnippet().toString());
@@ -499,7 +497,7 @@ public class MapsActivity extends FragmentActivity implements
         //dealPicture.setImageBitmap(decodedByte);
         //Log.d("InfoWindow picture:", components[4]);
 
-        grabbedView = (ImageView) v.findViewById(R.id.grabbedView);
+
         /*int icon;
         icon = R.drawable.grabbed;
         grabbedView.setImageDrawable(ContextCompat.getDrawable(getApplicationContext(), icon));
@@ -507,6 +505,16 @@ public class MapsActivity extends FragmentActivity implements
 
         TextView id = ((TextView) v.findViewById(R.id.idTextView));
         id.setText(components[5]);
+
+        if (dealArrayList.contains()) {
+            System.out.println("Deal is not grabbed");
+        } else {
+            System.out.println("Deal already grabbed");
+            grabbedView = (ImageView) v.findViewById(R.id.grabbedView);
+            grabbedView.setVisibility(View.VISIBLE);
+            grabButton.setVisibility(View.INVISIBLE);
+
+        }
 
         // Returning the view containing InfoWindow contents
         return v;

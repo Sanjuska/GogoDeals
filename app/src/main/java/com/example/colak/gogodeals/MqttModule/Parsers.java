@@ -24,6 +24,7 @@ public class Parsers {
 
     public void parse(String topic,MqttMessage message){
         switch (topic){
+            //Case for fetching deals
             case "deal/gogodeals/database/deals":
                 try {
                     fetchDealParser(message);
@@ -31,7 +32,7 @@ public class Parsers {
                     e.printStackTrace();
                 }
                 break;
-
+            //Case for grabbing deals
             case "deal/gogodeals/database/info":
                 try {
                     grabbedDealParser(message);
@@ -105,7 +106,7 @@ public class Parsers {
         int count = 0;
         String verificationID = null;
 
-        // Split upp messageString into components
+        // Split upp payload messageString into components
         String jsonString = new String(message.getPayload());
         JSONObject jsonData;
         jsonData  = new JSONObject(jsonString);
@@ -115,9 +116,11 @@ public class Parsers {
         verificationID = jsonData.getString("id");
 
         MapsActivity.grabbedView.setVisibility(View.VISIBLE);
+
         // update unit in popup
         TextView units = ((TextView) MapsActivity.popupMessage.getContentView().findViewById(R.id.units));
         units.setText(String.valueOf(count));
+
         // add deal to list
         TextView company = (TextView) MapsActivity.popupMessage.getContentView().findViewById(R.id.company);
         MapsActivity.dealArrayList.add((String)company.getText());
@@ -125,6 +128,7 @@ public class Parsers {
         // add code to deal in list
         MapsActivity.mProgressDlg.dismiss();
 
+        //close communication
         MapsActivity.dealMqtt.close();
     }
 }
