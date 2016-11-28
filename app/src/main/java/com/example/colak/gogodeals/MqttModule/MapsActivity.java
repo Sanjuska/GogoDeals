@@ -317,7 +317,14 @@ public class MapsActivity extends FragmentActivity implements
 
 
     public ArrayList<String> getFilterList() {
-        return filterList;
+        if(filterList.toString() == null) {
+            filterList.add("food");
+            return filterList;
+        }
+
+        else {
+            return filterList;
+        }
     }
 
     public void fetchDeals() {
@@ -333,7 +340,7 @@ public class MapsActivity extends FragmentActivity implements
                         " \"data\": {" +
                         " \"longitude\": " + mLastLocation.getLongitude() + "," +
                         " \"latitude\": " + mLastLocation.getLatitude() + "," +
-                        " \"filters\": " + filterList.toString() + "}}";
+                        " \"filters\": " + getFilterList().toString() + "}}";
 
                 String publishTopic = "deal/gogodeals/deal/fetch";
 
