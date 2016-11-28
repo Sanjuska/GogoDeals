@@ -4,10 +4,7 @@ import android.Manifest;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
-
-import android.graphics.BitmapFactory;
 import android.graphics.Point;
-
 import android.location.Location;
 import android.os.Build;
 import android.os.Bundle;
@@ -82,7 +79,6 @@ public class MapsActivity extends FragmentActivity implements
     CheckBox stuff;
     CheckBox random;
 
-    ArrayList<String> filterList;
     boolean fetched = false;
     ArrayList<String> filterList;
 
