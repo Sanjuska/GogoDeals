@@ -37,5 +37,5 @@
         android:layout_height="wrap_content"
         android:onClick="dealsBackButtonPressed"
         android:alpha="100"
-        android:layout_gravity="right" />
+        android:layout_gravity="end" />
 </LinearLayout>
