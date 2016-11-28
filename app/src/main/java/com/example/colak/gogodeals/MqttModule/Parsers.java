@@ -66,6 +66,7 @@ public class Parsers {
             String duration = jsonObject.getString("duration");
             int count = jsonObject.getInt("count");
             String client_id = jsonObject.getString("client_id");
+            String companyName = jsonObject.getString("client_name");
 
 
             LatLng latlng = new LatLng(latitude,longitude);
@@ -74,7 +75,7 @@ public class Parsers {
             Marker marker = MapsActivity.mMap.addMarker(new MarkerOptions()
                     .position(latlng)
                     .title(name)
-                    .snippet(description + ";" + price + ";" + count + ";" + duration + ";" + picture));
+                    .snippet(companyName + ";" + description + ";" + price + ";" + count + ";" + duration + ";" + picture));
             Log.i("deal added" ,marker.toString());
 
         }

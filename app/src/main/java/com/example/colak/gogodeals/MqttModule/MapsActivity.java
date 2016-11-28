@@ -4,10 +4,7 @@ import android.Manifest;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
-
-import android.graphics.BitmapFactory;
 import android.graphics.Point;
-
 import android.location.Location;
 import android.os.Build;
 import android.os.Bundle;
@@ -82,9 +79,8 @@ public class MapsActivity extends FragmentActivity implements
     CheckBox stuff;
     CheckBox random;
 
-    ArrayList<String> filterList;
     boolean fetched = false;
-
+    ArrayList<String> filterList;
 
     boolean isClickedPop = true;
 
@@ -104,6 +100,8 @@ public class MapsActivity extends FragmentActivity implements
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
+        filterList = new ArrayList<>();
         super.onCreate(savedInstanceState);
         popupMessage = new PopupWindow(this);
         optionsPopup = new PopupWindow(this);
@@ -315,30 +313,29 @@ public class MapsActivity extends FragmentActivity implements
     }
 
 
-    private void loopFetchDeals() {
+    private void loopFetchDeals(final String filter) {
         fetchHandler = new Handler();
         fetchHandler.postDelayed(new Runnable() {
             @Override
             public void run() {
-                fetchDeals();
-                loopFetchDeals();
+                fetchDeals(filter);
+                loopFetchDeals(filter);
             }
         }, 5000);
     }
 
-    public void fetchDeals() {
+    public void fetchDeals(String filter) {
 
         dealMqtt = new ConnectionMqtt(this);
 
         String subscribeTopic = "deal/gogodeals/database/deals";
 
 
-
                 String payload =   "{ \"id\": \"12345678-1011-M012-N210-112233445566\"," +
                         " \"data\": {" +
                         " \"longitude\": " + mLastLocation.getLongitude() + "," +
                         " \"latitude\": " + mLastLocation.getLatitude() + "," +
-                        " \"filters\": \"food\"}}";
+                        " \"filters\": \""+filter+"\"}}";
 
                 String publishTopic = "deal/gogodeals/deal/fetch";
 
@@ -593,9 +590,12 @@ public class MapsActivity extends FragmentActivity implements
         //locationListener.onLocationChanged(location);
         mMap.animateCamera(CameraUpdateFactory.newCameraPosition(myPosition));
 
-
+        filterList.add("food");
         if (!fetched){
-            fetchDeals();
+            for (String filter :filterList){
+                fetchDeals(filter);
+            }
+
         }
 
 
