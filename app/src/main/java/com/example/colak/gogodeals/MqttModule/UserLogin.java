@@ -90,15 +90,8 @@ public class UserLogin extends AppCompatActivity {
                                                     Email = object.getString("email");
                                                     Log.i("FBdata: ", Name + " " + Email);
 
-                                                    String topic = "deal/gogodeals/user/new";
-                                                    String payload = "{\"id\":\"1\",\"data\":{\"username\":\""
-                                                            + Name + "\",\"password\": \"" + Math.random() + "\",\"email\": \"" + Email + "\"},}";
-                                                    connection1.sendMqtt1(topic, payload);
-
                                                     Toast.makeText(getApplicationContext(), "Name: " + Name, Toast.LENGTH_LONG).show();
                                                     Toast.makeText(getApplicationContext(), "Email: " + Email, Toast.LENGTH_SHORT).show();
-
-
 
                                                 } catch (JSONException e) {
                                                     e.printStackTrace();
