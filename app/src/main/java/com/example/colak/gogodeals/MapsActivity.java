@@ -68,8 +68,6 @@ public class MapsActivity extends FragmentActivity implements
 
     Location mLastLocation;
 
-    Handler fetchHandler;
-
     Marker mPositionMarker;
 
     Marker lastOpened = null;
@@ -80,8 +78,6 @@ public class MapsActivity extends FragmentActivity implements
     CheckBox stuff;
     CheckBox random;
     Location lastFetched;
-
-    boolean fetched = false;
     ArrayList<String> filterList;
 
     boolean isClickedPop = true;
@@ -311,16 +307,6 @@ public class MapsActivity extends FragmentActivity implements
     }
 
 
-    private void loopFetchDeals(final String filter) {
-        fetchHandler = new Handler();
-        fetchHandler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                fetchDeals(filter);
-                loopFetchDeals(filter);
-            }
-        }, 5000);
-    }
 
     public void fetchDeals(String filter) {
 
@@ -340,7 +326,7 @@ public class MapsActivity extends FragmentActivity implements
                 dealMqtt.sendMqtt(payload,publishTopic,subscribeTopic,2);
 
 
-                fetched = true;
+
 
     }
 
