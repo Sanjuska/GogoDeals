@@ -1,4 +1,4 @@
-package com.example.colak.gogodeals.MqttModule;
+package com.example.colak.gogodeals;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -7,7 +7,6 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
-import com.example.colak.gogodeals.R;
 import com.facebook.CallbackManager;
 import com.facebook.login.widget.LoginButton;
 
