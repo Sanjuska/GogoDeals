@@ -23,7 +23,7 @@ public class Parsers {
         IdentifierSingleton identifierSingleton = IdentifierSingleton.getInstance();
 
         // Checks if this message is related to this instance of the application or to this user
-        if(IdentifierSingleton.session == get_id(message) || IdentifierSingleton.user == get_id(message)) {
+        if(IdentifierSingleton.SESSION == get_id(message) || IdentifierSingleton.USER == get_id(message)) {
             switch (topic) {
                 case "deal/gogodeals/database/deals":
                     try {
@@ -33,7 +33,7 @@ public class Parsers {
                     }
                     break;
 
-                case "deal/gogodeals/user/info":
+                case "deal/gogodeals/USER/info":
 
                     break;
 

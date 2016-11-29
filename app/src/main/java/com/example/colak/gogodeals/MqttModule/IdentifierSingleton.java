@@ -10,8 +10,8 @@ class IdentifierSingleton {
     private static IdentifierSingleton instance = null;
 
 
-    public static final UUID session = UUID.randomUUID();
-    public static UUID user;
+    public static final UUID SESSION = UUID.randomUUID();
+    public static UUID USER;
 
     /**
      * Get singleton instance
@@ -29,7 +29,7 @@ class IdentifierSingleton {
      * Private constructor
      */
     private IdentifierSingleton() {
-        user = null;
+        USER = null;
     }
 
     /**
@@ -37,6 +37,6 @@ class IdentifierSingleton {
      * @param user
      */
     public static void set(String user) {
-        IdentifierSingleton.user = UUID.fromString(user);
+        IdentifierSingleton.USER = UUID.fromString(user);
     }
 }
