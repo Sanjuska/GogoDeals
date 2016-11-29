@@ -9,6 +9,8 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.UUID;
+
 /**
  * Created by Johan Laptop on 2016-11-21.
  */
@@ -19,21 +21,26 @@ public class Parsers {
     it calls the correct method corresponding to that topic.
     */
     public void parse(String topic,MqttMessage message){
-        switch (topic){
-            case "deal/gogodeals/database/deals":
-                try {
-                    fetchDealParser(message);
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-                break;
+        IdentifierSingleton identifierSingleton = IdentifierSingleton.getInstance();
 
-            case "deal/gogodeals/user/info":
+        // Checks if this message is related to this instance of the application or to this user
+        if(IdentifierSingleton.SESSION == get_id(message) || IdentifierSingleton.USER == get_id(message)) {
+            switch (topic) {
+                case "deal/gogodeals/database/deals":
+                    try {
+                        fetchDealParser(message);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                    break;
 
-                break;
+                case "deal/gogodeals/user/info":
 
-            default:
-                break;
+                    break;
+
+                default:
+                    break;
+            }
         }
     }
 
@@ -136,6 +143,23 @@ public class Parsers {
 
         }
         MapsActivity.dealMqtt.close();
+    }
+
+    /**
+     * Get the id from a MqttMessage
+     * @param message
+     * @return UUID
+     */
+    public UUID get_id(MqttMessage message) {
+        String jsonString = new String(message.getPayload());
+        JSONObject jsonObject = null;
+        try {
+            jsonObject = new JSONObject(jsonString);
+            return UUID.fromString(jsonObject.getString("id"));
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
 

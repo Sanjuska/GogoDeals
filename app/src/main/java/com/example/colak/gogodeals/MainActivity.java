@@ -24,6 +24,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private TextView welcometext;
 
+    private IdentifierSingleton identifierSingleton;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,10 +37,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         mainsignup = (Button)findViewById(R.id.mainsignup);
         gogoProfile = (Button)findViewById(R.id.gogoProfile);
 
+        /*
+            This is the first instantiation of the IdentifierSingleton. This is needed for the
+            session and user id
+        */
+        identifierSingleton = IdentifierSingleton.getInstance();
+
         mainLogin.setOnClickListener(this);
         mainsignup.setOnClickListener(this);
-
-
     }
 
 
