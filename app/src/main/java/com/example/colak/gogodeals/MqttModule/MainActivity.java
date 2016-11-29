@@ -10,7 +10,6 @@ import android.widget.TextView;
 import com.example.colak.gogodeals.R;
 import com.facebook.AccessToken;
 import com.facebook.AccessTokenTracker;
-import com.facebook.CallbackManager;
 import com.facebook.login.widget.LoginButton;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
@@ -20,8 +19,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private LoginButton loginButton;
 
-    private CallbackManager callbackManager;
-
     private Button mainLogin;
     private Button mainsignup;
     private Button gogoProfile;
@@ -30,6 +27,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private AccessToken accessToken;
     private AccessTokenTracker accessTokenTracker;
 
+    ConnectionMqtt connection1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,8 +42,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         mainLogin.setOnClickListener(this);
         mainsignup.setOnClickListener(this);
 
-        //if user is logged in mapsactivity opens
-
     }
 
 
@@ -57,9 +53,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             //login for facebook users
 
             case R.id.mainLogin:
+                Intent gogoApp = new Intent(MainActivity.this, UserLogin.class);
+                startActivity(gogoApp);
 
-                Intent gogoApp1 = new Intent(MainActivity.this, UserLogin.class);
-                startActivity(gogoApp1);
+
                 break;
 
             //registration for non facebook users
