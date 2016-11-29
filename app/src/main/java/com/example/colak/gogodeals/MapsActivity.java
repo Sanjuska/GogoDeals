@@ -1,9 +1,10 @@
-package com.example.colak.gogodeals.MqttModule;
+package com.example.colak.gogodeals;
 
 import android.Manifest;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Point;
 import android.location.Location;
 import android.os.Build;
@@ -14,6 +15,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.RequiresApi;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
+import android.util.Base64;
 import android.util.Log;
 import android.view.Display;
 import android.view.Gravity;
@@ -23,11 +25,11 @@ import android.view.animation.LinearInterpolator;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.TextView;
 
-import com.example.colak.gogodeals.R;
 import com.google.android.gms.appindexing.AppIndex;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -40,7 +42,6 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
@@ -67,8 +68,6 @@ public class MapsActivity extends FragmentActivity implements
 
     Location mLastLocation;
 
-    Handler fetchHandler;
-
     Marker mPositionMarker;
 
     Marker lastOpened = null;
@@ -78,8 +77,7 @@ public class MapsActivity extends FragmentActivity implements
     CheckBox activities;
     CheckBox stuff;
     CheckBox random;
-
-    boolean fetched = false;
+    Location lastFetched;
     ArrayList<String> filterList;
 
     boolean isClickedPop = true;
@@ -238,10 +236,6 @@ public class MapsActivity extends FragmentActivity implements
                             }
                             Bitmap icon;
 
-                            //BitmapDescriptor deal = BitmapDescriptorFactory.fromResource(R.drawable.deal);
-                            BitmapDescriptor deal = BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_MAGENTA);
-                            marker.setIcon(deal);
-
 
                             View popup = getContent(marker);
                             popupMessage.setContentView(popup);
@@ -313,16 +307,6 @@ public class MapsActivity extends FragmentActivity implements
     }
 
 
-    private void loopFetchDeals(final String filter) {
-        fetchHandler = new Handler();
-        fetchHandler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                fetchDeals(filter);
-                loopFetchDeals(filter);
-            }
-        }, 5000);
-    }
 
     public void fetchDeals(String filter) {
 
@@ -342,7 +326,7 @@ public class MapsActivity extends FragmentActivity implements
                 dealMqtt.sendMqtt(payload,publishTopic,subscribeTopic,2);
 
 
-                fetched = true;
+
 
     }
 
@@ -501,14 +485,13 @@ public class MapsActivity extends FragmentActivity implements
                 }
             });
 
-           /* ImageView dealPicture = (ImageView) v.findViewById(R.id.dealPicture);
+            ImageView dealPicture = (ImageView) v.findViewById(R.id.dealPicture);
             // Converting String byte picture to an ImageView
             String base = components[4];
             byte[] decodedString = Base64.decode(base, Base64.DEFAULT);
             Bitmap decodedByte = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
             dealPicture.setImageBitmap(decodedByte);
             Log.d("InfoWindow picture:", components[4]);
-*/
             // Returning the view containing InfoWindow contents
         return v;
         }
@@ -591,10 +574,19 @@ public class MapsActivity extends FragmentActivity implements
         mMap.animateCamera(CameraUpdateFactory.newCameraPosition(myPosition));
 
         filterList.add("food");
-        if (!fetched){
+        filterList.add("activities");
+        filterList.add("random");
+        filterList.add("stuff");
+        filterList.add("clothes");
+
+        if (lastFetched.getLatitude()+0.2 < mLastLocation.getLatitude() &&
+                lastFetched.getLatitude()-0.2 > mLastLocation.getLatitude() &&
+                lastFetched.getLongitude()+0.2 < mLastLocation.getLongitude() &&
+                lastFetched.getLongitude()-0.2 > mLastLocation.getLongitude()){
             for (String filter :filterList){
                 fetchDeals(filter);
             }
+            lastFetched = mLastLocation;
 
         }
 

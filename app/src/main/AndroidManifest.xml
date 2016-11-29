@@ -20,32 +20,29 @@ package="com.example.colak.gogodeals">
     <service android:name="org.eclipse.paho.android.service.MqttService">
         <service android:name="com.jessefarebro.mqtt.MqttService" android:exported="false" />
     </service>
-    <activity android:name=".MqttModule.Intro">
+    <activity android:name=".Intro">
         <intent-filter>
             <action android:name="android.intent.action.MAIN" />
 
             <category android:name="android.intent.category.LAUNCHER" />
         </intent-filter>
     </activity>
-    <activity android:name=".MqttModule.MainActivity">
+    <activity android:name=".MainActivity">
 
     </activity>
 
-    <activity android:name=".MqttModule.UserLogin">
+    <activity android:name=".UserLogin">
 
     </activity>
 
-    <activity android:name=".MqttModule.UserSignup">
+    <activity android:name=".newUserSignup">
 
     </activity>
 
-    <activity android:name=".MqttModule.ConnectionMqtt">
+    <activity android:name=".ConnectionMqtt">
 
     </activity>
 
-    <activity android:name=".MqttModule.newUserSignup">
-
-    </activity>
 
     <meta-data android:name="com.facebook.sdk.ApplicationId"
         android:value="@string/facebook_app_id" />
@@ -61,12 +58,11 @@ package="com.example.colak.gogodeals">
 
 
     <activity
-        android:name=".MqttModule.MapsActivity"
+        android:name=".MapsActivity"
         android:label="@string/title_activity_maps">
 
     </activity>
 
-    <activity android:name=".MqttModule.ConnectionMqtt"/>
 
 </application>
 </manifest>
