@@ -1,5 +1,7 @@
 package com.example.colak.gogodeals.MqttModule;
 
+import android.widget.ImageView;
+
 /**
  * Created by colak on 2016-10-27.
  */
@@ -14,26 +16,16 @@ public class Deal {
 
 
     public String company;
-    public String productName;
-    public int price;
-    public String picture;
+    public String price;
+    public ImageView picture;
     public String description;
     public String duration;
+    public String dealID;
 
 
     public Deal(){
-        this.company = "Grabbed deals";
+        this.description = "Grabbed deals";
     }
-
-    public Deal(String company, String duration, String productName, int price, String picture, String description) {
-        this.company = company;
-        this.duration = duration;
-        this.productName = productName;
-        this.price = price;
-        this.picture = picture;
-        this.description = description;
-    }
-    private static final String TAG = "Deal";
 
     public String getCompany() {
         return company;
@@ -43,27 +35,19 @@ public class Deal {
         this.company = company;
     }
 
-    public String getProductName() {
-        return productName;
-    }
-
-    public void setProductName(String productName) {
-        this.productName = productName;
-    }
-
-    public int getPrice() {
+    public String getPrice() {
         return price;
     }
 
-    public void setPrice(int price) {
+    public void setPrice(String price) {
         this.price = price;
     }
 
-    public String getPicture() {
+    public ImageView getPicture() {
         return picture;
     }
 
-    public void setPicture(String picture) {
+    public void setPicture(ImageView picture) {
         this.picture = picture;
     }
 
@@ -82,8 +66,36 @@ public class Deal {
     public void setDuration(String duration) {
         this.duration = duration;
     }
+
+    public String getDealID() {
+        return dealID;
+    }
+
+    public void setDealID(String dealID) {
+        this.dealID = dealID;
+    }
+
+    public Deal(String company, String duration, String price, ImageView picture, String description, String dealID) {
+        this.company = company;
+        this.duration = duration;
+        this.price = price;
+        this.picture = picture;
+        this.description = description;
+        this.dealID = dealID;
+    }
+    private static final String TAG = "Deal";
+
+
     public String toString(){
-        return company;
+        return description;
+    }
+
+    public boolean equals(Object o) {
+        if(o instanceof Deal) {
+            Deal d = (Deal) o;
+            return dealID.equals(d.dealID);
+        }
+        return false;
     }
 
 }

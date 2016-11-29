@@ -5,7 +5,9 @@ import android.app.ProgressDialog;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.graphics.Point;
+import android.graphics.drawable.ColorDrawable;
 import android.location.Location;
 import android.os.Build;
 import android.os.Bundle;
@@ -21,9 +23,11 @@ import android.view.Gravity;
 import android.view.View;
 import android.view.animation.Interpolator;
 import android.view.animation.LinearInterpolator;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.GridLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -89,16 +93,18 @@ public class MapsActivity extends FragmentActivity implements
     public static ProgressDialog mProgressDlg;
 
     static PopupWindow popupMessage;
+    static PopupWindow popupDealView;
     Button grabButton;
     static ImageView grabbedView;
     LocationRequest locationRequest;
-
+    public static String descriptionOfGrabbedDeal;
+    public static Deal grabbedDeal;
 
     PopupWindow filterPopup;
     PopupWindow myDealsPopup;
-    ArrayAdapter<String> dealAdapter;
-    public static List<String> dealArrayList;
-    ListView dealListView;
+    ArrayAdapter<Deal> dealAdapter;
+    public static List<Deal> dealArrayList;
+    static ListView dealListView;
 
     PopupWindow profilePopup;
     PopupWindow optionsPopup;
@@ -115,14 +121,15 @@ public class MapsActivity extends FragmentActivity implements
         popupMessage = new PopupWindow(this);
         optionsPopup = new PopupWindow(this);
         profilePopup = new PopupWindow(this);
+        popupDealView = new PopupWindow(this);
         myDealsPopup = new PopupWindow(this);
         filterPopup = new PopupWindow(this);
         mainLayout = new LinearLayout(this);
         filterList = new ArrayList<>();
 
         //create list adapter for deal list
-        dealArrayList = new ArrayList<String>();
-        dealArrayList.add("Grabbed Deals");
+        dealArrayList = new ArrayList<Deal>();
+        dealArrayList.add(new Deal());
 
         food = (CheckBox) findViewById(R.id.checkBoxFood);
         clothes = (CheckBox) findViewById(R.id.checkBoxClothes);
@@ -136,7 +143,7 @@ public class MapsActivity extends FragmentActivity implements
         setContentView(R.layout.activity_maps);
 
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
-        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
+       SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
 
@@ -248,8 +255,16 @@ public class MapsActivity extends FragmentActivity implements
                             View popup = getContent(marker);
                             popupMessage.setContentView(popup);
                             popupMessage.showAtLocation(mainLayout, Gravity.CENTER, 0, 0);
-                            popupMessage.update(700, 620);
+                            Display display = getWindowManager().getDefaultDisplay();
+                            Point size = new Point();
+                            display.getSize(size);
+                            int screenWidth = size.x;
+                            int screenHeight = size.y;
+                            popupMessage.update(screenWidth - 50, screenHeight / 2);
 
+                            popupMessage.setOutsideTouchable(true);
+                            popupMessage.setFocusable(true);
+                            popupMessage.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
 
                             //marker.showInfoWindow();
                             // Re-assign the last openned such that we can close it later
@@ -385,11 +400,53 @@ public class MapsActivity extends FragmentActivity implements
         int screenWidth = size.x;
         int screenHeight = size.y;
 
-        View myDealsPop = getLayoutInflater().inflate(R.layout.mydeals, null);
+       View myDealsPop = getLayoutInflater().inflate(R.layout.mydeals, null);
         myDealsPopup.setContentView(myDealsPop);
-        dealAdapter = new ArrayAdapter<String>(MapsActivity.this,android.R.layout.simple_list_item_1, dealArrayList);
+        //myDealsPop.setFocusable(false);
+        //myDealsPop.setClickable(false);
+        //dealAdapter = new ArrayAdapter<Deal>(MapsActivity.this,R.layout.list_row, dealArrayList);
+        dealAdapter= new ArrayAdapter<Deal>(MapsActivity.this, android.R.layout.simple_list_item_1,dealArrayList);
+       // dealListView =((ListView) findViewById(R.id.dealList));
         dealListView = ((ListView) myDealsPopup.getContentView().findViewById(R.id.dealList));
         dealListView.setAdapter(dealAdapter);
+         dealListView.setClickable(true);
+        dealListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Log.i("click", "click");
+
+               Log.i ("Bubca ppopupgovno", String.valueOf(position));
+              //  Log.i("Tu smo", String.valueOf((Deal) parent.getItemAtPosition(position)));
+                Deal d = (Deal)parent.getItemAtPosition(position);
+                Log.i ("pizda", d.getDescription());
+              //  View popup = getContent(dealAdapter.getItem(position));
+               // Intent intent = new Intent(MapsActivity.this,Deal.class);
+              //  startActivity(intent);
+               // popupDealView.setContentView(popup);
+
+              //  popupMessage.setOutsideTouchable(true);
+              // popupMessage.setFocusable(true);
+              // popupMessage.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                //View myDealsPopView = getLayoutInflater().inflate(R.layout.deal_pop_up, null);
+               // View popup = getContent(dealAdapter.getItem(position));
+               // popupDealView.setContentView(popup);
+               /* popupDealView.showAtLocation(mainLayout, Gravity.CENTER, 0, 0);
+                Display display = getWindowManager().getDefaultDisplay();
+                Point size = new Point();
+                display.getSize(size);
+                int screenWidth = size.x;
+                int screenHeight = size.y;
+                popupDealView.update(screenWidth - 50, screenHeight / 2);
+
+                popupDealView.setOutsideTouchable(true);
+                popupDealView.setFocusable(true);
+                popupDealView.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+
+*/
+            }
+        });
+
         myDealsPopup.showAtLocation(mainLayout, Gravity.CENTER, 0, 0);
         myDealsPopup.update(screenWidth - 50, screenHeight / 2);
     }
@@ -457,16 +514,11 @@ public class MapsActivity extends FragmentActivity implements
         }
     }
 
-
-
-
-
     @Override
     public void onStart() {
         mGoogleApiClient.connect();
         super.onStart();
     }
-
 
     public View getContent(Marker marker) {
         View v = getLayoutInflater().inflate(R.layout.deal_pop_up, null);
@@ -475,27 +527,29 @@ public class MapsActivity extends FragmentActivity implements
         String[] components = marker.getSnippet().split(";");
         Log.i("json getsnippet ",marker.getSnippet().toString());
 
+        TextView company = (TextView) v.findViewById(R.id.company);
+        company.setText(components[0]);
+
         TextView description = (TextView) v.findViewById(R.id.description);
-        description.setText(components[0]);
+        description.setText(components[1]);
 
         TextView price = ((TextView) v.findViewById(R.id.price));
-        price.setText(components[1]);
-
+        price.setText(components[2]);
 
         TextView units = ((TextView) v.findViewById(R.id.units));
-        units.setText(components[2]);
+        units.setText(components[3]);
 
         TextView duration = ((TextView) v.findViewById(R.id.duration));
-        duration.setText(components[3].split(":")[0]);
+        duration.setText(components[4].split(":")[0]);
         //Log.d("InfoWindow description:", components[1]);
 
-        //ImageView dealPicture = (ImageView) v.findViewById(R.id.dealPicture);
+        ImageView dealPicture = (ImageView) v.findViewById(R.id.dealPicture);
         // Converting String byte picture to an ImageView
-        //String base = components[4].split(",")[1];
+        //String base = components[5].split(",")[1];
         //byte[] decodedString = Base64.decode(base, Base64.DEFAULT);
         //Bitmap decodedByte = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
         //dealPicture.setImageBitmap(decodedByte);
-        //Log.d("InfoWindow picture:", components[4]);
+        //Log.d("InfoWindow picture:", components[5]);
 
 
         /*int icon;
@@ -504,21 +558,59 @@ public class MapsActivity extends FragmentActivity implements
         grabbedView.setVisibility(View.INVISIBLE);*/
 
         TextView id = ((TextView) v.findViewById(R.id.idTextView));
-        id.setText(components[5]);
+        id.setText(components[6]);
 
-        if (dealArrayList.contains()) {
-            System.out.println("Deal is not grabbed");
-        } else {
+        Deal shownDeal = new Deal((String) company.getText(), (String) duration.getText(), (String) price.getText(), dealPicture, (String) description.getText(), (String) id.getText());
+
+
+        if (dealArrayList.contains(shownDeal)) {
             System.out.println("Deal already grabbed");
             grabbedView = (ImageView) v.findViewById(R.id.grabbedView);
             grabbedView.setVisibility(View.VISIBLE);
+            grabButton = (Button) v.findViewById(R.id.grabKuracButoncic);
             grabButton.setVisibility(View.INVISIBLE);
-
+        } else {
+            System.out.println("Deal is not grabbed");
+            grabbedView = (ImageView) v.findViewById(R.id.grabbedView);
+            grabbedView.setVisibility(View.INVISIBLE);
+            grabButton = (Button) v.findViewById(R.id.grabKuracButoncic);
+            grabButton.setVisibility(View.VISIBLE);
         }
 
         // Returning the view containing InfoWindow contents
         return v;
     }
+
+    public View getContent(Deal deal) {
+        View v = getLayoutInflater().inflate(R.layout.deal_pop_up, null);
+
+        TextView company = (TextView) v.findViewById(R.id.company);
+        company.setText(deal.getCompany());
+
+        TextView description = (TextView) v.findViewById(R.id.description);
+        description.setText(deal.getDescription());
+
+        TextView price = ((TextView) v.findViewById(R.id.price));
+        price.setText(deal.getPrice());
+
+        TextView units = ((TextView) v.findViewById(R.id.units));
+        units.setText("1 deal grabbed");
+
+        TextView duration = ((TextView) v.findViewById(R.id.duration));
+        duration.setText(deal.getDuration());
+
+        ImageView dealPicture = (ImageView) v.findViewById(R.id.dealPicture);
+        dealPicture = deal.getPicture();
+
+        grabbedView = (ImageView) v.findViewById(R.id.grabbedView);
+        grabbedView.setVisibility(View.VISIBLE);
+        grabButton = (Button) v.findViewById(R.id.grabKuracButoncic);
+        grabButton.setVisibility(View.INVISIBLE);
+
+        // Returning the view containing InfoWindow contents
+        return v;
+    }
+
     @Override
     public void onStop() {
         mGoogleApiClient.disconnect();
@@ -659,6 +751,7 @@ public class MapsActivity extends FragmentActivity implements
         //grabbedView.setVisibility(View.VISIBLE);
 
         LinearLayout parentLayout = (LinearLayout) grabButton.getParent();
+        GridLayout popUpLayout = (GridLayout) parentLayout.getParent();
 
         //extract deal id
         TextView idTV = ((TextView) parentLayout.findViewById(R.id.idTextView));
@@ -672,6 +765,19 @@ public class MapsActivity extends FragmentActivity implements
         String publishTopic = "deal/gogodeals/deal/save";
 
         dealMqtt.sendMqtt(payload,publishTopic,subscribeTopic,2);
+
+        //extract description of deal, to be stored in grabbed deal list on successful grab
+        TextView description = ((TextView) popUpLayout.findViewById(R.id.description));
+        descriptionOfGrabbedDeal = (String) description.getText();
+
+        //Deal grabbing
+        TextView company = ((TextView) popUpLayout.findViewById(R.id.company));
+        TextView duration = ((TextView) popUpLayout.findViewById(R.id.duration));
+        TextView price = ((TextView) popUpLayout.findViewById(R.id.price));
+        ImageView picture = ((ImageView) popUpLayout.findViewById(R.id.dealPicture));
+        //TextView description = ((TextView) popUpLayout.findViewById(R.id.description));
+
+        grabbedDeal = new Deal((String) company.getText(), (String) duration.getText(), (String) price.getText(), picture, (String) description.getText(), deal_id);
 
         //closePopUpButton = (ImageButton) v.findViewById(R.id.cancelButton);
         mProgressDlg = new ProgressDialog(this);

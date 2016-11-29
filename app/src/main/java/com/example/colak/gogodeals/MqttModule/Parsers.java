@@ -14,8 +14,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import static com.example.colak.gogodeals.MqttModule.MapsActivity.mMap;
-
 /**
  * Created by Johan Laptop on 2016-11-21.
  */
@@ -77,16 +75,17 @@ public class Parsers {
             String duration = jsonObject.getString("duration");
             int count = jsonObject.getInt("count");
             String client_id = jsonObject.getString("client_id");
+            String companyName = jsonObject.getString("client_name");
 
 
             LatLng latlng = new LatLng(latitude,longitude);
 
             //Deal marker on the map including popup
-            Marker marker = mMap.addMarker(new MarkerOptions()
+            Marker marker = MapsActivity.mMap.addMarker(new MarkerOptions()
                     .position(latlng)
                     .title(name)
-                    .snippet(description + ";" + price + ";" + count + ";" + duration + ";" + picture + ";" + id));
-            Log.i("deal added" ,marker.getSnippet());
+                    .snippet(companyName + ";" + description + ";" + price + ";" + count + ";" + duration + ";" + picture + ";" + id));
+            Log.i("deal added" ,marker.toString());
 
         }
         MapsActivity.dealMqtt.close();
@@ -102,6 +101,7 @@ public class Parsers {
             “id”: “24818880316702720”
         },
         }*/
+        //Log.i("MESSAGE to parse", new String(message.getPayload()));
         String dealID;
         int count = 0;
         String verificationID = null;
@@ -122,8 +122,10 @@ public class Parsers {
         units.setText(String.valueOf(count));
 
         // add deal to list
-        TextView company = (TextView) MapsActivity.popupMessage.getContentView().findViewById(R.id.company);
-        MapsActivity.dealArrayList.add((String)company.getText());
+        //TextView description = (TextView) MapsActivity.popupMessage.getContentView().findViewById(R.id.description);
+
+        //MapsActivity.dealArrayList.add(MapsActivity.descriptionOfGrabbedDeal);
+        MapsActivity.dealArrayList.add(MapsActivity.grabbedDeal);
 
         // add code to deal in list
         MapsActivity.mProgressDlg.dismiss();

@@ -31,7 +31,7 @@ public class ConnectionMqtt extends Activity implements MqttCallback {
     String payload;
     String sendTopic;
     String receiveTopic;
-    int qot;
+    int qos;
 public ConnectionMqtt(Activity activity){
     this.parent = activity;
     parsers = new Parsers();
@@ -44,15 +44,15 @@ public ConnectionMqtt(Activity activity){
         this.payload = payload;
         this.sendTopic = topic;
         this.receiveTopic ="";
-        this.qot = 0;
+        this.qos = 1;
     }
 
-    public void sendMqtt(String payload, String sendTopic, String receiveTopic, int qot){
+    public void sendMqtt(String payload, String sendTopic, String receiveTopic, int qos){
         open();
         this.payload = payload;
         this.sendTopic = sendTopic;
         this.receiveTopic = receiveTopic;
-        this.qot = qot;
+        this.qos = qos;
     }
 
 
@@ -73,7 +73,7 @@ public ConnectionMqtt(Activity activity){
                     if (receiveTopic.equals("")){
                         publish(payload,sendTopic);
                     }else{
-                        subscribe(receiveTopic,qot);
+                        subscribe(receiveTopic,qos);
                     }
                 }
 
@@ -110,8 +110,6 @@ public ConnectionMqtt(Activity activity){
                     // The message was published
                     Log.i("json subscribed to ",topic);
                     publish(payload,sendTopic);
-
-
                 }
 
                 @Override
