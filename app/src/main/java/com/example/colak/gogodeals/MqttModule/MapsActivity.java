@@ -5,6 +5,7 @@ import android.app.ProgressDialog;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.Point;
 import android.graphics.drawable.ColorDrawable;
@@ -17,6 +18,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.RequiresApi;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
+import android.util.Base64;
 import android.util.Log;
 import android.view.Display;
 import android.view.Gravity;
@@ -415,8 +417,7 @@ public class MapsActivity extends FragmentActivity implements
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Log.i("click", "click");
-
-               Log.i ("Bubca ppopupgovno", String.valueOf(position));
+                Log.i ("Bubca ppopupgovno", String.valueOf(position));
               //  Log.i("Tu smo", String.valueOf((Deal) parent.getItemAtPosition(position)));
                 Deal d = (Deal)parent.getItemAtPosition(position);
                 Log.i ("pizda", d.getDescription());
@@ -538,18 +539,20 @@ public class MapsActivity extends FragmentActivity implements
 
         TextView units = ((TextView) v.findViewById(R.id.units));
         units.setText(components[3]);
+        Log.d("InfoWindow units:", components[3]);
 
         TextView duration = ((TextView) v.findViewById(R.id.duration));
         duration.setText(components[4].split(":")[0]);
         //Log.d("InfoWindow description:", components[1]);
 
         ImageView dealPicture = (ImageView) v.findViewById(R.id.dealPicture);
-        // Converting String byte picture to an ImageView
-        //String base = components[5].split(",")[1];
-        //byte[] decodedString = Base64.decode(base, Base64.DEFAULT);
-        //Bitmap decodedByte = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
-        //dealPicture.setImageBitmap(decodedByte);
-        //Log.d("InfoWindow picture:", components[5]);
+        //Converting String byte picture to an ImageView
+        String base = components[5];
+       //String base = components[5].split(",")[1];
+       byte[] decodedString = Base64.decode(base, Base64.DEFAULT);
+        Bitmap decodedByte = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
+        dealPicture.setImageBitmap(decodedByte);
+        Log.d("InfoWindow picture:", components[5]);
 
 
         /*int icon;
@@ -756,13 +759,15 @@ public class MapsActivity extends FragmentActivity implements
         //extract deal id
         TextView idTV = ((TextView) parentLayout.findViewById(R.id.idTextView));
         String deal_id = (String) idTV.getText();
+        Log.i("ne radi",deal_id);
         //TODO replace the fix user_id with the user_id currently active in the app
         String payload =   "{ \"id\":\"" + deal_id + "\"," +
                 " \"data\": {" +
                 " \"user_id\":\"feb00c2b-b4b6-11e6-862e-080027e93e17\"}}";
                 //" \"user_id\":\" + user_id + "\"}}";
-
+        Log.i("ne radi",deal_id);
         String publishTopic = "deal/gogodeals/deal/save";
+        Log.i("ne radi",deal_id);
 
         dealMqtt.sendMqtt(payload,publishTopic,subscribeTopic,2);
 

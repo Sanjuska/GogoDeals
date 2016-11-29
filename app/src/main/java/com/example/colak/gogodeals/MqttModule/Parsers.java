@@ -93,6 +93,7 @@ public class Parsers {
 
 
     private void grabbedDealParser(MqttMessage message) throws JSONException {
+       Log.i("poruka", String.valueOf(message.getPayload()));
         // message template according to RFC
         /*{
             “id”: “33333333-1011-M012-N210-112233445566”,
