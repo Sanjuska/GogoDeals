@@ -1,6 +1,7 @@
 package com.example.colak.gogodeals;
 
 import android.Manifest;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
@@ -90,6 +91,7 @@ public class MapsActivity extends FragmentActivity implements
     PopupWindow myDealsPopup;
     PopupWindow profilePopup;
     PopupWindow optionsPopup;
+    PopupWindow grocodePopup;
 
     LinearLayout mainLayout;
 
@@ -106,6 +108,7 @@ public class MapsActivity extends FragmentActivity implements
         profilePopup = new PopupWindow(this);
         myDealsPopup = new PopupWindow(this);
         filterPopup = new PopupWindow(this);
+        grocodePopup = new PopupWindow(this);
         mainLayout = new LinearLayout(this);
         filterList = new ArrayList<>();
 
@@ -281,17 +284,31 @@ public class MapsActivity extends FragmentActivity implements
                     switch (v.getId()) {
                         case R.id.profileButton:
                             profileButtonPressed(v);
+                            break;
+
                         case R.id.dealsButton:
                             mydealsButtonPressed(v);
+                            break;
+
                         case R.id.filterButton:
                             filterButtonPressed(v);
+                            break;
+
                         case R.id.profileBackButton:
                             profileBackButtonPressed(v);
+                            break;
+
                         case R.id.dealsBackButton:
                             dealsBackButtonPressed(v);
+                            break;
+
                         case R.id.filterBackButton:
                             filterBackButtonPressed(v);
                             break;
+
+                        case R.id.grocodeButton:
+                            Intent mainIntent = new Intent(MapsActivity.this,GrocodeListActivity.class);
+                            startActivity(mainIntent);
                     }
 
                 } else {
