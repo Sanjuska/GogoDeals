@@ -1,12 +1,15 @@
 package com.example.colak.gogodeals;
 
 import android.Manifest;
+import android.app.Dialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.graphics.Point;
+import android.graphics.drawable.ColorDrawable;
 import android.location.Location;
 import android.os.Build;
 import android.os.Bundle;
@@ -23,11 +26,14 @@ import android.view.Gravity;
 import android.view.View;
 import android.view.animation.Interpolator;
 import android.view.animation.LinearInterpolator;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.PopupWindow;
 import android.widget.TextView;
 
@@ -97,6 +103,10 @@ public class MapsActivity extends FragmentActivity implements
 
     // Creating an instance of MarkerOptions to set position
     private GoogleApiClient client;
+    private ListView grocodeListView;
+    private ArrayAdapter<Deal> grocodeAdapter;
+    private ArrayList<Deal> grocodeArrayList;
+    private Dialog popupDealView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -322,9 +332,55 @@ public class MapsActivity extends FragmentActivity implements
         });
     }
 
-    private void grocodeButtonPressed(View v) {
-        Intent mainIntent = new Intent(MapsActivity.this,GrocodeListActivity.class);
-        startActivity(mainIntent);
+    // Opens the popupwith My Deal on click.
+    public void grocodeButtonPressed(View v){
+
+        Display display = getWindowManager().getDefaultDisplay();
+        Point size = new Point();
+        display.getSize(size);
+        int screenWidth = size.x;
+        int screenHeight = size.y;
+
+        View grocodeDealsPop = getLayoutInflater().inflate(R.layout.grocode_list, null);
+        grocodePopup.setContentView(grocodeDealsPop);
+        //myDealsPop.setFocusable(false);
+        //myDealsPop.setClickable(false);
+        //dealAdapter = new ArrayAdapter<Deal>(MapsActivity.this,R.layout.list_row, dealArrayList);
+        grocodeAdapter= new ArrayAdapter<Deal>(MapsActivity.this, android.R.layout.simple_list_item_1,grocodeArrayList);
+        // dealListView =((ListView) findViewById(R.id.dealList));
+        grocodeListView = ((ListView) myDealsPopup.getContentView().findViewById(R.id.grocodeListView));
+        grocodeListView.setAdapter(grocodeAdapter);
+        grocodeListView.setClickable(true);
+        grocodeListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                //Extract deal from the clicke list item
+                Deal deal = (Deal)parent.getItemAtPosition(position);
+
+                // Create popup window with deal based on the extracted deal
+                View popup = getContent(deal);
+                popupDealView.setContentView(popup);
+                popupDealView.showAtLocation(mainLayout, Gravity.CENTER, 0, 0);
+                Display display = getWindowManager().getDefaultDisplay();
+                Point size = new Point();
+                display.getSize(size);
+                int screenWidth = size.x;
+                int screenHeight = size.y;
+                popupDealView.update(screenWidth - 50, screenHeight / 2);
+
+                popupDealView.setOutsideTouchable(true);
+                popupDealView.setFocusable(true);
+                popupDealView.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+
+                //remember which deal is being shown, so that it can be removed if ungrabbed
+                grabbedDeal = deal;
+
+            }
+        });
+
+        myDealsPopup.showAtLocation(mainLayout, Gravity.CENTER, 0, 0);
+        myDealsPopup.update(screenWidth - 50, screenHeight / 2);
     }
 
 
