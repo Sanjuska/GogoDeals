@@ -44,8 +44,8 @@ public ConnectionMqtt(Activity activity){
 
     public void sendMqtt(String topic, String payload){
         open();
-        this.payload = payload;
         this.sendTopic = topic;
+        this.payload = payload;
         this.receiveTopic ="";
         this.qot = 0;
     }

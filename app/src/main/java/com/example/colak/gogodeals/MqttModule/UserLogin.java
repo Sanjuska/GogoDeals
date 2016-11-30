@@ -95,11 +95,18 @@ public class UserLogin extends AppCompatActivity {
                                                     Toast.makeText(getApplicationContext(), "Email: " + email, Toast.LENGTH_SHORT).show();
 
 
-
-                                                    String topic = "deal/gogodeals/user/new";
-                                                    String payload = "{\"id\":\"1\",\"data\":{\"username\":\""
-                                                            + object.getString("name") + "\",\"password\": \"" + Math.random()+Math.random() + "\",\"email\": \"" + object.getString("email") + "\"},}";
-                                                    connection1.sendMqtt(topic, payload);
+                                                    while (true){
+                                                        if (object.getString("name").equals(null) || object.getString("email").equals(null)) {
+                                                            continue;
+                                                        }
+                                                        else {
+                                                            String topic = "deal/gogodeals/user/new";
+                                                            String payload = "{\"id\":\"1\",\"data\":{\"username\":\""
+                                                                    + object.getString("name") + "\",\"password\": \"" + Math.random()+Math.random() + "\",\"email\": \"" + object.getString("email") + "\"},}";
+                                                            connection1.sendMqtt(topic, payload);
+                                                            break;
+                                                        }
+                                                    }
 
                                                 } catch (JSONException e) {
                                                     e.printStackTrace();
