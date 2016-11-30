@@ -307,8 +307,7 @@ public class MapsActivity extends FragmentActivity implements
                             break;
 
                         case R.id.grocodeButton:
-                            Intent mainIntent = new Intent(MapsActivity.this,GrocodeListActivity.class);
-                            startActivity(mainIntent);
+                            grocodeButtonPressed(v);
                     }
 
                 } else {
@@ -323,6 +322,10 @@ public class MapsActivity extends FragmentActivity implements
         });
     }
 
+    private void grocodeButtonPressed(View v) {
+        Intent mainIntent = new Intent(MapsActivity.this,GrocodeListActivity.class);
+        startActivity(mainIntent);
+    }
 
 
     public void fetchDeals(String filter) {
