@@ -7,6 +7,7 @@
     <color name="textViewColor">#525461</color>
     <color name="popUpColorBackground">#e9e9e9</color>
     <color name="grabDeal">#84c13a</color>
+    <color name="ungrabDeal">#ec1e28</color>
     <color name="cancelGrabWindow">#FFD2D2D2</color>
 
 </resources>

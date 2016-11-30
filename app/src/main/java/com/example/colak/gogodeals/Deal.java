@@ -21,6 +21,7 @@ public class Deal {
     public String description;
     public String duration;
     public String dealID;
+    public String verificationID;
 
 
     public Deal(){
@@ -73,6 +74,14 @@ public class Deal {
 
     public void setDealID(String dealID) {
         this.dealID = dealID;
+    }
+
+    public String getVerificationID() {
+        return verificationID;
+    }
+
+    public void setVerificationID(String verificationID) {
+        this.verificationID = verificationID;
     }
 
     public Deal(String company, String duration, String price, ImageView picture, String description, String dealID) {

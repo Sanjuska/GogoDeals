@@ -18,37 +18,54 @@
 
         <LinearLayout
             android:orientation="vertical"
-            android:layout_width="388dp"
+            android:layout_width="match_parent"
             android:layout_height="42dp"
-            android:layout_weight="0.54"
             android:layout_row="1"
             android:layout_column="0"
             android:weightSum="1">
 
-            <Button
-                android:text="Grab"
-                android:layout_width="match_parent"
-                android:layout_height="37dp"
-                android:id="@+id/grabKuracButoncic"
-                android:background="@color/grabDeal"
-                android:layout_marginBottom="10dp"
-                android:layout_marginRight="100dp"
-                android:layout_marginLeft="50dp"
-                android:layout_row="2"
-                android:layout_column="0"
-                android:onClick="buttonPressed"
-                android:visibility="visible"
-                style="@drawable/bordershape"/>
+            <FrameLayout
+                android:layout_width="382dp"
+                android:layout_height="match_parent">
 
-            <TextView
-                android:text="TextView"
-                android:layout_width="match_parent"
-                android:layout_height="100dp"
-                android:id="@+id/idTextView"
-                android:visibility="invisible" />
+                <Button
+                    android:text="Ungrab"
+                    android:layout_width="match_parent"
+                    android:layout_height="37dp"
+                    android:id="@+id/ungrabButton"
+                    android:background="@color/ungrabDeal"
+                    android:layout_marginBottom="10dp"
+                    android:layout_marginRight="100dp"
+                    android:layout_marginLeft="50dp"
+                    android:layout_row="2"
+                    android:layout_column="0"
+                    android:onClick="ungrabButtonPressed"
+                    android:visibility="invisible"
+                    style="@drawable/bordershape" />
 
+                <Button
+                    android:text="Grab"
+                    android:layout_width="match_parent"
+                    android:layout_height="37dp"
+                    android:id="@+id/grabButton"
+                    android:background="@color/grabDeal"
+                    android:layout_marginBottom="10dp"
+                    android:layout_marginRight="100dp"
+                    android:layout_marginLeft="50dp"
+                    android:layout_row="2"
+                    android:layout_column="0"
+                    android:onClick="buttonPressed"
+                    android:visibility="visible"
+                    style="@drawable/bordershape"/>
+
+                <TextView
+                    android:text="TextView"
+                    android:layout_width="match_parent"
+                    android:layout_height="100dp"
+                    android:id="@+id/idTextView"
+                    android:visibility="invisible" />
+            </FrameLayout>
         </LinearLayout>
-
 
 
         <LinearLayout
@@ -139,7 +156,7 @@
                     android:text="Units"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:id="@+id/textView3"
+                    android:id="@+id/verificationHeader"
                     style="@style/TextViewStyleHeader"
                     android:layout_weight="0.54" />
 

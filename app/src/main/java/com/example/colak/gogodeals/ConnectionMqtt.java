@@ -94,9 +94,6 @@ public ConnectionMqtt(Activity activity){
                     }else{
                         subscribe(receiveTopic,qot);
                     }
-
-
-
                 }
 
                 @Override
@@ -134,8 +131,6 @@ public ConnectionMqtt(Activity activity){
                     // The message was published
                     Log.i("json subscribed to ",topic);
                     publish(payload,sendTopic);
-
-
                 }
 
                 @Override

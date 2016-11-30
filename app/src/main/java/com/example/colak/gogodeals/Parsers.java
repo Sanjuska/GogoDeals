@@ -39,6 +39,14 @@ public class Parsers {
                     }
                     break;
 
+                case "deal/gogodeals/database/info":
+                    try {
+                        grabbedDealParser(message);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                    break;
+
                 case "deal/gogodeals/user/info":
                     try {
                         grabbedDealParser(message);
@@ -95,8 +103,6 @@ public class Parsers {
             String companyName = jsonObject.getString("client_name");
 
 
-
-
             LatLng latlng = new LatLng(latitude,longitude);
 
 
@@ -108,7 +114,6 @@ public class Parsers {
                             .icon(BitmapDescriptorFactory
                                     .fromResource(R.drawable.clothes))
                             .snippet(companyName + "€" + description + "€" + price + "€" + count + "€" + duration + "€" + picture + "€" + id));
-
 
                 }else if(filters.equals("food")){
                     //Deal marker on the map including popup
@@ -168,6 +173,8 @@ public class Parsers {
         }
         return null;
     }
+
+
     private void grabbedDealParser(MqttMessage message) throws JSONException {
         Log.i("poruka", String.valueOf(message.getPayload()));
         // message template according to RFC
@@ -202,6 +209,7 @@ public class Parsers {
         //TextView description = (TextView) MapsActivity.popupMessage.getContentView().findViewById(R.id.description);
 
         //MapsActivity.dealArrayList.add(MapsActivity.descriptionOfGrabbedDeal);
+        MapsActivity.grabbedDeal.setVerificationID(verificationID);
         MapsActivity.dealArrayList.add(MapsActivity.grabbedDeal);
 
         // add code to deal in list
