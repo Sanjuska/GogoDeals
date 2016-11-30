@@ -1,7 +1,5 @@
 package com.example.colak.gogodeals.MqttModule;
 
-import android.app.Activity;
-import android.widget.CheckBox;
 import android.widget.CompoundButton;
 
 import com.example.colak.gogodeals.R;
@@ -12,14 +10,14 @@ import java.util.ArrayList;
  * Created by mattias on 2016-11-28.
  */
 
-public class FilterHandler extends Activity implements CompoundButton.OnCheckedChangeListener {
-    private ArrayList<String> filters;
+public class FilterHandler extends MapsActivity implements CompoundButton.OnCheckedChangeListener {
+    public ArrayList<String> filters;
 
-    private CheckBox food;
-    private CheckBox clothes;
-    private CheckBox activities;
-    private CheckBox stuff;
-    private CheckBox random;
+    public CompoundButton food;
+    public CompoundButton clothes;
+    public CompoundButton activities;
+    public CompoundButton stuff;
+    public CompoundButton random;
 
     /**
      * Initializes the an empty ArrayList<String> of filters, the checkboxes and connect the
@@ -28,12 +26,12 @@ public class FilterHandler extends Activity implements CompoundButton.OnCheckedC
     public FilterHandler(){
         filters = new ArrayList<>();
         filters.add("food");
-
-        food = (CheckBox) findViewById(R.id.checkBoxFood);
-        clothes = (CheckBox) findViewById(R.id.checkBoxClothes);
-        activities = (CheckBox) findViewById(R.id.checkBoxActivites);
-        stuff = (CheckBox) findViewById(R.id.checkBoxStuff);
-        random = (CheckBox) findViewById(R.id.checkBoxRandom);
+        
+        food = (CompoundButton) findViewById(R.id.checkBoxFood);
+        clothes = (CompoundButton) findViewById(R.id.checkBoxClothes);
+        activities = (CompoundButton) findViewById(R.id.checkBoxActivites);
+        stuff = (CompoundButton) findViewById(R.id.checkBoxStuff);
+        random = (CompoundButton) findViewById(R.id.checkBoxRandom);
 
         food.setOnCheckedChangeListener(this);
         clothes.setOnCheckedChangeListener(this);
@@ -116,5 +114,9 @@ public class FilterHandler extends Activity implements CompoundButton.OnCheckedC
                 check("random", b);
                 break;
         }
+    }
+
+    public ArrayList<String> returnFilterList(){
+        return filters;
     }
 }
