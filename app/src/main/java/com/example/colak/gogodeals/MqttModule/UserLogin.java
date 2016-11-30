@@ -27,7 +27,7 @@ import org.json.JSONObject;
 
 import java.util.Arrays;
 
-public class UserLogin extends AppCompatActivity {
+public class UserLogin extends AppCompatActivity{
 
 
     private static final String TAG = "Test@ " ;
@@ -37,15 +37,14 @@ public class UserLogin extends AppCompatActivity {
 
     private CallbackManager callbackManager;
 
-    static String Name;
-    static String Email;
+    //static String fbname;
+    //static String fbemail;
 
     ConnectionMqtt connection1;
 
     @Override
         protected void onCreate ( final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
 
         connection1 = new ConnectionMqtt(this);
 
@@ -70,12 +69,7 @@ public class UserLogin extends AppCompatActivity {
                     @Override
                     public void onSuccess(LoginResult loginResult) {
 
-                        //when fb credentials are correct, user logins to gogodeals
-                        Intent gogoApp = new Intent(UserLogin.this, MapsActivity.class);
-                        startActivity(gogoApp);
-
-
-                         //Fetching facebook user data through JSON object: username and email to store it into our db
+                        //Fetching facebook user data through JSON object: username and email to store it into our db
                         GraphRequest request = GraphRequest.newMeRequest(
                                 loginResult.getAccessToken(),
                                 new GraphRequest.GraphJSONObjectCallback() {
@@ -85,18 +79,33 @@ public class UserLogin extends AppCompatActivity {
                                             GraphResponse response) {
                                         Log.i("LoginActivity Response ", response.toString());
 
-                                                try {
-                                                    Name = object.getString("name");
-                                                    Email = object.getString("email");
-                                                    Log.i("FBdata: ", Name + " " + Email);
+                                        try {
+                                            String fbname = object.getString("name");
+                                            String fbemail = object.getString("email");
+                                            Log.i("FBdata: ", fbname + " " + fbemail);
 
-                                                    Toast.makeText(getApplicationContext(), "Name: " + Name, Toast.LENGTH_LONG).show();
-                                                    Toast.makeText(getApplicationContext(), "Email: " + Email, Toast.LENGTH_SHORT).show();
+                                            Toast.makeText(getApplicationContext(), "Name: " + fbname, Toast.LENGTH_LONG).show();
+                                            Toast.makeText(getApplicationContext(), "Email: " + fbemail, Toast.LENGTH_SHORT).show();
 
-                                                } catch (JSONException e) {
-                                                    e.printStackTrace();
-                                                }
-                                            }
+                                            //if (!fbname.equals(null) && !fbemail.equals(null)) {
+                                            String topic = "deal/gogodeals/user/new";
+
+                                            String payload = "{\"id\":\"1\",\"data\":{\"username\":\""
+                                                    + fbname + "\",\"password\": \"" + Math.random() + Math.random() + "\",\"email\": \"" + fbemail + "\"},}";
+
+                                            connection1.sendMqtt1(topic, payload);
+                                            //connection1.close();
+                                            Log.i("pay: ", topic + " " + payload);
+
+                                            //}
+
+
+
+
+                                        } catch (JSONException e) {
+                                            e.printStackTrace();
+                                        }
+                                    }
                                 });
 
                         //bundle which parses the values we need to acquire from logged in user
@@ -104,6 +113,17 @@ public class UserLogin extends AppCompatActivity {
                         parameters.putString("fields", "name,email");
                         request.setParameters(parameters);
                         request.executeAsync();
+
+                        String topic = "deal/gogodeals/user/new";
+
+                        //String payload = "{\"id\":\"1\",\"data\":{\"username\":\""
+                                //+ fbname + "\",\"password\": \"" + Math.random() + Math.random() + "\",\"email\": \"" + fbemail + "\"},}";
+                        //connection1.sendMqtt1(topic, payload);
+                        //when fb credentials are correct, user logins to gogodeals
+
+
+                        Intent gogoApp = new Intent(UserLogin.this, MapsActivity.class);
+                        startActivity(gogoApp);
 
                         //when user press back, he goes to main screen in order to login again etc.
                         LoginManager.getInstance().logOut();

@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
 
 import com.example.colak.gogodeals.R;
@@ -28,6 +29,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private AccessTokenTracker accessTokenTracker;
 
     ConnectionMqtt connection1;
+    private Button gogoLoginbtn;
+    private EditText gogoUserfield;
+    private EditText gogoPassfield;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,8 +43,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         mainsignup = (Button) findViewById(R.id.mainsignup);
         gogoProfile = (Button) findViewById(R.id.gogoProfile);
 
+
+
         mainLogin.setOnClickListener(this);
         mainsignup.setOnClickListener(this);
+        gogoProfile.setOnClickListener(this);
+
 
     }
 
@@ -53,9 +61,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             //login for facebook users
 
             case R.id.mainLogin:
+                connection1 = new ConnectionMqtt(this);
                 Intent gogoApp = new Intent(MainActivity.this, UserLogin.class);
                 startActivity(gogoApp);
-
+                /*String topic = "deal/gogodeals/user/new";
+                String payload = "{\"id\":\"1\",\"data\":{\"username\":\""
+                        + UserLogin.fbname + "\",\"password\": \"" + Math.random() + "\",\"email\": \"" + UserLogin.fbemail + "\"},}";
+                connection1.sendMqtt1(payload, topic);*/
 
                 break;
 
@@ -65,7 +77,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 startActivity(gogoApp2);
                 break;
 
+            case R.id.gogoProfile:
 
-            }
+                setContentView(R.layout.gogo_profile_login);
+                break;
+
+
+
+
         }
     }
+}
+

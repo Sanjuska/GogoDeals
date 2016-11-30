@@ -38,7 +38,6 @@ public ConnectionMqtt(Activity activity){
 }
 
 
-
     public void sendMqtt1(String topic, String payload){
         open();
         this.payload = payload;
