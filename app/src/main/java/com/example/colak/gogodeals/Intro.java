@@ -1,4 +1,4 @@
-package com.example.colak.gogodeals.MqttModule;
+package com.example.colak.gogodeals;
 
 import android.app.Activity;
 import android.content.Intent;

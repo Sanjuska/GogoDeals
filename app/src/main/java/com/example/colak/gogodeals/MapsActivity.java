@@ -1,11 +1,14 @@
-package com.example.colak.gogodeals.MqttModule;
+package com.example.colak.gogodeals;
 
 import android.Manifest;
 import android.app.ProgressDialog;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.graphics.Point;
+import android.graphics.drawable.ColorDrawable;
 import android.location.Location;
 import android.os.Build;
 import android.os.Bundle;
@@ -34,7 +37,6 @@ import android.widget.ListView;
 import android.widget.PopupWindow;
 import android.widget.TextView;
 
-import com.example.colak.gogodeals.R;
 import com.google.android.gms.appindexing.AppIndex;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -47,7 +49,6 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
@@ -65,7 +66,6 @@ public class MapsActivity extends FragmentActivity implements
         GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener {
 
-    public Deals deals;
 
     static ConnectionMqtt dealMqtt;
 
@@ -86,7 +86,7 @@ public class MapsActivity extends FragmentActivity implements
     CheckBox activities;
     CheckBox stuff;
     CheckBox random;
-
+    Location lastFetched;
     ArrayList<String> filterList;
     boolean fetched = false;
 
@@ -154,8 +154,6 @@ public class MapsActivity extends FragmentActivity implements
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
 
-        // Create MQTT connection and create listeners to new messages
-        deals = new Deals(this);
 
 
         // ATTENTION: This was auto-generated to implement the App Indexing API.
@@ -261,10 +259,6 @@ public class MapsActivity extends FragmentActivity implements
                             }
                             Bitmap icon;
 
-                            //BitmapDescriptor deal = BitmapDescriptorFactory.fromResource(R.drawable.deal);
-                            BitmapDescriptor deal = BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_MAGENTA);
-                            marker.setIcon(deal);
-
 
                             View popup = getContent(marker);
                             popupMessage.setContentView(popup);
@@ -344,16 +338,6 @@ public class MapsActivity extends FragmentActivity implements
     }
 
 
-    private void loopFetchDeals(final String filter) {
-        fetchHandler = new Handler();
-        fetchHandler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                fetchDeals(filter);
-                loopFetchDeals(filter);
-            }
-        }, 5000);
-    }
 
     public void fetchDeals(String filter) {
 
@@ -373,7 +357,7 @@ public class MapsActivity extends FragmentActivity implements
                 dealMqtt.sendMqtt(payload,publishTopic,subscribeTopic,2);
 
 
-                fetched = true;
+
 
     }
 
@@ -541,6 +525,7 @@ public class MapsActivity extends FragmentActivity implements
     public View getContent(Marker marker) {
         View v = getLayoutInflater().inflate(R.layout.deal_pop_up, null);
 
+
         // Getting view from the layout file info_window_layout
         String[] components = marker.getSnippet().split(";");
         Log.i("json getsnippet ",marker.getSnippet().toString());
@@ -556,10 +541,10 @@ public class MapsActivity extends FragmentActivity implements
 
         TextView units = ((TextView) v.findViewById(R.id.units));
         units.setText(components[3]);
-        Log.d("InfoWindow units:", components[3]);
+        Log.d("InfoWindow units:", components[2]);
 
         TextView duration = ((TextView) v.findViewById(R.id.duration));
-        duration.setText(components[4].split(":")[0]);
+        duration.setText(components[4]);
         //Log.d("InfoWindow description:", components[1]);
 
         ImageView dealPicture = (ImageView) v.findViewById(R.id.dealPicture);
@@ -577,10 +562,8 @@ public class MapsActivity extends FragmentActivity implements
         grabbedView.setImageDrawable(ContextCompat.getDrawable(getApplicationContext(), icon));
         grabbedView.setVisibility(View.INVISIBLE);*/
 
-        TextView id = ((TextView) v.findViewById(R.id.idTextView));
-        id.setText(components[6]);
-
-        Deal shownDeal = new Deal((String) company.getText(), (String) duration.getText(), (String) price.getText(), dealPicture, (String) description.getText(), (String) id.getText());
+        String id = components[6];
+        Deal shownDeal = new Deal((String) company.getText(), (String) duration.getText(), (String) price.getText(), dealPicture, (String) description.getText(), (String) id);
 
 
         if (dealArrayList.contains(shownDeal)) {
@@ -598,6 +581,15 @@ public class MapsActivity extends FragmentActivity implements
         }
 
         // Returning the view containing InfoWindow contents
+            Button grab = ((Button) v.findViewById(R.id.grabKuracButoncic));
+            grab.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    popupMessage.dismiss();
+                }
+            });
+
+
         return v;
     }
 
@@ -707,10 +699,19 @@ public class MapsActivity extends FragmentActivity implements
         mMap.animateCamera(CameraUpdateFactory.newCameraPosition(myPosition));
 
         filterList.add("food");
-        if (!fetched){
+        filterList.add("activities");
+        filterList.add("random");
+        filterList.add("stuff");
+        filterList.add("clothes");
+
+        if (lastFetched.getLatitude()+0.2 < mLastLocation.getLatitude() &&
+                lastFetched.getLatitude()-0.2 > mLastLocation.getLatitude() &&
+                lastFetched.getLongitude()+0.2 < mLastLocation.getLongitude() &&
+                lastFetched.getLongitude()-0.2 > mLastLocation.getLongitude()){
             for (String filter :filterList){
                 fetchDeals(filter);
             }
+            lastFetched = mLastLocation;
 
         }
 
