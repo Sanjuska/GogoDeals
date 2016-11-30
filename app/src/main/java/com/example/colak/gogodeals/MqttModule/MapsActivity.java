@@ -5,10 +5,7 @@ import android.app.ProgressDialog;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.Color;
 import android.graphics.Point;
-import android.graphics.drawable.ColorDrawable;
 import android.location.Location;
 import android.os.Build;
 import android.os.Bundle;
@@ -68,6 +65,8 @@ public class MapsActivity extends FragmentActivity implements
         GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener {
 
+    public Deals deals;
+
     static ConnectionMqtt dealMqtt;
 
     public static GoogleMap mMap;
@@ -91,6 +90,7 @@ public class MapsActivity extends FragmentActivity implements
     ArrayList<String> filterList;
     boolean fetched = false;
 
+
     boolean isClickedPop = true;
     public static ProgressDialog mProgressDlg;
 
@@ -113,12 +113,13 @@ public class MapsActivity extends FragmentActivity implements
 
     LinearLayout mainLayout;
 
-
     // Creating an instance of MarkerOptions to set position
     private GoogleApiClient client;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
+        filterList = new ArrayList<>();
         super.onCreate(savedInstanceState);
         popupMessage = new PopupWindow(this);
         optionsPopup = new PopupWindow(this);
@@ -138,6 +139,10 @@ public class MapsActivity extends FragmentActivity implements
         activities = (CheckBox) findViewById(R.id.checkBoxActivites);
         stuff = (CheckBox) findViewById(R.id.checkBoxStuff);
         random = (CheckBox) findViewById(R.id.checkBoxRandom);
+        
+
+
+
 
         //also changed the version of google play services on gradle.app from 9.6.1 to
         //7.5.0 cause of compatibility.
@@ -148,6 +153,10 @@ public class MapsActivity extends FragmentActivity implements
        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
+
+        // Create MQTT connection and create listeners to new messages
+        deals = new Deals(this);
+
 
         // ATTENTION: This was auto-generated to implement the App Indexing API.
         // See https://g.co/AppIndexing/AndroidStudio for more information.
@@ -179,6 +188,9 @@ public class MapsActivity extends FragmentActivity implements
         LocationSettingsRequest.Builder builder = new LocationSettingsRequest.Builder()
                 .addLocationRequest(locationRequest);
         builder.setAlwaysShow(true);
+
+
+
     }
 
 
@@ -332,37 +344,36 @@ public class MapsActivity extends FragmentActivity implements
     }
 
 
-    private void loopFetchDeals() {
+    private void loopFetchDeals(final String filter) {
         fetchHandler = new Handler();
         fetchHandler.postDelayed(new Runnable() {
             @Override
             public void run() {
-                fetchDeals();
-                loopFetchDeals();
+                fetchDeals(filter);
+                loopFetchDeals(filter);
             }
         }, 5000);
     }
 
-    public void fetchDeals() {
+    public void fetchDeals(String filter) {
+
         dealMqtt = new ConnectionMqtt(this);
 
         String subscribeTopic = "deal/gogodeals/database/deals";
 
 
+                String payload =   "{ \"id\": \"12345678-1011-M012-N210-112233445566\"," +
+                        " \"data\": {" +
+                        " \"longitude\": " + mLastLocation.getLongitude() + "," +
+                        " \"latitude\": " + mLastLocation.getLatitude() + "," +
+                        " \"filters\": \""+filter+"\"}}";
 
-        String payload =   "{ \"id\": \"12345678-1011-M012-N210-112233445566\"," +
-                " \"data\": {" +
-                " \"longitude\": " + mLastLocation.getLongitude() + "," +
-                " \"latitude\": " + mLastLocation.getLatitude() + "," +
-                " \"filters\": \"food\"}}";
+                String publishTopic = "deal/gogodeals/deal/fetch";
 
-        Log.d("Bubca debug", payload);
-        String publishTopic = "deal/gogodeals/deal/fetch";
-
-        dealMqtt.sendMqtt(payload,publishTopic,subscribeTopic,2);
+                dealMqtt.sendMqtt(payload,publishTopic,subscribeTopic,2);
 
 
-        fetched = true;
+                fetched = true;
 
     }
 
@@ -396,6 +407,7 @@ public class MapsActivity extends FragmentActivity implements
 
     // Opens the popupwith My Deal on click.
     public void mydealsButtonPressed(View v){
+
         Display display = getWindowManager().getDefaultDisplay();
         Point size = new Point();
         display.getSize(size);
@@ -515,11 +527,16 @@ public class MapsActivity extends FragmentActivity implements
         }
     }
 
+
+
+
+
     @Override
     public void onStart() {
         mGoogleApiClient.connect();
         super.onStart();
     }
+
 
     public View getContent(Marker marker) {
         View v = getLayoutInflater().inflate(R.layout.deal_pop_up, null);
@@ -641,6 +658,9 @@ public class MapsActivity extends FragmentActivity implements
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
     }
 
+
+
+
     // Define a listener that responds to location updates
     LocationListener locationListener = new LocationListener() {
         @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
@@ -686,10 +706,14 @@ public class MapsActivity extends FragmentActivity implements
         //locationListener.onLocationChanged(location);
         mMap.animateCamera(CameraUpdateFactory.newCameraPosition(myPosition));
 
-
+        filterList.add("food");
         if (!fetched){
-            fetchDeals();
+            for (String filter :filterList){
+                fetchDeals(filter);
+            }
+
         }
+
 
         mMap.setLatLngBoundsForCameraTarget(new LatLngBounds(myLatLang,myLatLang));
         if (mPositionMarker == null) {
