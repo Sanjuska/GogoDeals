@@ -375,6 +375,7 @@ public class MapsActivity extends FragmentActivity implements
 
                 //remember which deal is being shown, so that it can be removed if ungrabbed
                 grabbedDeal = deal;
+                
 
             }
         });
