@@ -73,7 +73,7 @@ public class UserLogin extends AppCompatActivity {
                         //when fb credentials are correct, user logins to gogodeals
                         Intent gogoApp = new Intent(UserLogin.this, MapsActivity.class);
                         startActivity(gogoApp);
-
+                        JSONObject object;
 
                          //Fetching facebook user data through JSON object: username and email to store it into our db
                         GraphRequest request = GraphRequest.newMeRequest(
@@ -86,12 +86,20 @@ public class UserLogin extends AppCompatActivity {
                                         Log.i("LoginActivity Response ", response.toString());
 
                                                 try {
-                                                    Name = object.getString("name");
-                                                    Email = object.getString("email");
-                                                    Log.i("FBdata: ", Name + " " + Email);
+                                                    connection1 = new ConnectionMqtt(UserLogin.this);
+                                                    String name = object.getString("name");
+                                                    String email = object.getString("email");
+                                                    Log.i("FBdata: ", name + " " + email);
 
-                                                    Toast.makeText(getApplicationContext(), "Name: " + Name, Toast.LENGTH_LONG).show();
-                                                    Toast.makeText(getApplicationContext(), "Email: " + Email, Toast.LENGTH_SHORT).show();
+                                                    Toast.makeText(getApplicationContext(), "Name: " + name, Toast.LENGTH_LONG).show();
+                                                    Toast.makeText(getApplicationContext(), "Email: " + email, Toast.LENGTH_SHORT).show();
+
+
+
+                                                    String topic = "deal/gogodeals/user/new";
+                                                    String payload = "{\"id\":\"1\",\"data\":{\"username\":\""
+                                                            + object.getString("name") + "\",\"password\": \"" + Math.random()+Math.random() + "\",\"email\": \"" + object.getString("email") + "\"},}";
+                                                    connection1.sendMqtt(topic, payload);
 
                                                 } catch (JSONException e) {
                                                     e.printStackTrace();
@@ -104,6 +112,7 @@ public class UserLogin extends AppCompatActivity {
                         parameters.putString("fields", "name,email");
                         request.setParameters(parameters);
                         request.executeAsync();
+
 
                         //when user press back, he goes to main screen in order to login again etc.
                         LoginManager.getInstance().logOut();

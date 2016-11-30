@@ -35,11 +35,14 @@ public class ConnectionMqtt extends Activity implements MqttCallback {
 public ConnectionMqtt(Activity activity){
     this.parent = activity;
     parsers = new Parsers();
+    payload = "";
+    sendTopic= "";
+    receiveTopic ="";
 }
 
 
 
-    public void sendMqtt1(String topic, String payload){
+    public void sendMqtt(String topic, String payload){
         open();
         this.payload = payload;
         this.sendTopic = topic;
@@ -72,6 +75,7 @@ public ConnectionMqtt(Activity activity){
                     Log.d(TAG, "onSuccess");
                     if (receiveTopic.equals("")){
                         publish(payload,sendTopic);
+                        close();
                     }else{
                         subscribe(receiveTopic,qot);
                     }
