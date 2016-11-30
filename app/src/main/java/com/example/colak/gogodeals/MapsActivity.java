@@ -527,7 +527,7 @@ public class MapsActivity extends FragmentActivity implements
 
 
         // Getting view from the layout file info_window_layout
-        String[] components = marker.getSnippet().split(";");
+        String[] components = marker.getSnippet().split("€");
         Log.i("json getsnippet ",marker.getSnippet().toString());
 
         TextView company = (TextView) v.findViewById(R.id.company);
@@ -549,9 +549,9 @@ public class MapsActivity extends FragmentActivity implements
 
         ImageView dealPicture = (ImageView) v.findViewById(R.id.dealPicture);
         //Converting String byte picture to an ImageView
+        //String base = components[6];
         String base = components[5];
-       //String base = components[5].split(",")[1];
-       byte[] decodedString = Base64.decode(base, Base64.DEFAULT);
+        byte[] decodedString = Base64.decode(base, Base64.DEFAULT);
         Bitmap decodedByte = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
         dealPicture.setImageBitmap(decodedByte);
         Log.d("InfoWindow picture:", components[5]);
@@ -704,7 +704,14 @@ public class MapsActivity extends FragmentActivity implements
         filterList.add("stuff");
         filterList.add("clothes");
 
-        if (lastFetched.getLatitude()+0.2 < mLastLocation.getLatitude() &&
+        if (!fetched){
+            for (String filter :filterList){
+                fetchDeals(filter);
+            }
+            fetched = true;
+        }else if(lastFetched != null &&
+                mLastLocation != null &&
+                lastFetched.getLatitude()+0.2 < mLastLocation.getLatitude() &&
                 lastFetched.getLatitude()-0.2 > mLastLocation.getLatitude() &&
                 lastFetched.getLongitude()+0.2 < mLastLocation.getLongitude() &&
                 lastFetched.getLongitude()-0.2 > mLastLocation.getLongitude()){

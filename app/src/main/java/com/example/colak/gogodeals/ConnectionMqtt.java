@@ -90,6 +90,7 @@ public ConnectionMqtt(Activity activity){
                     Log.d(TAG, "onSuccess");
                     if (receiveTopic.equals("")){
                         publish(payload,sendTopic);
+                        Log.i("json published ",payload);
                     }else{
                         subscribe(receiveTopic,qot);
                     }
@@ -117,6 +118,7 @@ public ConnectionMqtt(Activity activity){
         try {
             encodedPayload = payload.getBytes("UTF-8");
             MqttMessage message = new MqttMessage(encodedPayload);
+            Log.i("json published ",payload);
             client.publish(topic, message);
         } catch (UnsupportedEncodingException | MqttException e) {
             e.printStackTrace();

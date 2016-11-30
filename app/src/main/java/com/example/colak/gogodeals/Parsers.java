@@ -26,14 +26,15 @@ public class Parsers {
     */
     public void parse(String topic,MqttMessage message){
         IdentifierSingleton identifierSingleton = IdentifierSingleton.getInstance();
-
         // Checks if this message is related to this instance of the application or to this user
-        if(IdentifierSingleton.SESSION == get_id(message) || IdentifierSingleton.USER == get_id(message)) {
+       // if(IdentifierSingleton.SESSION == get_id(message) || IdentifierSingleton.USER == get_id(message)) {
             switch (topic) {
                 case "deal/gogodeals/database/deals":
                     try {
                         fetchDealParser(message);
+                        Log.i("json parser ",message.toString());
                     } catch (JSONException e) {
+                        Log.i("json parser error!!","more error");
                         e.printStackTrace();
                     }
                     break;
@@ -51,7 +52,7 @@ public class Parsers {
                     break;
             }
         }
-    }
+    //}
 
 
     /*
@@ -77,6 +78,7 @@ public class Parsers {
         for (int i = 0; i< jsonArray.length();i++){
 
             jsonObject = jsonArray.getJSONObject(i);
+            Log.i("json obect ", jsonObject.toString());
             String id = jsonObject.getString("id");
             String name = jsonObject.getString("name");
             int price = jsonObject.getInt("price");
@@ -105,7 +107,7 @@ public class Parsers {
                             .title(name)
                             .icon(BitmapDescriptorFactory
                                     .fromResource(R.drawable.clothes))
-                            .snippet(companyName + ";" + description + ";" + price + ";" + count + ";" + duration + ";" + picture + ";" + id));
+                            .snippet(companyName + "€" + description + "€" + price + "€" + count + "€" + duration + "€" + picture + "€" + id));
 
 
                 }else if(filters.equals("food")){
@@ -115,8 +117,7 @@ public class Parsers {
                             .title(name)
                         .icon(BitmapDescriptorFactory
                                 .fromResource(R.drawable.food))
-                                .snippet(companyName + ";" + description + ";" + price + ";" + count + ";" + duration + ";" + picture+ ";" + id));
-
+                           .snippet(companyName + "€" + description + "€" + price + "€" + count + "€" + duration + "€" + picture + "€" + id));
 
                 }else if(filters.equals("alcohol")){
                     //Deal marker on the map including popup
@@ -125,8 +126,7 @@ public class Parsers {
                             .title(name)
                         .icon(BitmapDescriptorFactory
                                 .fromResource(R.drawable.alcohol))
-                                .snippet(companyName + ";" + description + ";" + price + ";" + count + ";" + duration + ";" + picture+ ";" + id));
-
+                            .snippet(companyName + "€" + description + "€" + price + "€" + count + "€" + duration + "€" + picture + "€" + id));
                 }else if(filters.equals("random")){
                     //Deal marker on the map including popup
                    MapsActivity.mMap.addMarker(new MarkerOptions()
@@ -134,8 +134,7 @@ public class Parsers {
                             .title(name)
                             .icon(BitmapDescriptorFactory
                                     .fromResource(R.drawable.random))
-                            .snippet(companyName + ";" + description + ";" + price + ";" + count + ";" + duration + ";" + picture+ ";" + id));
-
+                           .snippet(companyName + "€" + description + "€" + price + "€" + count + "€" + duration + "€" + picture + "€" + id));
                 }else if(filters.equals("stuff")){
                     //Deal marker on the map including popup
                    MapsActivity.mMap.addMarker(new MarkerOptions()
@@ -143,8 +142,7 @@ public class Parsers {
                             .title(name)
                         .icon(BitmapDescriptorFactory
                                 .fromResource(R.drawable.stuff))
-                                .snippet(companyName + ";" + description + ";" + price + ";" + count + ";" + duration + ";" + picture+ ";" + id));
-
+                           .snippet(companyName + "€" + description + "€" + price + "€" + count + "€" + duration + "€" + picture + "€" + id));
                 }
 
 
