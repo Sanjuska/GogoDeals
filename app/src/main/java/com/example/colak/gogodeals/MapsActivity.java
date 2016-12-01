@@ -523,7 +523,9 @@ public class MapsActivity extends FragmentActivity implements
                 fetchDeals(filter);
             }
             fetched = true;
-        }else if (lastFetched.getLatitude()+0.2 < mLastLocation.getLatitude() &&
+        }else if (lastFetched != null &&
+                mLastLocation != null &&
+                lastFetched.getLatitude()+0.2 < mLastLocation.getLatitude() &&
                 lastFetched.getLatitude()-0.2 > mLastLocation.getLatitude() &&
                 lastFetched.getLongitude()+0.2 < mLastLocation.getLongitude() &&
                 lastFetched.getLongitude()-0.2 > mLastLocation.getLongitude()){

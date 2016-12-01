@@ -1,5 +1,7 @@
 package com.example.colak.gogodeals;
 
+import android.util.Log;
+
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -55,7 +57,7 @@ public class Parsers {
     private void fetchDealParser(MqttMessage message) throws JSONException {
 
         String jsonString = new String(message.getPayload());
-
+        Log.i("json: ", jsonString);
 
         JSONArray jsonArray;
         JSONObject jsonObject;
