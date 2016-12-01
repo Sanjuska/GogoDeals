@@ -31,7 +31,7 @@ public class ConnectionMqtt extends Activity implements MqttCallback {
 
     static MqttAndroidClient client;
     Activity parent;
-    Parsers parsers;
+    com.example.colak.gogodeals.Parsers parsers;
     String payload;
     String sendTopic;
     String receiveTopic;
@@ -66,11 +66,11 @@ public ConnectionMqtt(Activity activity){
     This method subsrcibes to the topic given.
      */
     public void sendMqtt(String payload, String sendTopic, String receiveTopic, int qot){
-        open();
         this.payload = payload;
         this.sendTopic = sendTopic;
         this.receiveTopic = receiveTopic;
         this.qot = qot;
+        open();
     }
 
 
@@ -90,12 +90,11 @@ public ConnectionMqtt(Activity activity){
                     Log.d(TAG, "onSuccess");
                     if (receiveTopic.equals("")){
                         publish(payload,sendTopic);
+                        close();
+                        Log.i("json published ",payload);
                     }else{
                         subscribe(receiveTopic,qot);
                     }
-
-
-
                 }
 
                 @Override
@@ -117,7 +116,9 @@ public ConnectionMqtt(Activity activity){
         try {
             encodedPayload = payload.getBytes("UTF-8");
             MqttMessage message = new MqttMessage(encodedPayload);
+            Log.i("json published ",payload);
             client.publish(topic, message);
+            Log.i("json published ",message.toString());
         } catch (UnsupportedEncodingException | MqttException e) {
             e.printStackTrace();
         }

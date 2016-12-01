@@ -28,17 +28,35 @@ public class Parsers {
         IdentifierSingleton identifierSingleton = IdentifierSingleton.getInstance();
 
         // Checks if this message is related to this instance of the application or to this user
-        if(IdentifierSingleton.SESSION == get_id(message) || IdentifierSingleton.USER == get_id(message)) {
+        //if(IdentifierSingleton.SESSION == get_id(message) || IdentifierSingleton.USER == get_id(message)) {
             switch (topic) {
                 case "deal/gogodeals/database/deals":
                     try {
-                        fetchDealParser(message);
+                        JSONObject jsonCheck = new JSONObject(new String(message.getPayload()));
+                        Log.i("json checking",jsonCheck.toString());
+                        if (!jsonCheck.getString("data").equals("{}")){
+                            fetchDealParser(message);
+                        }
+                    } catch (JSONException e) {
+                        Log.i("json error fuuck ",message.toString() +e.toString());
+                        e.printStackTrace();
+                    }
+                    break;
+
+                case "deal/gogodeals/database/info":
+                    try {
+                        grabbedDealParser(message);
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
                     break;
 
                 case "deal/gogodeals/user/info":
+                    try {
+                        grabbedDealParser(message);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
 
                     break;
 
@@ -46,7 +64,7 @@ public class Parsers {
                     break;
             }
         }
-    }
+    //}
 
 
     /*
@@ -59,11 +77,12 @@ public class Parsers {
     private void fetchDealParser(MqttMessage message) throws JSONException {
 
         String jsonString = new String(message.getPayload());
-        Log.i("json: ", jsonString);
+
 
         JSONArray jsonArray;
         JSONObject jsonObject;
         JSONObject json1;
+        Log.i("json got message ",message.getPayload().toString());
         json1  = new JSONObject(jsonString);
         jsonArray = new JSONArray(json1.getJSONArray("data").toString());
 
@@ -72,6 +91,7 @@ public class Parsers {
         for (int i = 0; i< jsonArray.length();i++){
 
             jsonObject = jsonArray.getJSONObject(i);
+            Log.i("json obect ", jsonObject.toString());
             String id = jsonObject.getString("id");
             String name = jsonObject.getString("name");
             int price = jsonObject.getInt("price");
@@ -100,8 +120,7 @@ public class Parsers {
                             .title(name)
                             .icon(BitmapDescriptorFactory
                                     .fromResource(R.drawable.clothes))
-                            .snippet(companyName + ";" + description + ";" + price + ";" + count + ";" + duration + ";" + picture));
-
+                            .snippet(companyName + "€" + description + "€" + price + "€" + count + "€" + duration + "€" + picture + "€" + id));
 
                 }else if(filters.equals("food")){
                     //Deal marker on the map including popup
@@ -110,8 +129,7 @@ public class Parsers {
                             .title(name)
                         .icon(BitmapDescriptorFactory
                                 .fromResource(R.drawable.food))
-                                .snippet(companyName + ";" + description + ";" + price + ";" + count + ";" + duration + ";" + picture));
-
+                           .snippet(companyName + "€" + description + "€" + price + "€" + count + "€" + duration + "€" + picture + "€" + id));
 
                 }else if(filters.equals("alcohol")){
                     //Deal marker on the map including popup
@@ -120,8 +138,7 @@ public class Parsers {
                             .title(name)
                         .icon(BitmapDescriptorFactory
                                 .fromResource(R.drawable.alcohol))
-                                .snippet(companyName + ";" + description + ";" + price + ";" + count + ";" + duration + ";" + picture));
-
+                            .snippet(companyName + "€" + description + "€" + price + "€" + count + "€" + duration + "€" + picture + "€" + id));
                 }else if(filters.equals("random")){
                     //Deal marker on the map including popup
                    MapsActivity.mMap.addMarker(new MarkerOptions()
@@ -129,8 +146,7 @@ public class Parsers {
                             .title(name)
                             .icon(BitmapDescriptorFactory
                                     .fromResource(R.drawable.random))
-                            .snippet(companyName + ";" + description + ";" + price + ";" + count + ";" + duration + ";" + picture));
-
+                           .snippet(companyName + "€" + description + "€" + price + "€" + count + "€" + duration + "€" + picture + "€" + id));
                 }else if(filters.equals("stuff")){
                     //Deal marker on the map including popup
                    MapsActivity.mMap.addMarker(new MarkerOptions()
@@ -138,16 +154,15 @@ public class Parsers {
                             .title(name)
                         .icon(BitmapDescriptorFactory
                                 .fromResource(R.drawable.stuff))
-                                .snippet(companyName + ";" + description + ";" + price + ";" + count + ";" + duration + ";" + picture));
-
+                           .snippet(companyName + "€" + description + "€" + price + "€" + count + "€" + duration + "€" + picture + "€" + id));
                 }
-
-
 
 
         }
 
-    }
+        }
+
+
 
     /**
      * Get the id from a MqttMessage

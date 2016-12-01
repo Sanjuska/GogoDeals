@@ -70,7 +70,6 @@ public class MapsActivity extends FragmentActivity implements
 
     public Deal deals;
 
-    static ConnectionMqtt dealMqtt;
 
     public static GoogleMap mMap;
 
@@ -617,8 +616,6 @@ public class MapsActivity extends FragmentActivity implements
         // Returning the view containing InfoWindow contents
         return v;
     }
-
-
 
     @Override
     public void onStop() {

@@ -5,9 +5,8 @@
     android:layout_width="250dp"
     android:layout_height="400dp"
     android:layout_gravity="center"
-    android:focusable="false"
-    android:focusableInTouchMode="false"
     android:weightSum="1"
+    android:descendantFocusability="blocksDescendants"
     android:background="#648B79">
 
     <TextView
@@ -15,7 +14,6 @@
         android:layout_width="match_parent"
         android:id="@+id/textView11"
         android:textSize="18sp"
-        android:layout_weight="0.25"
         android:textStyle="normal|bold"
         android:textAlignment="center"
         android:elevation="16dp"
@@ -26,7 +24,9 @@
         android:layout_width="match_parent"
         android:layout_height="198dp"
         android:elevation="24dp"
-        android:background="#648B79"/>
+        android:background="#648B79"
+        android:id="@+id/dealList"
+        android:layout_weight="0.67" />
 
     <Button
         android:text="Back"
