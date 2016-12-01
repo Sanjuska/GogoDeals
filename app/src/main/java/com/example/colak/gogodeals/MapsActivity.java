@@ -23,7 +23,6 @@ import android.view.View;
 import android.view.animation.Interpolator;
 import android.view.animation.LinearInterpolator;
 import android.widget.Button;
-import android.widget.CheckBox;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -72,11 +71,6 @@ public class MapsActivity extends FragmentActivity implements
 
     Marker lastOpened = null;
 
-    CheckBox food;
-    CheckBox clothes;
-    CheckBox activities;
-    CheckBox stuff;
-    CheckBox random;
     Location lastFetched;
     ArrayList<String> filterList;
 
@@ -90,6 +84,7 @@ public class MapsActivity extends FragmentActivity implements
     PopupWindow myDealsPopup;
     PopupWindow profilePopup;
     PopupWindow optionsPopup;
+    boolean fetched;
 
     LinearLayout mainLayout;
 
@@ -98,7 +93,7 @@ public class MapsActivity extends FragmentActivity implements
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-
+        fetched = false;
         filterList = new ArrayList<>();
         super.onCreate(savedInstanceState);
         popupMessage = new PopupWindow(this);
@@ -107,13 +102,6 @@ public class MapsActivity extends FragmentActivity implements
         myDealsPopup = new PopupWindow(this);
         filterPopup = new PopupWindow(this);
         mainLayout = new LinearLayout(this);
-        filterList = new ArrayList<>();
-
-        food = (CheckBox) findViewById(R.id.checkBoxFood);
-        clothes = (CheckBox) findViewById(R.id.checkBoxClothes);
-        activities = (CheckBox) findViewById(R.id.checkBoxActivites);
-        stuff = (CheckBox) findViewById(R.id.checkBoxStuff);
-        random = (CheckBox) findViewById(R.id.checkBoxRandom);
         
 
 
@@ -389,56 +377,6 @@ public class MapsActivity extends FragmentActivity implements
     }
 
 
-    public void onCheckboxClicked (View v){
-
-        switch(v.getId()) {
-            case R.id.checkBoxFood:
-                if(food.isChecked()){
-                    filterList.add("food");
-                }
-                else{
-                    filterList.remove(filterList.indexOf("food"));
-                }
-
-            case R.id.checkBoxClothes:
-                if(clothes.isChecked()){
-                    filterList.add("clothes");
-                }
-                else{
-                    filterList.remove(filterList.indexOf("clothes"));
-                }
-
-            case R.id.checkBoxActivites:
-                if(activities.isChecked()){
-                    filterList.add("activities");
-                }
-                else{
-                    filterList.remove(filterList.indexOf("activities"));
-                }
-
-            case R.id.checkBoxStuff:
-                if(stuff.isChecked()){
-                    filterList.add("stuff");
-                }
-                else{
-                    filterList.remove(filterList.indexOf("stuff"));
-                }
-
-            case R.id.checkBoxRandom:
-                if(random.isChecked()){
-                    filterList.add("random");
-                }
-                else{
-                    filterList.remove(filterList.indexOf("random"));
-                }
-
-        break;
-        }
-    }
-
-
-
-
 
     @Override
     public void onStart() {
@@ -579,7 +517,13 @@ public class MapsActivity extends FragmentActivity implements
         filterList.add("stuff");
         filterList.add("clothes");
 
-        if (lastFetched.getLatitude()+0.2 < mLastLocation.getLatitude() &&
+
+        if(!fetched){
+            for (String filter :filterList) {
+                fetchDeals(filter);
+            }
+            fetched = true;
+        }else if (lastFetched.getLatitude()+0.2 < mLastLocation.getLatitude() &&
                 lastFetched.getLatitude()-0.2 > mLastLocation.getLatitude() &&
                 lastFetched.getLongitude()+0.2 < mLastLocation.getLongitude() &&
                 lastFetched.getLongitude()-0.2 > mLastLocation.getLongitude()){
