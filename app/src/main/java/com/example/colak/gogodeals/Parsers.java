@@ -27,7 +27,7 @@ public class Parsers {
     public void parse(String topic,MqttMessage message){
         IdentifierSingleton identifierSingleton = IdentifierSingleton.getInstance();
         // Checks if this message is related to this instance of the application or to this user
-       // if(IdentifierSingleton.SESSION == get_id(message) || IdentifierSingleton.USER == get_id(message)) {
+       // if(IdentifierSingleton.SESSION_ID == get_id(message) || IdentifierSingleton.USER_ID == get_id(message)) {
             switch (topic) {
                 case "deal/gogodeals/database/deals":
                     try {

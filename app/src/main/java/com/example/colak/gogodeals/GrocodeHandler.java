@@ -14,6 +14,10 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 
 /**
@@ -26,7 +30,20 @@ public class GrocodeHandler {
     private ArrayAdapter<String> arrayAdapter;
     private ListView listView;
 
-    public static ArrayList<Deal> handle(User user) {
+    public static ArrayList<Deal> handle(User user) throws JSONException {
+        JSONArray grocodeList = getFromGrocode(user);
+        JSONArray dealList = getDeals(grocodeList);
+
+
+        return null;
+    }
+
+    private static JSONArray getFromGrocode(User user){
+
+        return null;
+    }
+
+    private static JSONArray getDeals(JSONArray jsonArray){
 
         return null;
     }
