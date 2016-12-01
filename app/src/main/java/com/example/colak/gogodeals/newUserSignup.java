@@ -1,4 +1,4 @@
-package com.example.colak.gogodeals.MqttModule;
+package com.example.colak.gogodeals;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;

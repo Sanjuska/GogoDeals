@@ -1,9 +1,11 @@
-package com.example.colak.gogodeals.MqttModule;
+package com.example.colak.gogodeals;
 
 import android.Manifest;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Point;
 import android.location.Location;
 import android.os.Build;
 import android.os.Bundle;
@@ -13,18 +15,20 @@ import android.support.annotation.NonNull;
 import android.support.annotation.RequiresApi;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
+import android.util.Base64;
 import android.util.Log;
+import android.view.Display;
 import android.view.Gravity;
 import android.view.View;
 import android.view.animation.Interpolator;
 import android.view.animation.LinearInterpolator;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.TextView;
 
-import com.example.colak.gogodeals.R;
 import com.google.android.gms.appindexing.AppIndex;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -37,7 +41,6 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
@@ -45,6 +48,8 @@ import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.MapStyleOptions;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+
+import java.util.ArrayList;
 
 
 public class MapsActivity extends FragmentActivity implements
@@ -62,14 +67,12 @@ public class MapsActivity extends FragmentActivity implements
 
     Location mLastLocation;
 
-    Handler fetchHandler;
-
     Marker mPositionMarker;
 
     Marker lastOpened = null;
 
-    boolean fetched = false;
-
+    Location lastFetched;
+    ArrayList<String> filterList;
 
     boolean isClickedPop = true;
 
@@ -81,6 +84,7 @@ public class MapsActivity extends FragmentActivity implements
     PopupWindow myDealsPopup;
     PopupWindow profilePopup;
     PopupWindow optionsPopup;
+    boolean fetched;
 
     LinearLayout mainLayout;
 
@@ -89,6 +93,8 @@ public class MapsActivity extends FragmentActivity implements
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        fetched = false;
+        filterList = new ArrayList<>();
         super.onCreate(savedInstanceState);
         popupMessage = new PopupWindow(this);
         optionsPopup = new PopupWindow(this);
@@ -96,6 +102,11 @@ public class MapsActivity extends FragmentActivity implements
         myDealsPopup = new PopupWindow(this);
         filterPopup = new PopupWindow(this);
         mainLayout = new LinearLayout(this);
+        
+
+
+
+
         //also changed the version of google play services on gradle.app from 9.6.1 to
         //7.5.0 cause of compatibility.
         MapsInitializer.initialize(getApplicationContext());
@@ -141,7 +152,10 @@ public class MapsActivity extends FragmentActivity implements
                 .addLocationRequest(locationRequest);
         builder.setAlwaysShow(true);
 
+
+
     }
+
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
@@ -210,10 +224,6 @@ public class MapsActivity extends FragmentActivity implements
                             }
                             Bitmap icon;
 
-                            //BitmapDescriptor deal = BitmapDescriptorFactory.fromResource(R.drawable.deal);
-                            BitmapDescriptor deal = BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_MAGENTA);
-                            marker.setIcon(deal);
-
 
                             View popup = getContent(marker);
                             popupMessage.setContentView(popup);
@@ -241,10 +251,17 @@ public class MapsActivity extends FragmentActivity implements
                 if (isClickedPop == true) {
                     isClickedPop = false;
 
+                    Display display = getWindowManager().getDefaultDisplay();
+                    Point size = new Point();
+                    display.getSize(size);
+                    int screenWidth = size.x;
+                    int screenHeight = size.y;
+
                     View optPop = getLayoutInflater().inflate(R.layout.options_list_popup, null);
                     optionsPopup.setContentView(optPop);
                     optionsPopup.showAtLocation(mainLayout, Gravity.CENTER, 0, 0);
-                    optionsPopup.update(700, 620);
+                    optionsPopup.update(screenWidth - 50, screenHeight / 2);
+
                     profilePopup.dismiss();
                     myDealsPopup.dismiss();
                     filterPopup.dismiss();
@@ -278,37 +295,26 @@ public class MapsActivity extends FragmentActivity implements
     }
 
 
-    private void loopFetchDeals() {
-        fetchHandler = new Handler();
-        fetchHandler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                fetchDeals();
-                loopFetchDeals();
-            }
-        }, 5000);
-    }
 
-    public void fetchDeals() {
+    public void fetchDeals(String filter) {
 
         dealMqtt = new ConnectionMqtt(this);
 
         String subscribeTopic = "deal/gogodeals/database/deals";
 
 
-
                 String payload =   "{ \"id\": \"12345678-1011-M012-N210-112233445566\"," +
                         " \"data\": {" +
                         " \"longitude\": " + mLastLocation.getLongitude() + "," +
                         " \"latitude\": " + mLastLocation.getLatitude() + "," +
-                        " \"filters\": \"food\"}}";
+                        " \"filters\": \""+filter+"\"}}";
 
                 String publishTopic = "deal/gogodeals/deal/fetch";
 
                 dealMqtt.sendMqtt(payload,publishTopic,subscribeTopic,2);
 
 
-                fetched = true;
+
 
     }
 
@@ -324,34 +330,51 @@ public class MapsActivity extends FragmentActivity implements
     public void filterBackButtonPressed(View v){
         filterPopup.dismiss();
     }
+
     // Opens the popup with My Profile on click.
     public void profileButtonPressed(View v){
+
+        Display display = getWindowManager().getDefaultDisplay();
+        Point size = new Point();
+        display.getSize(size);
+        int screenWidth = size.x;
+        int screenHeight = size.y;
+
         View profPop = getLayoutInflater().inflate(R.layout.myprofile, null);
         profilePopup.setContentView(profPop);
         profilePopup.showAtLocation(mainLayout, Gravity.CENTER, 0, 0);
-        profilePopup.update(700, 620);
+        profilePopup.update(screenWidth - 50, screenHeight / 2);
     }
 
     // Opens the popup with My Deals on click.
     public void mydealsButtonPressed(View v){
+
+        Display display = getWindowManager().getDefaultDisplay();
+        Point size = new Point();
+        display.getSize(size);
+        int screenWidth = size.x;
+        int screenHeight = size.y;
+
         View myDealsPop = getLayoutInflater().inflate(R.layout.mydeals, null);
         myDealsPopup.setContentView(myDealsPop);
         myDealsPopup.showAtLocation(mainLayout, Gravity.CENTER, 0, 0);
-        myDealsPopup.update(700, 620);
+        myDealsPopup.update(screenWidth - 50, screenHeight / 2);
     }
 
     // Opens the popup with Deal Filters on click.
     public void filterButtonPressed(View v){
+
+        Display display = getWindowManager().getDefaultDisplay();
+        Point size = new Point();
+        display.getSize(size);
+        int screenWidth = size.x;
+        int screenHeight = size.y;
+
         View filtersPop = getLayoutInflater().inflate(R.layout.filterslist, null);
         filterPopup.setContentView(filtersPop);
         filterPopup.showAtLocation(mainLayout, Gravity.CENTER, 0 ,0);
-        filterPopup.update(700, 620);
+        filterPopup.update(screenWidth - 50, screenHeight / 2);
     }
-
-   /* public void logoutButtonPressed(View v) {
-
-    }*/
-
 
 
 
@@ -400,14 +423,13 @@ public class MapsActivity extends FragmentActivity implements
                 }
             });
 
-           /* ImageView dealPicture = (ImageView) v.findViewById(R.id.dealPicture);
+            ImageView dealPicture = (ImageView) v.findViewById(R.id.dealPicture);
             // Converting String byte picture to an ImageView
             String base = components[4];
             byte[] decodedString = Base64.decode(base, Base64.DEFAULT);
             Bitmap decodedByte = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
             dealPicture.setImageBitmap(decodedByte);
             Log.d("InfoWindow picture:", components[4]);
-*/
             // Returning the view containing InfoWindow contents
         return v;
         }
@@ -489,9 +511,29 @@ public class MapsActivity extends FragmentActivity implements
         //locationListener.onLocationChanged(location);
         mMap.animateCamera(CameraUpdateFactory.newCameraPosition(myPosition));
 
+        filterList.add("food");
+        filterList.add("activities");
+        filterList.add("random");
+        filterList.add("stuff");
+        filterList.add("clothes");
 
-        if (!fetched){
-            fetchDeals();
+
+        if(!fetched){
+            for (String filter :filterList) {
+                fetchDeals(filter);
+            }
+            fetched = true;
+        }else if (lastFetched != null &&
+                mLastLocation != null &&
+                lastFetched.getLatitude()+0.2 < mLastLocation.getLatitude() &&
+                lastFetched.getLatitude()-0.2 > mLastLocation.getLatitude() &&
+                lastFetched.getLongitude()+0.2 < mLastLocation.getLongitude() &&
+                lastFetched.getLongitude()-0.2 > mLastLocation.getLongitude()){
+            for (String filter :filterList){
+                fetchDeals(filter);
+            }
+            lastFetched = mLastLocation;
+
         }
 
 

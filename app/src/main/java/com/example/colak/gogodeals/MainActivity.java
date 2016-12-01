@@ -1,4 +1,4 @@
-package com.example.colak.gogodeals.MqttModule;
+package com.example.colak.gogodeals;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -7,6 +7,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.facebook.CallbackManager;
 import com.example.colak.gogodeals.R;
 import com.facebook.AccessToken;
 import com.facebook.AccessTokenTracker;
@@ -14,7 +15,6 @@ import com.facebook.login.widget.LoginButton;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
-    private static final String TAG = "";
     private TextView info;
 
     private LoginButton loginButton;
@@ -24,10 +24,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private Button gogoProfile;
 
     private TextView welcometext;
-    private AccessToken accessToken;
-    private AccessTokenTracker accessTokenTracker;
 
-    ConnectionMqtt connection1;
+    private IdentifierSingleton identifierSingleton;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,11 +38,18 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         mainsignup = (Button) findViewById(R.id.mainsignup);
         gogoProfile = (Button) findViewById(R.id.gogoProfile);
 
+        /*
+            This is the first instantiation of the IdentifierSingleton. This is needed for the
+            session and user id
+        */
+        identifierSingleton = IdentifierSingleton.getInstance();
+
         mainLogin.setOnClickListener(this);
         mainsignup.setOnClickListener(this);
         gogoProfile.setOnClickListener(this);
 
     }
+
 
 
     @Override
@@ -52,12 +58,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public void onClick(View v) {
         switch (v.getId()) {
             //login for facebook users
-
             case R.id.mainLogin:
-                Intent gogoApp = new Intent(MainActivity.this, FacebookLogin.class);
-                startActivity(gogoApp);
-
-
+                Intent gogoApp1 = new Intent(MainActivity.this, UserLogin.class);
+                startActivity(gogoApp1);
                 break;
 
             //registration for non facebook users

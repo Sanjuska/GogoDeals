@@ -20,6 +20,10 @@ import java.io.UnsupportedEncodingException;
  * Created by colak on 06/10/16.
  */
 
+
+/*
+Connectionmqqt handles the communication with the broker.
+ */
 public class ConnectionMqtt extends Activity implements MqttCallback {
     // Variables used in the class
     private static final String TAG = "ConnectionMqtt";
@@ -32,24 +36,35 @@ public class ConnectionMqtt extends Activity implements MqttCallback {
     String sendTopic;
     String receiveTopic;
     int qot;
+
+    /*
+    this is the constructor for connectionmqtt, it takes an activity as input.
+    it also instanciates a new parsers class.
+     */
 public ConnectionMqtt(Activity activity){
     this.parent = activity;
     parsers = new Parsers();
-    payload = "";
-    sendTopic= "";
-    receiveTopic ="";
 }
-
-
-
-    public void sendMqtt(String topic, String payload){
-        open();
-        this.sendTopic = topic;
-        this.payload = payload;
-        this.receiveTopic ="";
-        this.qot = 0;
+    public ConnectionMqtt(){
     }
 
+
+    /*
+    sentmqtt is called from other classe and takes a payload and a topic and starts the connection
+    and publishing to the broker. This method only publish and dont subscribe.
+     */
+    public void sendMqtt(String payload, String topic){
+        this.payload = payload;
+        this.sendTopic = topic;
+        this.receiveTopic ="";
+        this.qot = 0;
+        open();
+    }
+
+    /*
+    This method is the same as the previous one with the exception of the recievetopic and the qot.
+    This method subsrcibes to the topic given.
+     */
     public void sendMqtt(String payload, String sendTopic, String receiveTopic, int qot){
         open();
         this.payload = payload;
@@ -75,7 +90,6 @@ public ConnectionMqtt(Activity activity){
                     Log.d(TAG, "onSuccess");
                     if (receiveTopic.equals("")){
                         publish(payload,sendTopic);
-                        close();
                     }else{
                         subscribe(receiveTopic,qot);
                     }
@@ -96,7 +110,8 @@ public ConnectionMqtt(Activity activity){
         }
 
     }
-    // Publishing messages in the -topic- by clicking button
+
+    // This method publishes the payload to the given topic.
     public void publish(String payload, String topic){
         byte[] encodedPayload = new byte[0];
         try {
@@ -107,7 +122,7 @@ public ConnectionMqtt(Activity activity){
             e.printStackTrace();
         }
     }
-    // Subscribing on a topic and getting messages from the publisher
+    // This method subsribes to the topic given with the qos given.
     public void subscribe(final String topic, int qos){
         try {
             IMqttToken subToken = client.subscribe(topic, qos);
@@ -139,6 +154,9 @@ public ConnectionMqtt(Activity activity){
         Log.d(TAG, "connection lost");
     }
 
+    /*
+    This method closes the connection.
+     */
     public void close(){
         try {
             client.disconnect();
@@ -149,7 +167,7 @@ public ConnectionMqtt(Activity activity){
         }
     }
 
-    // When message from publisher arrived, show the deal on the map.
+    // When a message arrive from a subsribed topic this method calls the parsers class method parse.
     public void messageArrived(String topic, MqttMessage message) throws MqttException {
         parsers.parse(topic,message);
 
