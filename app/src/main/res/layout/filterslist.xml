@@ -29,9 +29,10 @@
         android:elevation="24dp"
         android:textSize="18sp"
         android:layout_height="40dp"
+        android:saveEnabled="true"
         android:checked="true"
-        android:onClick="checkBoxFoodClicked"
         style="@android:style/Widget.Holo.Light.CompoundButton.CheckBox" />
+
 
     <CheckBox
         android:text="Clothes &amp; Hats"
@@ -40,19 +41,19 @@
         android:elevation="24dp"
         android:textSize="18sp"
         android:layout_height="40dp"
+        android:saveEnabled="true"
         android:checked="true"
-        android:onClick="checkBoxClothesClicked"
         style="@android:style/Widget.Holo.Light.CompoundButton.CheckBox" />
 
     <CheckBox
-        android:text="Activites"
+        android:text="Activities"
         android:layout_width="match_parent"
-        android:id="@+id/checkBoxActivites"
+        android:id="@+id/checkBoxActivities"
         android:elevation="24dp"
         android:textSize="18sp"
         android:layout_height="40dp"
+        android:saveEnabled="true"
         android:checked="true"
-        android:onClick="checkBoxActivitiesClicked"
         style="@android:style/Widget.Holo.Light.CompoundButton.CheckBox" />
 
     <CheckBox
@@ -62,8 +63,8 @@
         android:elevation="24dp"
         android:textSize="18sp"
         android:layout_height="40dp"
+        android:saveEnabled="true"
         android:checked="true"
-        android:onClick="checkBoxStuffClicked"
         style="@android:style/Widget.Holo.Light.CompoundButton.CheckBox" />
 
     <CheckBox
@@ -74,7 +75,6 @@
         android:textSize="18sp"
         android:layout_height="40dp"
         android:checked="true"
-        android:onClick="checkBoxRandomClicked"
         style="@android:style/Widget.Holo.Light.CompoundButton.CheckBox" />
 
     <Button

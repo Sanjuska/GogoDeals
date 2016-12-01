@@ -31,6 +31,10 @@ package="com.example.colak.gogodeals">
 
     </activity>
 
+    <!--<activity android:name=".Filters">
+
+    </activity>-->
+
     <activity android:name=".UserLogin">
 
     </activity>

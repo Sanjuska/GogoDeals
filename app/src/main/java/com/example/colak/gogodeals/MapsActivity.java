@@ -1,6 +1,8 @@
 package com.example.colak.gogodeals;
 
 import android.Manifest;
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
@@ -24,6 +26,7 @@ import android.view.animation.Interpolator;
 import android.view.animation.LinearInterpolator;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -57,7 +60,8 @@ import java.util.ArrayList;
 public class MapsActivity extends FragmentActivity implements
         OnMapReadyCallback,
         GoogleApiClient.ConnectionCallbacks,
-        GoogleApiClient.OnConnectionFailedListener {
+        GoogleApiClient.OnConnectionFailedListener,
+        CompoundButton.OnCheckedChangeListener {
 
     public Deals deals;
 
@@ -73,16 +77,8 @@ public class MapsActivity extends FragmentActivity implements
 
     Marker lastOpened = null;
 
-
     String testString = "FoodClo";
-    ArrayList<String> filterArrayList;
 
-
-    boolean checkedFood;
-    boolean checkedClothes;
-    boolean checkedActivities;
-    boolean checkedStuff;
-    boolean checkedRandom;
     Location lastFetched;
     ArrayList<String> filterList;
 
@@ -90,7 +86,6 @@ public class MapsActivity extends FragmentActivity implements
 
     PopupWindow popupMessage;
     LocationRequest locationRequest;
-
 
     PopupWindow filterPopup;
     PopupWindow myDealsPopup;
@@ -100,15 +95,14 @@ public class MapsActivity extends FragmentActivity implements
 
     LinearLayout mainLayout;
 
-    CheckBox checkBoxFood;
-    CheckBox checkBoxClothes;
-    CheckBox checkBoxActivities;
-    CheckBox checkBoxStuff;
-    CheckBox checkBoxRandom;
+    CheckBox cbFood;
+    CheckBox cbClothes;
+    CheckBox cbActiv;
+    CheckBox cbStuff;
+    CheckBox cbRandom;
 
 
-
-
+    SharedPreferences preferences;
     // Creating an instance of MarkerOptions to set position
     private GoogleApiClient client;
 
@@ -123,22 +117,20 @@ public class MapsActivity extends FragmentActivity implements
         myDealsPopup = new PopupWindow(this);
         filterPopup = new PopupWindow(this);
         mainLayout = new LinearLayout(this);
-        filterArrayList = new ArrayList<String>();
-        filterArrayList.add("food");
-        filterArrayList.add("clothes");
-        filterArrayList.add("activities");
-        filterArrayList.add("stuff");
-        filterArrayList.add("random");
-        checkBoxFood = new CheckBox(this);
-        checkBoxClothes = new CheckBox(this);
-        checkBoxActivities = new CheckBox(this);
-        checkBoxStuff = new CheckBox(this);
-        checkBoxRandom = new CheckBox(this);
+
+        cbFood = (CheckBox)findViewById(R.id.checkBoxFood);
+        cbClothes = (CheckBox)findViewById(R.id.checkBoxClothes);
+        cbActiv = (CheckBox)findViewById(R.id.checkBoxActivities);
+        cbStuff = (CheckBox)findViewById(R.id.checkBoxStuff);
+        cbRandom = (CheckBox)findViewById(R.id.checkBoxRandom);
+
 
         //also changed the version of google play services on gradle.app from 9.6.1 to
         //7.5.0 cause of compatibility.
         MapsInitializer.initialize(getApplicationContext());
         setContentView(R.layout.activity_maps);
+
+
 
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
@@ -182,6 +174,7 @@ public class MapsActivity extends FragmentActivity implements
 
 
 
+
     }
 
 
@@ -190,33 +183,6 @@ public class MapsActivity extends FragmentActivity implements
         mMap = googleMap;
 
 
-
-        checkBoxFood.setOnClickListener(new View.OnClickListener() {
-
-            @Override
-            public void onClick(View v) {
-
-                View filtPop = getLayoutInflater().inflate(R.layout.filterslist, null);
-                filterPopup.setContentView(filtPop);
-
-
-                switch (v.getId()) {
-                    case R.id.checkBoxFood:
-                        checkBoxFoodClicked(v);
-                    case R.id.checkBoxClothes:
-                        checkBoxClothesClicked(v);
-                    case R.id.checkBoxActivites:
-                        checkBoxActivitiesClicked(v);
-                    case R.id.checkBoxStuff:
-                        checkBoxStuffClicked(v);
-                    case R.id.checkBoxRandom:
-                        checkBoxRandomClicked(v);
-                break;
-
-                }
-
-            }
-        });
 
         try {
             // Customise the styling of the base map using a JSON object defined
@@ -237,6 +203,9 @@ public class MapsActivity extends FragmentActivity implements
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             return;
         }
+
+
+        /* HÄÄÄÄÄÄÄR */
 
 
         //GoogleMap settings
@@ -299,6 +268,8 @@ public class MapsActivity extends FragmentActivity implements
                     }
                 });
 
+
+
         //Initializing the Options List button and setting an onClick listener to it.
         final ImageButton optionsButton = (ImageButton) findViewById(R.id.optionslistbutton);
         optionsButton.setOnClickListener(new View.OnClickListener() {
@@ -339,7 +310,7 @@ public class MapsActivity extends FragmentActivity implements
                             dealsBackButtonPressed(v);
                         case R.id.filterBackButton:
                             filterBackButtonPressed(v);
-                            break;
+                    break;
                     }
 
                 } else {
@@ -354,11 +325,47 @@ public class MapsActivity extends FragmentActivity implements
         });
     }
 
+    public boolean getFromSP(String key){
+        SharedPreferences preferences = getSharedPreferences("com.example.colak.gogodeals", Context.MODE_PRIVATE);
+        return preferences.getBoolean(key, false);
+    }
+    public void saveInSp(String key,boolean value){
+        SharedPreferences preferences = getSharedPreferences("com.example.colak.gogodeals", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.putBoolean(key, value);
+        editor.apply();
+    }
+
+    @Override
+    public void onCheckedChanged(CompoundButton v,
+                                 boolean isChecked) {
+        switch(v.getId()){
+            case R.id.checkBoxFood:
+                saveInSp("cbFood",isChecked);
+                break;
+            case R.id.checkBoxClothes:
+                saveInSp("cbClothes",isChecked);
+                break;
+
+            case R.id.checkBoxActivities:
+                saveInSp("cbActiv",isChecked);
+                break;
+
+            case R.id.checkBoxStuff:
+                saveInSp("cbStuff",isChecked);
+                break;
+            case R.id.checkBoxRandom:
+                saveInSp("cbRandom",isChecked);
+                break;
+        }
+
+    }
+
 
 
     public void fetchDeals(String filter) {
 
-        dealMqtt = new ConnectionMqtt(this);
+        ConnectionMqtt connectionMqtt = new ConnectionMqtt(this);
 
         String subscribeTopic = "deal/gogodeals/database/deals";
 
@@ -371,7 +378,7 @@ public class MapsActivity extends FragmentActivity implements
 
                 String publishTopic = "deal/gogodeals/deal/fetch";
 
-                dealMqtt.sendMqtt(payload,publishTopic,subscribeTopic,2);
+                connectionMqtt.sendMqtt(payload,publishTopic,subscribeTopic,2);
 
 
                 fetched = true;
@@ -379,61 +386,6 @@ public class MapsActivity extends FragmentActivity implements
     }
 
 
-
-    public void checkBoxFoodClicked(View v) {
-        if (checkBoxFood.isChecked()) {
-            checkedFood = false;
-            filterArrayList.add("food");
-        }
-        else {
-            checkedFood = true;
-            filterArrayList.remove("food");
-        }
-    }
-
-    public void checkBoxClothesClicked(View v) {
-        if (checkBoxClothes.isChecked()) {
-            checkedClothes = false;
-            filterArrayList.add("clothes");
-        }
-        else {
-            checkedClothes = true;
-            filterArrayList.remove("clothes");
-        }
-    }
-
-    public void checkBoxActivitiesClicked(View v) {
-        if (checkBoxActivities.isChecked()) {
-            checkedActivities = false;
-            filterArrayList.add("activities");
-        }
-        else {
-            checkedActivities = true;
-            filterArrayList.remove("activities");
-        }
-    }
-
-    public void checkBoxStuffClicked(View v) {
-        if (checkBoxStuff.isChecked()) {
-            checkedStuff = false;
-            filterArrayList.add("stuff");
-        }
-        else {
-            checkedStuff = true;
-            filterArrayList.remove("stuff");
-        }
-    }
-
-    public void checkBoxRandomClicked(View v) {
-        if (checkBoxRandom.isChecked()) {
-            checkedRandom = false;
-            filterArrayList.add("random");
-        }
-        else {
-            checkedRandom = true;
-            filterArrayList.remove("random");
-        }
-    }
 
     //Function called by the switch case when back button on My Profile is pressed which dismisses the My Profile popup.
     public void profileBackButtonPressed(View v){
@@ -487,11 +439,16 @@ public class MapsActivity extends FragmentActivity implements
         int screenWidth = size.x;
         int screenHeight = size.y;
 
+
+
         View filtersPop = getLayoutInflater().inflate(R.layout.filterslist, null);
         filterPopup.setContentView(filtersPop);
         filterPopup.showAtLocation(mainLayout, Gravity.CENTER, 0 ,0);
         filterPopup.update(screenWidth - 50, screenHeight / 2);
+
+
     }
+
 
 
     @Override
@@ -628,19 +585,44 @@ public class MapsActivity extends FragmentActivity implements
         //locationListener.onLocationChanged(location);
         mMap.animateCamera(CameraUpdateFactory.newCameraPosition(myPosition));
 
-        filterList.add("food");
-        filterList.add("activities");
-        filterList.add("random");
-        filterList.add("stuff");
-        filterList.add("clothes");
-
 
         if(!fetched){
+            filterList.clear();
+            filterList.add("food");
+            filterList.add("clothes");
+            filterList.add("activities");
+            filterList.add("stuff");
+            filterList.add("random");
+
+            if(!getFromSP("cbFood")){
+                filterList.remove("food"); }
+
+            if(!getFromSP("cbClothes")){
+                filterList.remove("clothes"); }
+
+            if(!getFromSP("cbActiv")){
+                filterList.remove("activities"); }
+
+            if(!getFromSP("cbStuff")){
+                filterList.remove("stuff"); }
+
+            if(!getFromSP("cbRandom")){
+                filterList.remove("random"); }
+
+            if(filterList == null){
+                filterList.add("food");
+            }
+
+            Log.i("Filter List", String.valueOf(filterList));
+
+
             for (String filter :filterList) {
                 fetchDeals(filter);
             }
             fetched = true;
-        }else if (lastFetched.getLatitude()+0.2 < mLastLocation.getLatitude() &&
+        }else if (lastFetched != null &&
+                mLastLocation != null &&
+                lastFetched.getLatitude()+0.2 < mLastLocation.getLatitude() &&
                 lastFetched.getLatitude()-0.2 > mLastLocation.getLatitude() &&
                 lastFetched.getLongitude()+0.2 < mLastLocation.getLongitude() &&
                 lastFetched.getLongitude()-0.2 > mLastLocation.getLongitude()){
@@ -703,4 +685,6 @@ public class MapsActivity extends FragmentActivity implements
             }
         });
     }
+
+
 }
