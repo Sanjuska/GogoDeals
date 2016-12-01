@@ -1,4 +1,4 @@
-package com.example.colak.gogodeals.MqttModule;
+package com.example.colak.gogodeals;
 
 import android.app.Activity;
 import android.support.v7.app.AppCompatActivity;
@@ -17,7 +17,7 @@ import org.eclipse.paho.client.mqttv3.MqttClient;
 import org.eclipse.paho.client.mqttv3.MqttException;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
 
-import static com.example.colak.gogodeals.MqttModule.MapsActivity.mMap;
+import static com.example.colak.gogodeals.MapsActivity.mMap;
 
 /**
  * Created by colak on 2016-10-27.

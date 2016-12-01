@@ -1,12 +1,12 @@
-package com.example.colak.gogodeals.MqttModule;
+package com.example.colak.gogodeals;
 
 import android.Manifest;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Point;
 import android.location.Location;
-import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -15,7 +15,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.RequiresApi;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
-import android.text.TextUtils;
+import android.util.Base64;
 import android.util.Log;
 import android.view.Display;
 import android.view.Gravity;
@@ -25,14 +25,12 @@ import android.view.animation.LinearInterpolator;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.TextView;
 
-import com.example.colak.gogodeals.R;
-import com.google.android.gms.appindexing.Action;
 import com.google.android.gms.appindexing.AppIndex;
-import com.google.android.gms.appindexing.Thing;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationListener;
@@ -71,8 +69,6 @@ public class MapsActivity extends FragmentActivity implements
 
     Location mLastLocation;
 
-    Handler fetchHandler;
-
     Marker mPositionMarker;
 
     Marker lastOpened = null;
@@ -81,21 +77,26 @@ public class MapsActivity extends FragmentActivity implements
     String testString = "FoodClo";
     ArrayList<String> filterArrayList;
 
-    boolean fetched = false;
+
     boolean checkedFood;
     boolean checkedClothes;
     boolean checkedActivities;
     boolean checkedStuff;
     boolean checkedRandom;
+    Location lastFetched;
+    ArrayList<String> filterList;
+
     boolean isClickedPop = true;
 
     PopupWindow popupMessage;
     LocationRequest locationRequest;
 
+
     PopupWindow filterPopup;
     PopupWindow myDealsPopup;
     PopupWindow profilePopup;
     PopupWindow optionsPopup;
+    boolean fetched;
 
     LinearLayout mainLayout;
 
@@ -111,10 +112,10 @@ public class MapsActivity extends FragmentActivity implements
     // Creating an instance of MarkerOptions to set position
     private GoogleApiClient client;
 
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        fetched = false;
+        filterList = new ArrayList<>();
         super.onCreate(savedInstanceState);
         popupMessage = new PopupWindow(this);
         optionsPopup = new PopupWindow(this);
@@ -162,13 +163,11 @@ public class MapsActivity extends FragmentActivity implements
         }
         // Create an instance of GoogleAPIClient.
         if (mGoogleApiClient == null) {
-            // ATTENTION: This "addApi(AppIndex.API)"was auto-generated to implement the App Indexing API.
-            // See https://g.co/AppIndexing/AndroidStudio for more information.
             mGoogleApiClient = new GoogleApiClient.Builder(this)
                     .addConnectionCallbacks(this)
                     .addOnConnectionFailedListener(this)
                     .addApi(LocationServices.API)
-                    .addApi(AppIndex.API).build();
+                    .build();
         }
 
 
@@ -180,8 +179,6 @@ public class MapsActivity extends FragmentActivity implements
         LocationSettingsRequest.Builder builder = new LocationSettingsRequest.Builder()
                 .addLocationRequest(locationRequest);
         builder.setAlwaysShow(true);
-
-
 
 
 
@@ -302,9 +299,6 @@ public class MapsActivity extends FragmentActivity implements
                     }
                 });
 
-
-
-
         //Initializing the Options List button and setting an onClick listener to it.
         final ImageButton optionsButton = (ImageButton) findViewById(R.id.optionslistbutton);
         optionsButton.setOnClickListener(new View.OnClickListener() {
@@ -358,39 +352,22 @@ public class MapsActivity extends FragmentActivity implements
                 }
             }
         });
-
-
-
     }
 
 
-    private void loopFetchDeals() {
-        fetchHandler = new Handler();
-        fetchHandler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                fetchDeals();
-                loopFetchDeals();
-            }
-        }, 5000);
-    }
 
-    public void fetchDeals() {
+    public void fetchDeals(String filter) {
 
         dealMqtt = new ConnectionMqtt(this);
 
-
-
-        String filterString = TextUtils.join(",", filterArrayList);
         String subscribeTopic = "deal/gogodeals/database/deals";
-
 
 
                 String payload =   "{ \"id\": \"12345678-1011-M012-N210-112233445566\"," +
                         " \"data\": {" +
                         " \"longitude\": " + mLastLocation.getLongitude() + "," +
                         " \"latitude\": " + mLastLocation.getLatitude() + "," +
-                        " \"filters\": " + filterString + "}}";
+                        " \"filters\": \""+filter+"\"}}";
 
                 String publishTopic = "deal/gogodeals/deal/fetch";
 
@@ -517,14 +494,10 @@ public class MapsActivity extends FragmentActivity implements
     }
 
 
-
     @Override
     public void onStart() {
         mGoogleApiClient.connect();
         super.onStart();
-        // ATTENTION: This was auto-generated to implement the App Indexing API.
-        // See https://g.co/AppIndexing/AndroidStudio for more information.
-        AppIndex.AppIndexApi.start(mGoogleApiClient, getIndexApiAction());
     }
 
 
@@ -566,14 +539,14 @@ public class MapsActivity extends FragmentActivity implements
                 }
             });
 
-           /* ImageView dealPicture = (ImageView) v.findViewById(R.id.dealPicture);
+            ImageView dealPicture = (ImageView) v.findViewById(R.id.dealPicture);
             // Converting String byte picture to an ImageView
             String base = components[4];
             byte[] decodedString = Base64.decode(base, Base64.DEFAULT);
             Bitmap decodedByte = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
             dealPicture.setImageBitmap(decodedByte);
             Log.d("InfoWindow picture:", components[4]);
-*/
+
             // Returning the view containing InfoWindow contents
         return v;
         }
@@ -583,9 +556,7 @@ public class MapsActivity extends FragmentActivity implements
     @Override
     public void onStop() {
         mGoogleApiClient.disconnect();
-        super.onStop();// ATTENTION: This was auto-generated to implement the App Indexing API.
-// See https://g.co/AppIndexing/AndroidStudio for more information.
-        AppIndex.AppIndexApi.end(mGoogleApiClient, getIndexApiAction());
+        super.onStop();
     }
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
@@ -657,9 +628,27 @@ public class MapsActivity extends FragmentActivity implements
         //locationListener.onLocationChanged(location);
         mMap.animateCamera(CameraUpdateFactory.newCameraPosition(myPosition));
 
+        filterList.add("food");
+        filterList.add("activities");
+        filterList.add("random");
+        filterList.add("stuff");
+        filterList.add("clothes");
 
-        if (!fetched){
-            fetchDeals();
+
+        if(!fetched){
+            for (String filter :filterList) {
+                fetchDeals(filter);
+            }
+            fetched = true;
+        }else if (lastFetched.getLatitude()+0.2 < mLastLocation.getLatitude() &&
+                lastFetched.getLatitude()-0.2 > mLastLocation.getLatitude() &&
+                lastFetched.getLongitude()+0.2 < mLastLocation.getLongitude() &&
+                lastFetched.getLongitude()-0.2 > mLastLocation.getLongitude()){
+            for (String filter :filterList){
+                fetchDeals(filter);
+            }
+            lastFetched = mLastLocation;
+
         }
 
 
@@ -714,22 +703,4 @@ public class MapsActivity extends FragmentActivity implements
             }
         });
     }
-
-    /**
-     * ATTENTION: This was auto-generated to implement the App Indexing API.
-     * See https://g.co/AppIndexing/AndroidStudio for more information.
-     */
-    public Action getIndexApiAction() {
-        Thing object = new Thing.Builder()
-                .setName("Maps Page") // TODO: Define a title for the content shown.
-                // TODO: Make sure this auto-generated URL is correct.
-                .setUrl(Uri.parse("http://[ENTER-YOUR-URL-HERE]"))
-                .build();
-        return new Action.Builder(Action.TYPE_VIEW)
-                .setObject(object)
-                .setActionStatus(Action.STATUS_TYPE_COMPLETED)
-                .build();
-    }
-
-
 }
