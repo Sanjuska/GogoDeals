@@ -23,6 +23,7 @@ import android.view.View;
 import android.view.animation.Interpolator;
 import android.view.animation.LinearInterpolator;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
@@ -78,11 +79,14 @@ public class MapsActivity extends FragmentActivity implements
 
 
     String testString = "FoodClo";
-    ArrayList<String> filterList;
+    ArrayList<String> filterArrayList;
+
     boolean fetched = false;
-
-
-
+    boolean checkedFood;
+    boolean checkedClothes;
+    boolean checkedActivities;
+    boolean checkedStuff;
+    boolean checkedRandom;
     boolean isClickedPop = true;
 
     PopupWindow popupMessage;
@@ -94,6 +98,13 @@ public class MapsActivity extends FragmentActivity implements
     PopupWindow optionsPopup;
 
     LinearLayout mainLayout;
+
+    CheckBox checkBoxFood;
+    CheckBox checkBoxClothes;
+    CheckBox checkBoxActivities;
+    CheckBox checkBoxStuff;
+    CheckBox checkBoxRandom;
+
 
 
 
@@ -111,7 +122,17 @@ public class MapsActivity extends FragmentActivity implements
         myDealsPopup = new PopupWindow(this);
         filterPopup = new PopupWindow(this);
         mainLayout = new LinearLayout(this);
-
+        filterArrayList = new ArrayList<String>();
+        filterArrayList.add("food");
+        filterArrayList.add("clothes");
+        filterArrayList.add("activities");
+        filterArrayList.add("stuff");
+        filterArrayList.add("random");
+        checkBoxFood = new CheckBox(this);
+        checkBoxClothes = new CheckBox(this);
+        checkBoxActivities = new CheckBox(this);
+        checkBoxStuff = new CheckBox(this);
+        checkBoxRandom = new CheckBox(this);
 
         //also changed the version of google play services on gradle.app from 9.6.1 to
         //7.5.0 cause of compatibility.
@@ -161,6 +182,9 @@ public class MapsActivity extends FragmentActivity implements
         builder.setAlwaysShow(true);
 
 
+
+
+
     }
 
 
@@ -168,6 +192,34 @@ public class MapsActivity extends FragmentActivity implements
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
 
+
+
+        checkBoxFood.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+
+                View filtPop = getLayoutInflater().inflate(R.layout.filterslist, null);
+                filterPopup.setContentView(filtPop);
+
+
+                switch (v.getId()) {
+                    case R.id.checkBoxFood:
+                        checkBoxFoodClicked(v);
+                    case R.id.checkBoxClothes:
+                        checkBoxClothesClicked(v);
+                    case R.id.checkBoxActivites:
+                        checkBoxActivitiesClicked(v);
+                    case R.id.checkBoxStuff:
+                        checkBoxStuffClicked(v);
+                    case R.id.checkBoxRandom:
+                        checkBoxRandomClicked(v);
+                break;
+
+                }
+
+            }
+        });
 
         try {
             // Customise the styling of the base map using a JSON object defined
@@ -250,9 +302,12 @@ public class MapsActivity extends FragmentActivity implements
                     }
                 });
 
+
+
+
         //Initializing the Options List button and setting an onClick listener to it.
-        final ImageButton hamburgerButton = (ImageButton) findViewById(R.id.optionslistbutton);
-        hamburgerButton.setOnClickListener(new View.OnClickListener() {
+        final ImageButton optionsButton = (ImageButton) findViewById(R.id.optionslistbutton);
+        optionsButton.setOnClickListener(new View.OnClickListener() {
 
             //Function which handles the user pressing the Options List button. If the button is clicked already the popup will be dismissed instead of appearing again.
             //Populating the content view with options_list_popup and shows it on top of the main layout in the centre.
@@ -303,6 +358,9 @@ public class MapsActivity extends FragmentActivity implements
                 }
             }
         });
+
+
+
     }
 
 
@@ -321,10 +379,9 @@ public class MapsActivity extends FragmentActivity implements
 
         dealMqtt = new ConnectionMqtt(this);
 
-        FilterHandler filters = new FilterHandler();
-        ArrayList<String> filterss = filters.returnFilterList();
-        String filterString = TextUtils.join(",", filterss);
 
+
+        String filterString = TextUtils.join(",", filterArrayList);
         String subscribeTopic = "deal/gogodeals/database/deals";
 
 
@@ -342,6 +399,63 @@ public class MapsActivity extends FragmentActivity implements
 
                 fetched = true;
 
+    }
+
+
+
+    public void checkBoxFoodClicked(View v) {
+        if (checkBoxFood.isChecked()) {
+            checkedFood = false;
+            filterArrayList.add("food");
+        }
+        else {
+            checkedFood = true;
+            filterArrayList.remove("food");
+        }
+    }
+
+    public void checkBoxClothesClicked(View v) {
+        if (checkBoxClothes.isChecked()) {
+            checkedClothes = false;
+            filterArrayList.add("clothes");
+        }
+        else {
+            checkedClothes = true;
+            filterArrayList.remove("clothes");
+        }
+    }
+
+    public void checkBoxActivitiesClicked(View v) {
+        if (checkBoxActivities.isChecked()) {
+            checkedActivities = false;
+            filterArrayList.add("activities");
+        }
+        else {
+            checkedActivities = true;
+            filterArrayList.remove("activities");
+        }
+    }
+
+    public void checkBoxStuffClicked(View v) {
+        if (checkBoxStuff.isChecked()) {
+            checkedStuff = false;
+            filterArrayList.add("stuff");
+        }
+        else {
+            checkedStuff = true;
+            filterArrayList.remove("stuff");
+        }
+    }
+
+    public void checkBoxRandomClicked(View v) {
+        if (checkBoxRandom.isChecked()) {
+            checkedRandom = false;
+            filterArrayList.add("random");
+        }
+        else {
+            checkedRandom = true;
+            filterArrayList.remove("random");
+        }
     }
 
     //Function called by the switch case when back button on My Profile is pressed which dismisses the My Profile popup.
