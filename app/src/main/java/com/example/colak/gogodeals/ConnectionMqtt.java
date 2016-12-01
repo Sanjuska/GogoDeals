@@ -66,14 +66,6 @@ public ConnectionMqtt(Activity activity){
     This method subsrcibes to the topic given.
      */
     public void sendMqtt(String payload, String sendTopic, String receiveTopic, int qot){
-        open();
-    }
-
-    /*
-    This method is the same as the previous one with the exception of the recievetopic and the qot.
-    This method subsrcibes to the topic given.
-     */
-    public void sendMqtt(String payload, String sendTopic, String receiveTopic, int qot){
         this.payload = payload;
         this.sendTopic = sendTopic;
         this.receiveTopic = receiveTopic;

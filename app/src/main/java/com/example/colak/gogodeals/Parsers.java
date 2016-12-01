@@ -26,23 +26,6 @@ public class Parsers {
     */
     public void parse(String topic,MqttMessage message){
         IdentifierSingleton identifierSingleton = IdentifierSingleton.getInstance();
-        // Checks if this message is related to this instance of the application or to this user
-       // if(IdentifierSingleton.SESSION == get_id(message) || IdentifierSingleton.USER == get_id(message)) {
-            switch (topic) {
-                case "deal/gogodeals/database/deals":
-                    try {
-                        fetchDealParser(message);
-                        Log.i("json parser ",message.toString());
-                    } catch (JSONException e) {
-                        Log.i("json parser error!!","more error");
-                        e.printStackTrace();
-                    }
-                    break;
-
-                case "deal/gogodeals/database/info":
-                    try {
-                        grabbedDealParser(message);
-                    } catch (JSONException e) {
 
         // Checks if this message is related to this instance of the application or to this user
         //if(IdentifierSingleton.SESSION == get_id(message) || IdentifierSingleton.USER == get_id(message)) {
@@ -56,6 +39,14 @@ public class Parsers {
                         }
                     } catch (JSONException e) {
                         Log.i("json error fuuck ",message.toString() +e.toString());
+                        e.printStackTrace();
+                    }
+                    break;
+
+                case "deal/gogodeals/database/info":
+                    try {
+                        grabbedDealParser(message);
+                    } catch (JSONException e) {
                         e.printStackTrace();
                     }
                     break;
@@ -168,8 +159,8 @@ public class Parsers {
         }
 
         }
-        MapsActivity.dealMqtt.close();
-    }
+
+
 
     /**
      * Get the id from a MqttMessage
@@ -229,8 +220,6 @@ public class Parsers {
         // add code to deal in list
         MapsActivity.mProgressDlg.dismiss();
 
-        //close communication
-        MapsActivity.dealMqtt.close();
     }
 
 
