@@ -1,6 +1,8 @@
 package com.example.colak.gogodeals;
 
 import android.util.Log;
+import android.view.View;
+import android.widget.TextView;
 
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
@@ -24,6 +26,23 @@ public class Parsers {
     */
     public void parse(String topic,MqttMessage message){
         IdentifierSingleton identifierSingleton = IdentifierSingleton.getInstance();
+        // Checks if this message is related to this instance of the application or to this user
+       // if(IdentifierSingleton.SESSION == get_id(message) || IdentifierSingleton.USER == get_id(message)) {
+            switch (topic) {
+                case "deal/gogodeals/database/deals":
+                    try {
+                        fetchDealParser(message);
+                        Log.i("json parser ",message.toString());
+                    } catch (JSONException e) {
+                        Log.i("json parser error!!","more error");
+                        e.printStackTrace();
+                    }
+                    break;
+
+                case "deal/gogodeals/database/info":
+                    try {
+                        grabbedDealParser(message);
+                    } catch (JSONException e) {
 
         // Checks if this message is related to this instance of the application or to this user
         //if(IdentifierSingleton.SESSION == get_id(message) || IdentifierSingleton.USER == get_id(message)) {
@@ -42,6 +61,11 @@ public class Parsers {
                     break;
 
                 case "deal/gogodeals/user/info":
+                    try {
+                        grabbedDealParser(message);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
 
                     break;
 
@@ -76,6 +100,7 @@ public class Parsers {
         for (int i = 0; i< jsonArray.length();i++){
 
             jsonObject = jsonArray.getJSONObject(i);
+            Log.i("json obect ", jsonObject.toString());
             String id = jsonObject.getString("id");
             String name = jsonObject.getString("name");
             int price = jsonObject.getInt("price");
@@ -92,8 +117,6 @@ public class Parsers {
             String companyName = jsonObject.getString("client_name");
 
 
-
-
             LatLng latlng = new LatLng(latitude,longitude);
 
 
@@ -104,8 +127,7 @@ public class Parsers {
                             .title(name)
                             .icon(BitmapDescriptorFactory
                                     .fromResource(R.drawable.clothes))
-                            .snippet(companyName + ";" + description + ";" + price + ";" + count + ";" + duration + ";" + picture));
-
+                            .snippet(companyName + "€" + description + "€" + price + "€" + count + "€" + duration + "€" + picture + "€" + id));
 
                 }else if(filters.equals("food")){
                     //Deal marker on the map including popup
@@ -114,8 +136,7 @@ public class Parsers {
                             .title(name)
                         .icon(BitmapDescriptorFactory
                                 .fromResource(R.drawable.food))
-                                .snippet(companyName + ";" + description + ";" + price + ";" + count + ";" + duration + ";" + picture));
-
+                           .snippet(companyName + "€" + description + "€" + price + "€" + count + "€" + duration + "€" + picture + "€" + id));
 
                 }else if(filters.equals("alcohol")){
                     //Deal marker on the map including popup
@@ -124,8 +145,7 @@ public class Parsers {
                             .title(name)
                         .icon(BitmapDescriptorFactory
                                 .fromResource(R.drawable.alcohol))
-                                .snippet(companyName + ";" + description + ";" + price + ";" + count + ";" + duration + ";" + picture));
-
+                            .snippet(companyName + "€" + description + "€" + price + "€" + count + "€" + duration + "€" + picture + "€" + id));
                 }else if(filters.equals("random")){
                     //Deal marker on the map including popup
                    MapsActivity.mMap.addMarker(new MarkerOptions()
@@ -133,8 +153,7 @@ public class Parsers {
                             .title(name)
                             .icon(BitmapDescriptorFactory
                                     .fromResource(R.drawable.random))
-                            .snippet(companyName + ";" + description + ";" + price + ";" + count + ";" + duration + ";" + picture));
-
+                           .snippet(companyName + "€" + description + "€" + price + "€" + count + "€" + duration + "€" + picture + "€" + id));
                 }else if(filters.equals("stuff")){
                     //Deal marker on the map including popup
                    MapsActivity.mMap.addMarker(new MarkerOptions()
@@ -142,15 +161,14 @@ public class Parsers {
                             .title(name)
                         .icon(BitmapDescriptorFactory
                                 .fromResource(R.drawable.stuff))
-                                .snippet(companyName + ";" + description + ";" + price + ";" + count + ";" + duration + ";" + picture));
-
+                           .snippet(companyName + "€" + description + "€" + price + "€" + count + "€" + duration + "€" + picture + "€" + id));
                 }
 
 
-
+        }
 
         }
-        //MapsActivity.dealMqtt.close();
+        MapsActivity.dealMqtt.close();
     }
 
     /**
@@ -168,6 +186,51 @@ public class Parsers {
             e.printStackTrace();
         }
         return null;
+    }
+
+
+    private void grabbedDealParser(MqttMessage message) throws JSONException {
+        Log.i("poruka", String.valueOf(message.getPayload()));
+        // message template according to RFC
+        /*{
+            “id”: “33333333-1011-M012-N210-112233445566”,
+            “data”: {
+            “count”: 99,
+            “id”: “24818880316702720”
+        },
+        }*/
+        //Log.i("MESSAGE to parse", new String(message.getPayload()));
+        String dealID;
+        int count = 0;
+        String verificationID = null;
+
+        // Split upp payload messageString into components
+        String jsonString = new String(message.getPayload());
+        JSONObject jsonData;
+        jsonData  = new JSONObject(jsonString);
+        dealID = jsonData.getString("id");
+        jsonData = new JSONObject(jsonData.getString("data"));
+        count = jsonData.getInt("count");
+        verificationID = jsonData.getString("id");
+
+        MapsActivity.grabbedView.setVisibility(View.VISIBLE);
+
+        // update unit in popup
+        TextView units = ((TextView) MapsActivity.popupMessage.getContentView().findViewById(R.id.units));
+        units.setText(String.valueOf(count));
+
+        // add deal to list
+        //TextView description = (TextView) MapsActivity.popupMessage.getContentView().findViewById(R.id.description);
+
+        //MapsActivity.dealArrayList.add(MapsActivity.descriptionOfGrabbedDeal);
+        MapsActivity.grabbedDeal.setVerificationID(verificationID);
+        MapsActivity.dealArrayList.add(MapsActivity.grabbedDeal);
+
+        // add code to deal in list
+        MapsActivity.mProgressDlg.dismiss();
+
+        //close communication
+        MapsActivity.dealMqtt.close();
     }
 
 
