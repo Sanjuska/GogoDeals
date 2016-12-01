@@ -28,7 +28,7 @@ public class Parsers {
                 break;
 
             //check users on database
-            case "deal/gogodeals/user/info":
+            case "deal/gogodeals/database/users":
                 try {
                     checkEmail(message);
                 } catch (JSONException e) {
@@ -38,11 +38,7 @@ public class Parsers {
 
             //insert new user in databse
             case "deal/gogodeals/user/new":
-                try {
-                    checkEmail(message);
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
+
                 break;
 
             default:
@@ -50,13 +46,13 @@ public class Parsers {
         }
     }
 
-    public static void checkEmail (MqttMessage message) throws JSONException {
+    private void checkEmail(MqttMessage message) throws JSONException {
         String messageString = new String(message.getPayload());
-        Log.i("fetchdb: ", String.valueOf(message.getPayload()));
+        Log.i("fetchdb: ", String.valueOf((message.getPayload())));
         JSONObject jsonEmail;
         jsonEmail = new JSONObject(messageString);
         String email = jsonEmail.getString("email");
-        GogouserLogin.gogoUserMqtt.close();
+        //GogouserLogin.gogoUserMqtt.close();
 
 
     }

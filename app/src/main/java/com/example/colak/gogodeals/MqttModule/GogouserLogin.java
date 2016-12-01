@@ -40,7 +40,7 @@ public class GogouserLogin extends AppCompatActivity {
     }
 
     private void gogoLogin() {
-
+        gogoUserMqtt = new ConnectionMqtt(this);
         String email = loginEmail.getText().toString();
         String password = loginPassword.getText().toString();
 
@@ -48,7 +48,7 @@ public class GogouserLogin extends AppCompatActivity {
         String payload = "{\"id\":\"12345678-1011-M012-N210-112233445566\",\"data\":{\"email\":\""
                 + email + "\",\"password\": \"" + password + "\"},}";
 
-        Log.i("loginfielads: ", email + password + topic + payload);
+        Log.i("loginfielads: ", email + password);
 
         gogoUserMqtt.sendMqtt(topic, payload);
     }
