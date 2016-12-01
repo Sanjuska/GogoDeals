@@ -99,7 +99,6 @@ public class MapsActivity extends FragmentActivity implements
     public static ProgressDialog mProgressDlg;
 
     static PopupWindow popupMessage;
-    static PopupWindow popupDealView;
     Button grabButton;
     Button ungrabButton;
     static ImageView grabbedView;
@@ -116,6 +115,7 @@ public class MapsActivity extends FragmentActivity implements
     PopupWindow profilePopup;
     PopupWindow optionsPopup;
     PopupWindow grocodePopup;
+    PopupWindow popupDealView;
 
     LinearLayout mainLayout;
 
@@ -124,7 +124,6 @@ public class MapsActivity extends FragmentActivity implements
     private ListView grocodeListView;
     private ArrayAdapter<Deal> grocodeAdapter;
     private ArrayList<Deal> grocodeArrayList;
-    private Dialog popupDealView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
