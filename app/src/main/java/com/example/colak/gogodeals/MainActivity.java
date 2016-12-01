@@ -7,10 +7,6 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
-import com.facebook.CallbackManager;
-import com.example.colak.gogodeals.R;
-import com.facebook.AccessToken;
-import com.facebook.AccessTokenTracker;
 import com.facebook.login.widget.LoginButton;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
@@ -59,7 +55,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         switch (v.getId()) {
             //login for facebook users
             case R.id.mainLogin:
-                Intent gogoApp1 = new Intent(MainActivity.this, UserLogin.class);
+                Intent gogoApp1 = new Intent(MainActivity.this, FacebookLogin.class);
                 startActivity(gogoApp1);
                 break;
 

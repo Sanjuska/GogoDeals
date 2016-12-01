@@ -54,11 +54,18 @@ public class Parsers {
                 case "deal/gogodeals/user/info":
                     try {
                         grabbedDealParser(message);
+
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
-
                     break;
+
+                case "deal/gogodeals/database/users":
+                    try {
+                        checkEmail(message);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
 
                 default:
                     break;
@@ -74,6 +81,16 @@ public class Parsers {
     creates a marker with that information.
     It then puts the marker on the map in Mapsactivity.
      */
+    private void checkEmail(MqttMessage message) throws JSONException{
+
+        String messageString1 = new String(message.getPayload());
+        Log.i("fetchdb: ", String.valueOf(message.getPayload()).toString());
+        JSONObject jsonEmail;
+        jsonEmail = new JSONObject(messageString1);
+        String email = jsonEmail.getString("email");
+        GogouserLogin.gogoUserMqtt.close();
+    }
+
     private void fetchDealParser(MqttMessage message) throws JSONException {
 
         String jsonString = new String(message.getPayload());

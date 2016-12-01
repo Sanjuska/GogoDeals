@@ -107,5 +107,4 @@ public class Deal {
         return false;
     }
 
-<<<<<<< HEAD
 }
