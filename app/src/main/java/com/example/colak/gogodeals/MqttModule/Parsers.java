@@ -49,7 +49,7 @@ public class Parsers {
     }
 
     public static void checkEmail (MqttMessage message) throws JSONException {
-
+        Log.i("fetchdb: ", String.valueOf(message.getPayload()));
         String messageString = new String(message.getPayload());
         JSONObject jsonEmail;
         jsonEmail = new JSONObject(messageString);

@@ -37,8 +37,9 @@ public class UserLogin extends AppCompatActivity {
 
     private CallbackManager callbackManager;
 
-    static String Name;
-    static String Email;
+    //private JSONObject fbObject;
+
+    //public static String fbname, fbemail;
 
     ConnectionMqtt connection1;
 
@@ -86,12 +87,12 @@ public class UserLogin extends AppCompatActivity {
                                         Log.i("LoginActivity Response ", response.toString());
 
                                                 try {
-                                                    connection1 = new ConnectionMqtt(UserLogin.this);
+                                                    //fbObject=object;
                                                     String name = object.getString("name");
                                                     String email = object.getString("email");
                                                     Log.i("FBdata: ", name + " " + email);
 
-                                                    while (true){
+                                                    /*while (true){
                                                         if (object.getString("name").equals(null) || object.getString("email").equals(null)) {
                                                             continue;
                                                         }
@@ -103,31 +104,42 @@ public class UserLogin extends AppCompatActivity {
                                                             String payload = "{\"id\":\"1\",\"data\":{\"username\":\""
                                                                     + object.getString("name") + "\",\"password\": \"" + Math.random() + "\",\"email\": \"" + object.getString("email") + "\"},}";
                                                             connection1.sendMqtt(topic, payload);
+                                                            Log.i("while condition: ", name + email);
                                                             break;
                                                         }
-                                                    }
+                                                    }*/
 
                                                 } catch (JSONException e) {
-                                                    e.printStackTrace();
+                                                   e.printStackTrace();
                                                 }
                                             }
                                 });
 
-                        //bundle which parses the values we need to acquire from logged in user
+                        //bundle which parses the values we need from logged in user
+                        //by acquiring them as parameters
                         Bundle parameters = new Bundle();
                         parameters.putString("fields", "name,email");
                         request.setParameters(parameters);
                         request.executeAsync();
 
+                        //connection1 = new ConnectionMqtt(UserLogin.this);
 
                         //when user press back, he goes to main screen in order to login again etc.
-                        LoginManager.getInstance().logOut();
-                        finish();
+                        //LoginManager.getInstance().logOut();
+                        //finish();
                         //startActivity(gogoAppMainscreen);
 
                     }
+                    /*public void mattiasMethod() {
+                        try {
+                            fbemail = fbObject.getString("email");
+                            Log.i("fbemail: ", fbemail);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }*/
 
-                     @Override
+                    @Override
                      public void onCancel() {
                          LoginManager.getInstance().logOut();
                          Intent gogoAppMainscreen = new Intent(UserLogin.this, MainActivity.class);

@@ -95,7 +95,7 @@ public class newUserSignup extends AppCompatActivity{
 
         //if username, password and/or email have same values, user must check tips on his screen
         else if (regUser.equals(regPass) || regUser.equals(regMail)
-                || regMail.equals(regPass) || regUser.length() < 5 || regPass.length() < 8) {
+                || regMail.equals(regPass) || regUser.length() < 1 || regPass.length() < 1) {
             Toast.makeText(getApplicationContext(), "Check tips", Toast.LENGTH_SHORT).show();
         }
 
@@ -109,7 +109,7 @@ public class newUserSignup extends AppCompatActivity{
         //credential fields are filled out properly and user signs up
         else if ((!regUser.isEmpty() && !regPass.isEmpty() &&
                 !regMail.isEmpty() && !regMailConf.isEmpty() && !regPassConf.isEmpty())) {
-            if (regUser.length() >= 5 && regPass.length() >= 8) {
+            if (regUser.length() >= 1 && regPass.length() >= 1) {
                 if ((!regUser.equals(regPass) && !regMail.equals(regPass) &&
                         !regUser.equals(regMail) && regMail.equals(regMailConf) && regPass.equals(regPassConf))) {
 
@@ -118,6 +118,7 @@ public class newUserSignup extends AppCompatActivity{
 
                     //opens mqtt connection and sends data to database
                     connection1.sendMqtt(topic, payload);
+                    //Parsers.checkEmail();
 
                     Log.i("topic payload ", topic + " " + payload);
 
