@@ -38,6 +38,11 @@ public class Parsers {
 
             //insert new user in databse
             case "deal/gogodeals/user/new":
+                try {
+                    checkEmail(message);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
                 break;
 
             default:

@@ -83,7 +83,7 @@ public class newUserSignup extends AppCompatActivity{
 
         //topic and payload which will add user to database
         String topic = "deal/gogodeals/user/new";
-        String payload = "{\"id\":\"1\",\"data\":{\"username\":\""
+        String payload = "{\"id\":\"12345678-1011-M012-N210-112233445566\",\"data\":{\"name\":\""
                 + regUser + "\",\"password\": \"" + regPass + "\",\"email\": \"" + regMail + "\"},}";
 
 

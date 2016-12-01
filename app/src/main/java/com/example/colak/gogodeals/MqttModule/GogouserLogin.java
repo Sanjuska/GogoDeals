@@ -2,6 +2,7 @@ package com.example.colak.gogodeals.MqttModule;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -46,6 +47,8 @@ public class GogouserLogin extends AppCompatActivity {
         String topic = "deal/gogodeals/user/info";
         String payload = "{\"id\":\"12345678-1011-M012-N210-112233445566\",\"data\":{\"email\":\""
                 + email + "\",\"password\": \"" + password + "\"},}";
+
+        Log.i("loginfielads: ", email + password + topic + payload);
 
         gogoUserMqtt.sendMqtt(topic, payload);
     }
