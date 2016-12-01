@@ -2,7 +2,7 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
-    android:layout_width="250dp"
+    android:layout_width="300dp"
     android:layout_height="400dp"
     android:layout_gravity="center"
     android:weightSum="1"
@@ -12,7 +12,7 @@
         android:layout_height="100dp">-->
 
     <GridLayout
-        android:layout_width="390dp"
+        android:layout_width="380dp"
         android:layout_height="match_parent"
         android:visibility="visible">
 
@@ -122,47 +122,46 @@
 
                 <TextView
                     android:text="Company"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_width="149dp"
+                    android:layout_height="20dp"
                     android:id="@+id/textView5"
                     style="@style/TextViewStyleHeader"
                     android:layout_weight="0.54" />
 
                 <TextView
                     android:text="TextView"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_width="149dp"
+                    android:layout_height="20dp"
                     android:id="@+id/company"
                     style="@style/TextViewStyle"
                     android:layout_weight="0.54" />
 
                 <TextView
                     android:text="Price"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_width="149dp"
+                    android:layout_height="20dp"
                     android:id="@+id/textView2"
                     style="@style/TextViewStyleHeader"
                     android:layout_weight="0.54" />
 
                 <TextView
                     android:text="TextView"
-                    android:layout_width="match_parent"
+                    android:layout_width="149dp"
                     android:layout_height="20dp"
                     android:id="@+id/price"
-                    style="@style/TextViewStyle"
-                    android:layout_weight="0.54" />
+                    style="@style/TextViewStyle" />
 
                 <TextView
                     android:text="Units"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_width="149dp"
+                    android:layout_height="20dp"
                     android:id="@+id/verificationHeader"
                     style="@style/TextViewStyleHeader"
                     android:layout_weight="0.54" />
 
                 <TextView
                     android:text="TextView"
-                    android:layout_width="match_parent"
+                    android:layout_width="149dp"
                     android:layout_height="20dp"
                     android:id="@+id/units"
                     style="@style/TextViewStyle"
@@ -170,15 +169,15 @@
 
                 <TextView
                     android:text="Time left"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_width="149dp"
+                    android:layout_height="20dp"
                     style="@style/TextViewStyleHeader"
                     android:id="@+id/textView4"
                     android:layout_weight="0.54" />
 
-                <Chronometer
-                    android:layout_width="199dp"
-                    android:layout_height="42dp"
+                <TextView
+                    android:layout_width="149dp"
+                    android:layout_height="20dp"
                     android:id="@+id/duration"
                     style="@style/TextViewStyle" />
 
@@ -189,7 +188,7 @@
     </GridLayout>
 
     <ImageView
-        android:layout_width="390dp"
+        android:layout_width="331dp"
         android:layout_height="300dp"
         android:id="@+id/grabbedView"
         android:visibility="invisible"

@@ -72,13 +72,18 @@ public class Parsers {
      */
     private void fetchDealParser(MqttMessage message) throws JSONException {
 
+
         String jsonString = new String(message.getPayload());
 
-
+        Log.i("json String",jsonString);
         JSONArray jsonArray;
         JSONObject jsonObject;
         JSONObject json1;
         json1  = new JSONObject(jsonString);
+        if (!json1.getString("data").equals("{}")){
+
+
+
         jsonArray = new JSONArray(json1.getJSONArray("data").toString());
 
 
@@ -151,7 +156,7 @@ public class Parsers {
                 }
 
 
-
+        }
 
         }
         MapsActivity.dealMqtt.close();

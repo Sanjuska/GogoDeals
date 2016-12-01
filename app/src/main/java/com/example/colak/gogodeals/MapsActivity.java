@@ -77,8 +77,6 @@ public class MapsActivity extends FragmentActivity implements
 
     Location mLastLocation;
 
-    Handler fetchHandler;
-
     Marker mPositionMarker;
 
     Marker lastOpened = null;
@@ -90,7 +88,7 @@ public class MapsActivity extends FragmentActivity implements
     CheckBox random;
     Location lastFetched;
     ArrayList<String> filterList;
-    boolean fetched = false;
+   boolean fetched = false;
 
 
     boolean isClickedPop = true;
