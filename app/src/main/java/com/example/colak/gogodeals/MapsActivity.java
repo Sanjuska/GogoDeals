@@ -334,6 +334,8 @@ public class MapsActivity extends FragmentActivity implements
 
     // Opens the popupwith My Deal on click.
     public void grocodeButtonPressed(View v){
+        User user = new User();
+        grocodeArrayList = GrocodeHandler.handle(user);
 
         Display display = getWindowManager().getDefaultDisplay();
         Point size = new Point();
