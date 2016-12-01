@@ -41,6 +41,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         mainLogin.setOnClickListener(this);
         mainsignup.setOnClickListener(this);
+        gogoProfile.setOnClickListener(this);
 
     }
 
@@ -53,7 +54,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             //login for facebook users
 
             case R.id.mainLogin:
-                Intent gogoApp = new Intent(MainActivity.this, UserLogin.class);
+                Intent gogoApp = new Intent(MainActivity.this, FacebookLogin.class);
                 startActivity(gogoApp);
 
 
@@ -63,6 +64,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             case R.id.mainsignup:
                 Intent gogoApp2 = new Intent(MainActivity.this, newUserSignup.class);
                 startActivity(gogoApp2);
+                break;
+
+            case R.id.gogoProfile:
+                Intent gogoApp3 = new Intent(MainActivity.this, GogouserLogin.class);
+                startActivity(gogoApp3);
                 break;
 
 

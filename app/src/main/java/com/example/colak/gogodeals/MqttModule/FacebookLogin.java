@@ -27,7 +27,7 @@ import org.json.JSONObject;
 
 import java.util.Arrays;
 
-public class UserLogin extends AppCompatActivity {
+public class FacebookLogin extends AppCompatActivity {
 
 
     private static final String TAG = "Test@ " ;
@@ -72,7 +72,7 @@ public class UserLogin extends AppCompatActivity {
                     public void onSuccess(LoginResult loginResult) {
 
                         //when fb credentials are correct, user logins to gogodeals
-                        Intent gogoApp = new Intent(UserLogin.this, MapsActivity.class);
+                        Intent gogoApp = new Intent(FacebookLogin.this, MapsActivity.class);
                         startActivity(gogoApp);
                         JSONObject object;
 
@@ -122,7 +122,7 @@ public class UserLogin extends AppCompatActivity {
                         request.setParameters(parameters);
                         request.executeAsync();
 
-                        //connection1 = new ConnectionMqtt(UserLogin.this);
+                        //connection1 = new ConnectionMqtt(FacebookLogin.this);
 
                         //when user press back, he goes to main screen in order to login again etc.
                         //LoginManager.getInstance().logOut();
@@ -142,11 +142,11 @@ public class UserLogin extends AppCompatActivity {
                     @Override
                      public void onCancel() {
                          LoginManager.getInstance().logOut();
-                         Intent gogoAppMainscreen = new Intent(UserLogin.this, MainActivity.class);
+                         Intent gogoAppMainscreen = new Intent(FacebookLogin.this, MainActivity.class);
                          startActivity(gogoAppMainscreen);
                          //finish();
 
-                          Toast.makeText(UserLogin.this, "Login canceled", Toast.LENGTH_SHORT).show();
+                          Toast.makeText(FacebookLogin.this, "Login canceled", Toast.LENGTH_SHORT).show();
                       }
                      @Override
                      public void onError(FacebookException e) {

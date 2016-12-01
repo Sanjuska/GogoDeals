@@ -31,11 +31,11 @@ package="com.example.colak.gogodeals">
 
     </activity>
 
-    <activity android:name=".MqttModule.UserLogin">
+    <activity android:name=".MqttModule.FacebookLogin">
 
     </activity>
 
-    <activity android:name=".MqttModule.UserSignup">
+    <activity android:name=".MqttModule.GogouserLogin">
 
     </activity>
 

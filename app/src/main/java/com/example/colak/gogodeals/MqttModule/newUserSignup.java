@@ -25,7 +25,7 @@ public class newUserSignup extends AppCompatActivity{
     Button gogosignup;
 
 
-    ConnectionMqtt connection1;
+    static ConnectionMqtt connection1;
     @Override
 
     //Connect class with xml file

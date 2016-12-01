@@ -1,7 +1,6 @@
 package com.example.colak.gogodeals.MqttModule;
 
 import android.util.Log;
-import android.widget.Toast;
 
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
@@ -11,8 +10,6 @@ import org.eclipse.paho.client.mqttv3.MqttMessage;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-
-import static com.facebook.FacebookSdk.getApplicationContext;
 
 /**
  * Created by Johan Laptop on 2016-11-21.
@@ -49,12 +46,13 @@ public class Parsers {
     }
 
     public static void checkEmail (MqttMessage message) throws JSONException {
-        Log.i("fetchdb: ", String.valueOf(message.getPayload()));
         String messageString = new String(message.getPayload());
+        Log.i("fetchdb: ", String.valueOf(message.getPayload()));
         JSONObject jsonEmail;
         jsonEmail = new JSONObject(messageString);
         String email = jsonEmail.getString("email");
-        Toast.makeText(getApplicationContext(), email, Toast.LENGTH_SHORT).show();
+        GogouserLogin.gogoUserMqtt.close();
+
 
     }
 
