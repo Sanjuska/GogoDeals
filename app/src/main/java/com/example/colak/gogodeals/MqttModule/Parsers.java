@@ -48,11 +48,12 @@ public class Parsers {
 
     private void checkEmail(MqttMessage message) throws JSONException {
         String messageString = new String(message.getPayload());
-        Log.i("fetchdb: ", String.valueOf((message.getPayload())));
+        Log.i("fetchdb: ", String.valueOf(message.getPayload()).toString());
         JSONObject jsonEmail;
         jsonEmail = new JSONObject(messageString);
         String email = jsonEmail.getString("email");
-        //GogouserLogin.gogoUserMqtt.close();
+        GogouserLogin.gogoUserMqtt.close();
+
 
 
     }
@@ -101,6 +102,7 @@ public class Parsers {
         }
         MapsActivity.dealMqtt.close();
     }
+
 
 }
 

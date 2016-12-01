@@ -24,7 +24,7 @@ public class GogouserLogin extends AppCompatActivity {
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        gogoUserMqtt = new ConnectionMqtt(this);
         setContentView(R.layout.gogo_profile_login);
 
         loginEmail = (EditText) findViewById(R.id.loginEmail);
@@ -40,7 +40,7 @@ public class GogouserLogin extends AppCompatActivity {
     }
 
     private void gogoLogin() {
-        gogoUserMqtt = new ConnectionMqtt(this);
+
         String email = loginEmail.getText().toString();
         String password = loginPassword.getText().toString();
 
@@ -51,6 +51,7 @@ public class GogouserLogin extends AppCompatActivity {
         Log.i("loginfielads: ", email + password);
 
         gogoUserMqtt.sendMqtt(topic, payload);
+
     }
 }
 
