@@ -90,6 +90,7 @@ public class MapsActivity extends FragmentActivity implements
     PopupWindow myDealsPopup;
     PopupWindow profilePopup;
     PopupWindow optionsPopup;
+    boolean fetched;
 
     LinearLayout mainLayout;
 
@@ -98,7 +99,7 @@ public class MapsActivity extends FragmentActivity implements
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-
+        fetched = false;
         filterList = new ArrayList<>();
         super.onCreate(savedInstanceState);
         popupMessage = new PopupWindow(this);
@@ -579,7 +580,13 @@ public class MapsActivity extends FragmentActivity implements
         filterList.add("stuff");
         filterList.add("clothes");
 
-        if (lastFetched.getLatitude()+0.2 < mLastLocation.getLatitude() &&
+
+        if(!fetched){
+            for (String filter :filterList) {
+                fetchDeals(filter);
+            }
+            fetched = true;
+        }else if (lastFetched.getLatitude()+0.2 < mLastLocation.getLatitude() &&
                 lastFetched.getLatitude()-0.2 > mLastLocation.getLatitude() &&
                 lastFetched.getLongitude()+0.2 < mLastLocation.getLongitude() &&
                 lastFetched.getLongitude()-0.2 > mLastLocation.getLongitude()){
