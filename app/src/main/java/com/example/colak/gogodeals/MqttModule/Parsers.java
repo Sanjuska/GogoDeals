@@ -17,6 +17,8 @@ import org.json.JSONObject;
 
 public class Parsers {
 
+    static GogouserLogin gogouserLogin;
+
     public void parse(String topic,MqttMessage message){
         switch (topic){
             case "deal/gogodeals/database/deals":
@@ -46,17 +48,61 @@ public class Parsers {
         }
     }
 
-    private void checkEmail(MqttMessage message) throws JSONException {
+    public void checkEmail(MqttMessage message) throws JSONException {
+        String emailData;
+        String passwordData;
+        String id;
         String messageString = new String(message.getPayload());
-        Log.i("fetchdb: ", String.valueOf(message.getPayload()).toString());
-        JSONObject jsonEmail;
-        jsonEmail = new JSONObject(messageString);
+        Log.i("fetchEmail: ", String.valueOf(message.getPayload()));
+        JSONObject jsonData;
+
+        jsonData = new JSONObject(messageString);
+
+        jsonData = new JSONObject(jsonData.getString("data"));
+
+        emailData = jsonData.getString("email");
+        passwordData = jsonData.getString("password");
+        id = jsonData.getString("id");
+
+        if (emailData.equals(GogouserLogin.email) && passwordData.equals(GogouserLogin.password)){
+
+            GogouserLogin.loginResult=true;
+
+            MainActivity.userID = id;
+            Log.i("User", MainActivity.userID);
+            GogouserLogin.mProgressDlg.dismiss();
+
+            gogouserLogin.loginResultReceived();
+
+        }
+        else {
+            Log.i("7 :", "1");
+            Log.i("9 :", "1");
+            GogouserLogin.loginResult=false;
+            GogouserLogin.mProgressDlg.dismiss();
+
+
+        }
+
+
+
+       /* “id”: “12345678-1011-M012-N210-112233445566”,
+        “data”: {
+            “id”: “0a1e53be-ac55-11e6-a0a1-8c705aaa0186”,
+            “name”: “Bob Bobson”,
+            “email”: “Bob@Bobson.se”,
+            “password”: “Bobson123”,
+            “filters”: null,
+            “deals”: null
+            }
+*/
+        /*jsonEmail = new JSONObject(messageString);
+        jsonPassword = new JSONObject(messageString);
         String email = jsonEmail.getString("email");
+        String password = jsonPassword.getString("password");*/
         GogouserLogin.gogoUserMqtt.close();
-
-
-
     }
+
 
 
     public void fetchDealParser(MqttMessage message) throws JSONException {

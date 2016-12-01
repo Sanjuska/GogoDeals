@@ -88,26 +88,21 @@ public class FacebookLogin extends AppCompatActivity {
 
                                                 try {
                                                     //fbObject=object;
-                                                    String name = object.getString("name");
+                                                    String name = object.getString("first_name");
+                                                    String lastName = object.getString("last_name");
                                                     String email = object.getString("email");
-                                                    Log.i("FBdata: ", name + " " + email);
+                                                    Log.i("FBdata: ", name + " " + lastName);
 
-                                                    /*while (true){
-                                                        if (object.getString("name").equals(null) || object.getString("email").equals(null)) {
-                                                            continue;
-                                                        }
-                                                        else {
 
-                                                            Toast.makeText(getApplicationContext(), "Name: " + name, Toast.LENGTH_LONG).show();
-                                                            Toast.makeText(getApplicationContext(), "Email: " + email, Toast.LENGTH_SHORT).show();
                                                             String topic = "deal/gogodeals/user/new";
-                                                            String payload = "{\"id\":\"1\",\"data\":{\"username\":\""
-                                                                    + object.getString("name") + "\",\"password\": \"" + Math.random() + "\",\"email\": \"" + object.getString("email") + "\"},}";
-                                                            connection1.sendMqtt(topic, payload);
+                                                    Log.i("fbData2: ", topic);
+                                                            String payload = "{\"id\":\"1\",\"data\":{\"name\":\""
+                                                                    + name + lastName + "\",\"email\": \"" + Math.random() + "\",\"password\": \"" + object.getString("email") + "\"}}";
+                                                    Log.i("fbData3: ", payload);
+
+                                                    connection1.sendMqtt(topic, payload);
                                                             Log.i("while condition: ", name + email);
-                                                            break;
-                                                        }
-                                                    }*/
+
 
                                                 } catch (JSONException e) {
                                                    e.printStackTrace();
@@ -118,7 +113,7 @@ public class FacebookLogin extends AppCompatActivity {
                         //bundle which parses the values we need from logged in user
                         //by acquiring them as parameters
                         Bundle parameters = new Bundle();
-                        parameters.putString("fields", "name,email");
+                        parameters.putString("fields", "first_name, last_name, email");
                         request.setParameters(parameters);
                         request.executeAsync();
 

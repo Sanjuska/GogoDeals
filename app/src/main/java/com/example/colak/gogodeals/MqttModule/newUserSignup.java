@@ -120,7 +120,7 @@ public class newUserSignup extends AppCompatActivity{
                     connection1.sendMqtt(topic, payload);
                     //Parsers.checkEmail();
 
-                    Log.i("topic payload ", topic + " " + payload);
+                    Log.i("topic payload: ", topic + " " + payload);
 
                     //clear fields
                     regUsername.getText().clear();

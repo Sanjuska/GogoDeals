@@ -43,19 +43,21 @@ public ConnectionMqtt(Activity activity){
 
 
     public void sendMqtt(String topic, String payload){
-        open();
+        Log.i(TAG, payload);
         this.sendTopic = topic;
         this.payload = payload;
         this.receiveTopic ="";
         this.qot = 0;
+        open();
     }
 
     public void sendMqtt(String payload, String sendTopic, String receiveTopic, int qot){
-        open();
+
         this.payload = payload;
         this.sendTopic = sendTopic;
         this.receiveTopic = receiveTopic;
         this.qot = qot;
+        open();
     }
 
 
@@ -68,14 +70,16 @@ public ConnectionMqtt(Activity activity){
 
         try {
             IMqttToken token = client.connect();
+
             token.setActionCallback(new IMqttActionListener() {
                 @Override
                 public void onSuccess(IMqttToken asyncActionToken) {
                     // We are connected
                     Log.d(TAG, "onSuccess");
+                    Log.d(TAG, payload);
+                    Log.d(TAG, sendTopic);
                     if (receiveTopic.equals("")){
                         publish(payload,sendTopic);
-                        close();
                     }else{
                         subscribe(receiveTopic,qot);
                     }
@@ -102,8 +106,12 @@ public ConnectionMqtt(Activity activity){
         try {
             encodedPayload = payload.getBytes("UTF-8");
             MqttMessage message = new MqttMessage(encodedPayload);
+            Log.e(TAG, topic);
+            Log.e(TAG, payload);
+            Log.e(TAG, String.valueOf(message));
             client.publish(topic, message);
         } catch (UnsupportedEncodingException | MqttException e) {
+            Log.e(TAG, "I FAILED");
             e.printStackTrace();
         }
     }

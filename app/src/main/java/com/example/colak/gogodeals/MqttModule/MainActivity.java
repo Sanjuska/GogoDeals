@@ -8,8 +8,6 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.example.colak.gogodeals.R;
-import com.facebook.AccessToken;
-import com.facebook.AccessTokenTracker;
 import com.facebook.login.widget.LoginButton;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
@@ -24,8 +22,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private Button gogoProfile;
 
     private TextView welcometext;
-    private AccessToken accessToken;
-    private AccessTokenTracker accessTokenTracker;
+
+    public static String userID;
 
     ConnectionMqtt connection1;
 
