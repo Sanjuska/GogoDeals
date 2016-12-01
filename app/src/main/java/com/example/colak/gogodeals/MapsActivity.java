@@ -59,8 +59,6 @@ public class MapsActivity extends FragmentActivity implements
 
     public Deals deals;
 
-    static ConnectionMqtt dealMqtt;
-
     public static GoogleMap mMap;
 
     GoogleApiClient mGoogleApiClient;
@@ -298,7 +296,7 @@ public class MapsActivity extends FragmentActivity implements
 
     public void fetchDeals(String filter) {
 
-        dealMqtt = new ConnectionMqtt(this);
+        ConnectionMqtt connectionMqtt = new ConnectionMqtt(this);
 
         String subscribeTopic = "deal/gogodeals/database/deals";
 
@@ -311,7 +309,8 @@ public class MapsActivity extends FragmentActivity implements
 
                 String publishTopic = "deal/gogodeals/deal/fetch";
 
-                dealMqtt.sendMqtt(payload,publishTopic,subscribeTopic,2);
+                Log.i("json publish ",payload);
+                connectionMqtt.sendMqtt(payload,publishTopic,subscribeTopic,2);
 
 
 
@@ -521,9 +520,12 @@ public class MapsActivity extends FragmentActivity implements
         if(!fetched){
             for (String filter :filterList) {
                 fetchDeals(filter);
+                Log.i("json filter ",filter);
             }
             fetched = true;
-        }else if (lastFetched.getLatitude()+0.2 < mLastLocation.getLatitude() &&
+        }else if (lastFetched != null &&
+                mLastLocation != null &&
+                lastFetched.getLatitude()+0.2 < mLastLocation.getLatitude() &&
                 lastFetched.getLatitude()-0.2 > mLastLocation.getLatitude() &&
                 lastFetched.getLongitude()+0.2 < mLastLocation.getLongitude() &&
                 lastFetched.getLongitude()-0.2 > mLastLocation.getLongitude()){

@@ -66,11 +66,11 @@ public ConnectionMqtt(Activity activity){
     This method subsrcibes to the topic given.
      */
     public void sendMqtt(String payload, String sendTopic, String receiveTopic, int qot){
-        open();
         this.payload = payload;
         this.sendTopic = sendTopic;
         this.receiveTopic = receiveTopic;
         this.qot = qot;
+        open();
     }
 
 
@@ -90,6 +90,7 @@ public ConnectionMqtt(Activity activity){
                     Log.d(TAG, "onSuccess");
                     if (receiveTopic.equals("")){
                         publish(payload,sendTopic);
+                        close();
                     }else{
                         subscribe(receiveTopic,qot);
                     }
@@ -118,6 +119,7 @@ public ConnectionMqtt(Activity activity){
             encodedPayload = payload.getBytes("UTF-8");
             MqttMessage message = new MqttMessage(encodedPayload);
             client.publish(topic, message);
+            Log.i("json published ",message.toString());
         } catch (UnsupportedEncodingException | MqttException e) {
             e.printStackTrace();
         }
