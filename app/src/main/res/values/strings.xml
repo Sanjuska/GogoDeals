@@ -4,4 +4,6 @@
     <string name="testing">testing</string>
     <string name="facebook_app_id">1845779298989366</string>
     <string name="title_activity_maps">Map</string>
+    <string name="listDisplay">ListDisplay</string>
+
 </resources>
