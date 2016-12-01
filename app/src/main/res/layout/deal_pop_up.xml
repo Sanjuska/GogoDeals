@@ -1,155 +1,202 @@
 <?xml version="1.0" encoding="utf-8"?>
-<GridLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="700dp"
-    android:weightSum="1"
-    android:baselineAligned="false"
-    android:gravity="center_vertical|center_horizontal"
     android:orientation="vertical"
-    android:background="@drawable/bordershape"
-    android:layout_height="300dp">
-
+    android:layout_width="250dp"
+    android:layout_height="400dp"
+    android:layout_gravity="center"
+    android:weightSum="1"
+    android:background="@drawable/bordershape">
     <!--<android.support.constraint.ConstraintLayout
         android:layout_width="100dp"
         android:layout_height="100dp">-->
 
-    <LinearLayout
-        android:orientation="horizontal"
-        android:layout_width="255dp"
-        android:layout_height="258dp"
-        android:layout_row="0"
-        android:layout_column="0"
-        android:weightSum="1"
-        android:baselineAligned="false">
+    <GridLayout
+        android:layout_width="390dp"
+        android:layout_height="match_parent"
+        android:visibility="visible">
 
         <LinearLayout
             android:orientation="vertical"
-            android:layout_width="183dp"
-            android:layout_height="245dp"
-            android:weightSum="1"
-            android:layout_marginLeft="5dp">
-
-            <ImageView
-                app:srcCompat="@drawable/common_google_signin_btn_icon_dark_pressed"
-                android:id="@+id/dealPicture"
-                android:layout_width="172dp"
-                android:textColor="@color/com_facebook_button_login_silver_background_color"
-                android:layout_height="140dp"
-                android:layout_weight="0.81" />
-
-            <TextView
-                android:text="Description"
-                android:layout_width="175dp"
-                android:layout_height="wrap_content"
-                android:id="@+id/textView"
-                android:textStyle="normal|bold"
-                style="@style/TextViewStyleHeader"
-                android:typeface="normal" />
-
-            <TextView
-                android:text="TextView"
-                android:layout_width="371dp"
-                android:layout_height="81dp"
-                android:id="@+id/description"
-                android:textColor="@color/textViewColor"
-                style="@style/TextViewStyle"
-                android:layout_marginLeft="5dp"
-                android:layout_marginRight="5dp" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:orientation="vertical"
-            android:layout_width="189dp"
-            android:layout_height="247dp">
-
-            <TextView
-                android:text="Company"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:id="@+id/textView5"
-                style="@style/TextViewStyleHeader"
-                android:layout_weight="0.54" />
-
-            <TextView
-                android:text="TextView"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:id="@+id/company"
-                style="@style/TextViewStyle"
-                android:layout_weight="0.54" />
-
-            <TextView
-                android:text="Price"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:id="@+id/textView2"
-                style="@style/TextViewStyleHeader"
-                android:layout_weight="0.54" />
-
-            <TextView
-                android:text="TextView"
-                android:layout_width="match_parent"
-                android:layout_height="20dp"
-                android:id="@+id/price"
-                style="@style/TextViewStyle"
-                android:layout_weight="0.54" />
-
-            <TextView
-                android:text="Units"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:id="@+id/textView3"
-                style="@style/TextViewStyleHeader"
-                android:layout_weight="0.54" />
-
-            <TextView
-                android:text="TextView"
-                android:layout_width="match_parent"
-                android:layout_height="20dp"
-                android:id="@+id/units"
-                style="@style/TextViewStyle"
-                android:layout_weight="0.54" />
-
-            <TextView
-                android:text="Time left"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                style="@style/TextViewStyleHeader"
-                android:id="@+id/textView4"
-                android:layout_weight="0.54" />
-
-            <Chronometer
-                android:layout_width="199dp"
-                android:layout_height="42dp"
-                android:id="@+id/duration"
-                style="@style/TextViewStyle" />
-
-        </LinearLayout>
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:orientation="vertical"
-        android:layout_width="388dp"
-        android:layout_height="42dp"
-        android:layout_weight="0.54"
-        android:layout_row="1"
-        android:layout_column="0">
-
-        <Button
-            android:text="Grab"
             android:layout_width="match_parent"
-            android:layout_height="37dp"
-            android:id="@+id/grabButton"
-            android:background="@color/grabDeal"
-            android:layout_marginBottom="10dp"
-            android:layout_marginRight="100dp"
-            android:layout_marginLeft="50dp"
-            android:layout_row="2"
-            android:layout_column="0" />
-    </LinearLayout>
+            android:layout_height="42dp"
+            android:layout_row="1"
+            android:layout_column="0"
+            android:weightSum="1">
+
+            <FrameLayout
+                android:layout_width="382dp"
+                android:layout_height="match_parent">
+
+                <Button
+                    android:text="Ungrab"
+                    android:layout_width="match_parent"
+                    android:layout_height="37dp"
+                    android:id="@+id/ungrabButton"
+                    android:background="@color/ungrabDeal"
+                    android:layout_marginBottom="10dp"
+                    android:layout_marginRight="100dp"
+                    android:layout_marginLeft="50dp"
+                    android:layout_row="2"
+                    android:layout_column="0"
+                    android:onClick="ungrabButtonPressed"
+                    android:visibility="invisible"
+                    style="@drawable/bordershape" />
+
+                <Button
+                    android:text="Grab"
+                    android:layout_width="match_parent"
+                    android:layout_height="37dp"
+                    android:id="@+id/grabButton"
+                    android:background="@color/grabDeal"
+                    android:layout_marginBottom="10dp"
+                    android:layout_marginRight="100dp"
+                    android:layout_marginLeft="50dp"
+                    android:layout_row="2"
+                    android:layout_column="0"
+                    android:onClick="buttonPressed"
+                    android:visibility="visible"
+                    style="@drawable/bordershape"/>
+
+                <TextView
+                    android:text="TextView"
+                    android:layout_width="match_parent"
+                    android:layout_height="100dp"
+                    android:id="@+id/idTextView"
+                    android:visibility="invisible" />
+            </FrameLayout>
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="255dp"
+            android:layout_height="258dp"
+            android:layout_row="0"
+            android:layout_column="0"
+            android:weightSum="1"
+            android:baselineAligned="false">
+
+
+            <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="183dp"
+                android:layout_height="245dp"
+                android:weightSum="1"
+                android:layout_marginLeft="5dp">
+
+
+                <ImageView
+                    app:srcCompat="@drawable/common_google_signin_btn_icon_dark_pressed"
+                    android:id="@+id/dealPicture"
+                    android:layout_width="172dp"
+                    android:textColor="@color/com_facebook_button_login_silver_background_color"
+                    android:layout_height="140dp"
+                    android:layout_weight="0.81" />
+
+                <TextView
+                    android:text="Description"
+                    android:layout_width="175dp"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/textView"
+                    android:textStyle="normal|bold"
+                    style="@style/TextViewStyleHeader"
+                    android:typeface="normal" />
+
+                <TextView
+                    android:text="TextView"
+                    android:layout_width="371dp"
+                    android:layout_height="81dp"
+                    android:id="@+id/description"
+                    android:textColor="@color/textViewColor"
+                    style="@style/TextViewStyle"
+                    android:layout_marginLeft="5dp"
+                    android:layout_marginRight="5dp" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="189dp"
+                android:layout_height="247dp">
+
+                <TextView
+                    android:text="Company"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/textView5"
+                    style="@style/TextViewStyleHeader"
+                    android:layout_weight="0.54" />
+
+                <TextView
+                    android:text="TextView"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/company"
+                    style="@style/TextViewStyle"
+                    android:layout_weight="0.54" />
+
+                <TextView
+                    android:text="Price"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/textView2"
+                    style="@style/TextViewStyleHeader"
+                    android:layout_weight="0.54" />
+
+                <TextView
+                    android:text="TextView"
+                    android:layout_width="match_parent"
+                    android:layout_height="20dp"
+                    android:id="@+id/price"
+                    style="@style/TextViewStyle"
+                    android:layout_weight="0.54" />
+
+                <TextView
+                    android:text="Units"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/verificationHeader"
+                    style="@style/TextViewStyleHeader"
+                    android:layout_weight="0.54" />
+
+                <TextView
+                    android:text="TextView"
+                    android:layout_width="match_parent"
+                    android:layout_height="20dp"
+                    android:id="@+id/units"
+                    style="@style/TextViewStyle"
+                    android:layout_weight="0.54" />
+
+                <TextView
+                    android:text="Time left"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    style="@style/TextViewStyleHeader"
+                    android:id="@+id/textView4"
+                    android:layout_weight="0.54" />
+
+                <Chronometer
+                    android:layout_width="199dp"
+                    android:layout_height="42dp"
+                    android:id="@+id/duration"
+                    style="@style/TextViewStyle" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </GridLayout>
+
+    <ImageView
+        android:layout_width="390dp"
+        android:layout_height="300dp"
+        android:id="@+id/grabbedView"
+        android:visibility="invisible"
+        android:background="@drawable/grabbed"
+        android:layout_weight="47.10" />
+
 
     <!--  </android.support.constraint.ConstraintLayout>-->
 
-</GridLayout>
+</FrameLayout>
