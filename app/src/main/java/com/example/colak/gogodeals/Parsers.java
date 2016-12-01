@@ -2,6 +2,7 @@ package com.example.colak.gogodeals;
 
 import android.util.Log;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
@@ -13,6 +14,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
 import java.util.UUID;
 
 /**
@@ -56,10 +58,51 @@ public class Parsers {
 
                     break;
 
+                case "Gro/*":
+                    try {
+                        grocodeFetchParser(message);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+
+                case "deal/gogodeals/database/grocode":
+                    try {
+                        grocodeListParser(message);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+
                 default:
                     break;
             }
         }
+
+
+    private void grocodeFetchParser(MqttMessage message) throws JSONException {
+        String payload = new String(message.getPayload());
+        JSONArray jsonArray = new JSONArray(new JSONObject(payload).getJSONArray("data").toString());
+
+        GrocodeHandler.getDeals(jsonArray);
+    }
+
+    private void grocodeListParser(MqttMessage message) throws JSONException {
+        String payload = new String(message.getPayload());
+        JSONArray jsonArray = new JSONArray(new JSONObject(payload).getJSONArray("data").toString());
+
+        ArrayList<Deal> deals = new ArrayList<>();
+
+        for(int i = 0; i < jsonArray.length(); i++){
+            deals.add(new Deal(
+                jsonArray.getJSONObject(i).getString("client_name"),
+                jsonArray.getJSONObject(i).getString("duration"),
+                jsonArray.getJSONObject(i).getString("price"),
+                null,
+                jsonArray.getJSONObject(i).getString("description"),
+                jsonArray.getJSONObject(i).getString("id")));
+        }
+
+        IdentifierSingleton.USER.setGrocode(deals);
+    }
     //}
 
 

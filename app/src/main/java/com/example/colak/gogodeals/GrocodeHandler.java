@@ -20,31 +20,47 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 
+
 /**
  * Created by mattias on 2016-11-30.
  */
 
 public class GrocodeHandler {
 
+    private static ConnectionMqtt connectionMqtt;
     private ArrayList<String> items;
     private ArrayAdapter<String> arrayAdapter;
     private ListView listView;
 
-    public static ArrayList<Deal> handle(User user) throws JSONException {
-        JSONArray grocodeList = getFromGrocode(user);
-        JSONArray dealList = getDeals(grocodeList);
+
+    public static void getFromGrocode(ConnectionMqtt c){
+        connectionMqtt = c;
+
+        String subscribeTopic = "Gro/" + IdentifierSingleton.USER.getEmail();
 
 
-        return null;
+        String payload =
+                "{ " +
+                        " \"client_id\": \"" + IdentifierSingleton.USER.getEmail() +  "\"," +
+                        " \"list\": \"food\"" +
+                        " \"request\": \"fetch\"," +
+                        " \"data\": \"\" " +
+                "}";
+
+        String publishTopic = "Gro/" + IdentifierSingleton.USER.getEmail();
+
+        connectionMqtt.sendMqtt(payload,publishTopic,subscribeTopic,2);
     }
 
-    private static JSONArray getFromGrocode(User user){
+    public static void getDeals(JSONArray jsonArray){
+        String subscribeTopic = "deal/gogodeals/database/grocode";
 
-        return null;
-    }
+        String payload =   "{ \"id\": \"" + IdentifierSingleton.USER_ID + "\"," +
+                " \"data\": " + jsonArray.toString() + "}";
 
-    private static JSONArray getDeals(JSONArray jsonArray){
+        String publishTopic = "deal/gogodeals/deal/grocode";
 
-        return null;
+        connectionMqtt.sendMqtt(payload,publishTopic,subscribeTopic,2);
+
     }
 }

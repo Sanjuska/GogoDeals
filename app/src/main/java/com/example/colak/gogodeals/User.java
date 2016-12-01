@@ -19,4 +19,24 @@ public class User {
         this.email = email;
         this.password = password;
     }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setGrabbed(ArrayList<Deal> grabbed) {
+        this.grabbed = grabbed;
+    }
+
+    public ArrayList<Deal> getGrabbed() {
+        return grabbed;
+    }
+
+    public ArrayList<Deal> getGrocode() {
+        return grocode;
+    }
+
+    public void setGrocode(ArrayList<Deal> grocode) {
+        this.grocode = grocode;
+    }
 }
