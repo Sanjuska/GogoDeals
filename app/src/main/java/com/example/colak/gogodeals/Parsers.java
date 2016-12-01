@@ -1,6 +1,8 @@
 package com.example.colak.gogodeals;
 
 import android.util.Log;
+import android.view.View;
+import android.widget.TextView;
 
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
@@ -144,7 +146,7 @@ public class Parsers {
 
 
         }
-        MapsActivity.dealMqtt.close();
+
     }
 
     /**
@@ -162,6 +164,49 @@ public class Parsers {
             e.printStackTrace();
         }
         return null;
+    }
+
+
+    private void grabbedDealParser(MqttMessage message) throws JSONException {
+        Log.i("poruka", String.valueOf(message.getPayload()));
+        // message template according to RFC
+        /*{
+            “id”: “33333333-1011-M012-N210-112233445566”,
+            “data”: {
+            “count”: 99,
+            “id”: “24818880316702720”
+        },
+        }*/
+        //Log.i("MESSAGE to parse", new String(message.getPayload()));
+        String dealID;
+        int count = 0;
+        String verificationID = null;
+
+        // Split upp payload messageString into components
+        String jsonString = new String(message.getPayload());
+        JSONObject jsonData;
+        jsonData  = new JSONObject(jsonString);
+        dealID = jsonData.getString("id");
+        jsonData = new JSONObject(jsonData.getString("data"));
+        count = jsonData.getInt("count");
+        verificationID = jsonData.getString("id");
+
+        MapsActivity.grabbedView.setVisibility(View.VISIBLE);
+
+        // update unit in popup
+        TextView units = ((TextView) MapsActivity.popupMessage.getContentView().findViewById(R.id.units));
+        units.setText(String.valueOf(count));
+
+        // add deal to list
+        //TextView description = (TextView) MapsActivity.popupMessage.getContentView().findViewById(R.id.description);
+
+        //MapsActivity.dealArrayList.add(MapsActivity.descriptionOfGrabbedDeal);
+        MapsActivity.grabbedDeal.setVerificationID(verificationID);
+        MapsActivity.dealArrayList.add(MapsActivity.grabbedDeal);
+
+        // add code to deal in list
+        MapsActivity.mProgressDlg.dismiss();
+
     }
 
 
