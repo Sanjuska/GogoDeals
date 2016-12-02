@@ -124,6 +124,8 @@ public class MapsActivity extends FragmentActivity implements
         cbStuff = (CheckBox)findViewById(R.id.checkBoxStuff);
         cbRandom = (CheckBox)findViewById(R.id.checkBoxRandom);
 
+        SharedPreferences preferences = this.getPreferences(Context.MODE_PRIVATE);
+
 
         //also changed the version of google play services on gradle.app from 9.6.1 to
         //7.5.0 cause of compatibility.
@@ -334,6 +336,7 @@ public class MapsActivity extends FragmentActivity implements
         SharedPreferences.Editor editor = preferences.edit();
         editor.putBoolean(key, value);
         editor.apply();
+
     }
 
     @Override
@@ -341,21 +344,20 @@ public class MapsActivity extends FragmentActivity implements
                                  boolean isChecked) {
         switch(v.getId()){
             case R.id.checkBoxFood:
-                saveInSp("cbFood",isChecked);
+                saveInSp("cbFood", !isChecked);
                 break;
             case R.id.checkBoxClothes:
-                saveInSp("cbClothes",isChecked);
+                saveInSp("cbClothes", !isChecked);
                 break;
-
             case R.id.checkBoxActivities:
-                saveInSp("cbActiv",isChecked);
+                saveInSp("cbActiv", !isChecked);
                 break;
 
             case R.id.checkBoxStuff:
-                saveInSp("cbStuff",isChecked);
+                saveInSp("cbStuff", !isChecked);
                 break;
             case R.id.checkBoxRandom:
-                saveInSp("cbRandom",isChecked);
+                saveInSp("cbRandom", !isChecked);
                 break;
         }
 
@@ -446,6 +448,21 @@ public class MapsActivity extends FragmentActivity implements
         filterPopup.showAtLocation(mainLayout, Gravity.CENTER, 0 ,0);
         filterPopup.update(screenWidth - 50, screenHeight / 2);
 
+        if(!getFromSP("cbFood")){
+            cbFood.toggle();
+        }
+        if(!getFromSP("cbClothes")){
+            cbClothes.toggle();
+        }
+        if(!getFromSP("cbActiv")){
+            cbActiv.toggle();
+        }
+        if(!getFromSP("cbStuff")){
+            cbStuff.toggle();
+        }
+        if(!getFromSP("cbRandom")){
+            cbRandom.toggle();
+        }
 
     }
 
@@ -574,6 +591,33 @@ public class MapsActivity extends FragmentActivity implements
                 mGoogleApiClient, locationRequest, locationListener);
     }
 
+
+    private ArrayList<String> updateFilter(){
+
+        filterList.clear();
+
+
+        if(getFromSP("cbFood")){
+            filterList.add("food"); }
+
+        if(getFromSP("cbClothes")){
+            filterList.add("clothes"); }
+
+        if(getFromSP("cbActiv")){
+            filterList.add("activities"); }
+
+        if(getFromSP("cbStuff")){
+            filterList.add("stuff"); }
+
+        if(getFromSP("cbRandom")){
+            filterList.add("random"); }
+
+        if(filterList == null){
+            filterList.add("food");
+        }
+        return filterList;
+    }
+
     //Location view settings
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     private void makeUseOfNewLocation(Location location) {
@@ -587,34 +631,10 @@ public class MapsActivity extends FragmentActivity implements
 
 
         if(!fetched){
-            filterList.clear();
-            filterList.add("food");
-            filterList.add("clothes");
-            filterList.add("activities");
-            filterList.add("stuff");
-            filterList.add("random");
 
-            if(!getFromSP("cbFood")){
-                filterList.remove("food"); }
-
-            if(!getFromSP("cbClothes")){
-                filterList.remove("clothes"); }
-
-            if(!getFromSP("cbActiv")){
-                filterList.remove("activities"); }
-
-            if(!getFromSP("cbStuff")){
-                filterList.remove("stuff"); }
-
-            if(!getFromSP("cbRandom")){
-                filterList.remove("random"); }
-
-            if(filterList == null){
-                filterList.add("food");
-            }
+            updateFilter();
 
             Log.i("Filter List", String.valueOf(filterList));
-
 
             for (String filter :filterList) {
                 fetchDeals(filter);
@@ -653,6 +673,7 @@ public class MapsActivity extends FragmentActivity implements
 
 
     }
+
 
     public void animateMarker(final Marker marker, final Location location) {
         final Handler handler = new Handler();
