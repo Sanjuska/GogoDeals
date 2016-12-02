@@ -29,9 +29,9 @@ public class ConnectionMqtt extends Activity implements MqttCallback {
     private static final String TAG = "ConnectionMqtt";
 
 
-    static MqttAndroidClient client;
+    MqttAndroidClient client;
     Activity parent;
-    com.example.colak.gogodeals.Parsers parsers;
+    Parsers parsers;
     String payload;
     String sendTopic;
     String receiveTopic;
@@ -90,13 +90,11 @@ public ConnectionMqtt(Activity activity){
                 @Override
                 public void onSuccess(IMqttToken asyncActionToken) {
                     // We are connected
-                    Log.d(TAG, "onSuccess");
-                    Log.d(TAG, payload);
-                    Log.d(TAG, sendTopic);
+
                     if (receiveTopic.equals("")){
                         publish(payload,sendTopic);
-                        close();
-                        Log.i("json published ",payload);
+                        Log.i("json published payload ",payload);
+                        Log.i("json publish topic",sendTopic );
                     }else{
                         subscribe(receiveTopic,qot);
                     }

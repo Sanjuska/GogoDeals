@@ -173,8 +173,6 @@ public class Parsers {
 
         }
 
-
-
     /**
      * Get the id from a MqttMessage
      * @param message
@@ -287,7 +285,6 @@ public class Parsers {
         jsonPassword = new JSONObject(messageString);
         String email = jsonEmail.getString("email");
         String password = jsonPassword.getString("password");*/
-        GogouserLogin.gogoUserMqtt.close();
     }
 
 

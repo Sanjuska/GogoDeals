@@ -116,7 +116,9 @@ public class newUserSignup extends AppCompatActivity{
                     Toast.makeText(getApplicationContext(), "Welcome:" + regUser, Toast.LENGTH_SHORT).show();
 
                     //opens mqtt connection and sends data to database
-                    connection1.sendMqtt(topic, payload);
+                    ConnectionMqtt connectionMqtt = new ConnectionMqtt(newUserSignup.this);
+
+                    connectionMqtt.sendMqtt(payload, topic);
                     //Parsers.checkEmail();
 
                     Log.i("topic payload: ", topic + " " + payload);

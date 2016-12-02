@@ -99,7 +99,8 @@ public class FacebookLogin extends AppCompatActivity {
                                                                     + name + lastName + "\",\"email\": \"" + Math.random() + "\",\"password\": \"" + object.getString("email") + "\"}}";
                                                     Log.i("fbData3: ", payload);
 
-                                                    connection1.sendMqtt(topic, payload);
+                                                    ConnectionMqtt connectionMqtt = new ConnectionMqtt(FacebookLogin.this);
+                                                    connectionMqtt.sendMqtt(topic, payload);
                                                             Log.i("while condition: ", name + email);
 
 
