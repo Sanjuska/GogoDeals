@@ -1,5 +1,5 @@
 
-package com.example.colak.gogodeals;
+package com.example.colak.gogodeals.MqttModule;
 
 import android.app.Activity;
 import android.util.Log;
@@ -31,7 +31,7 @@ public class ConnectionMqtt extends Activity implements MqttCallback {
 
     static MqttAndroidClient client;
     Activity parent;
-    com.example.colak.gogodeals.Parsers parsers;
+    Parsers parsers;
     String payload;
     String sendTopic;
     String receiveTopic;
@@ -44,6 +44,9 @@ public class ConnectionMqtt extends Activity implements MqttCallback {
 public ConnectionMqtt(Activity activity){
     this.parent = activity;
     parsers = new Parsers();
+    payload = "";
+    sendTopic= "";
+    receiveTopic ="";
 }
     public ConnectionMqtt(){
     }
@@ -88,6 +91,8 @@ public ConnectionMqtt(Activity activity){
                 public void onSuccess(IMqttToken asyncActionToken) {
                     // We are connected
                     Log.d(TAG, "onSuccess");
+                    Log.d(TAG, payload);
+                    Log.d(TAG, sendTopic);
                     if (receiveTopic.equals("")){
                         publish(payload,sendTopic);
                         close();
@@ -117,9 +122,14 @@ public ConnectionMqtt(Activity activity){
             encodedPayload = payload.getBytes("UTF-8");
             MqttMessage message = new MqttMessage(encodedPayload);
             Log.i("json published ",payload);
+            Log.e(TAG, topic);
+            Log.e(TAG, payload);
+            Log.e(TAG, String.valueOf(message));
             client.publish(topic, message);
             Log.i("json published ",message.toString());
+            Log.e(TAG, "Should have sent");
         } catch (UnsupportedEncodingException | MqttException e) {
+            Log.e(TAG, "I FAILED");
             e.printStackTrace();
         }
     }
