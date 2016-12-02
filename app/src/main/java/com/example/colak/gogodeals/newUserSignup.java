@@ -128,7 +128,7 @@ public class newUserSignup extends AppCompatActivity{
                     regEmailConfirmation.getText().clear();
                     regPasswordConfirmation.getText().clear();
 
-                    Intent backToLogIn= new Intent(newUserSignup.this, MainActivity.class);
+                   Intent backToLogIn= new Intent(newUserSignup.this, MainActivity.class);
                     startActivity(backToLogIn);
 
                 }

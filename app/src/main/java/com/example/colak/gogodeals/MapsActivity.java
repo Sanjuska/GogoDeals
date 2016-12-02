@@ -343,6 +343,8 @@ public class MapsActivity extends FragmentActivity implements
         });
     }
 
+
+
     public void fetchDeals(String filter) {
 
         ConnectionMqtt connectionMqtt = new ConnectionMqtt(this);
@@ -360,6 +362,9 @@ public class MapsActivity extends FragmentActivity implements
 
                 Log.i("json publish ",payload);
                 connectionMqtt.sendMqtt(payload,publishTopic,subscribeTopic,2);
+
+
+
 
     }
 

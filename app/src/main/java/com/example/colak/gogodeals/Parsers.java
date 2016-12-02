@@ -73,7 +73,6 @@ public class Parsers {
                 case "deal/gogodeals/user/new":
 
                     break;
-
                 default:
                     break;
             }

@@ -32,7 +32,7 @@ package="com.example.colak.gogodeals">
 
     </activity>
 
-    <activity android:name="FacebookLogin">
+    <activity android:name=".FacebookLogin">
 
     </activity>
 
