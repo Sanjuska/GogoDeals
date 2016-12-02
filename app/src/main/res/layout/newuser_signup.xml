@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background ="@drawable/gogologin"
     android:weightSum="1">
 
     <EditText
@@ -59,6 +60,8 @@
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:background="@color/buttonColor"
+        style="@drawable/bordershape"
         android:text="Sign Up"
         android:id="@+id/gogosignup"
         android:layout_centerVertical="true"

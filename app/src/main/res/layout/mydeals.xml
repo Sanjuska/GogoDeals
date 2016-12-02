@@ -6,8 +6,7 @@
     android:layout_height="400dp"
     android:layout_gravity="center"
     android:weightSum="1"
-    android:descendantFocusability="blocksDescendants"
-    android:background="#648B79">
+    android:descendantFocusability="blocksDescendants">
 
     <TextView
         android:text="My Deals"
@@ -31,6 +30,8 @@
     <Button
         android:text="Back"
         android:layout_width="wrap_content"
+        android:background="@color/buttonColor"
+        style="@drawable/bordershape"
         android:id="@+id/dealsBackButton"
         android:layout_marginLeft="150dp"
         android:elevation="24dp"

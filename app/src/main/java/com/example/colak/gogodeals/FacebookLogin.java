@@ -121,7 +121,7 @@ public class FacebookLogin extends AppCompatActivity {
 
                         //when user press back, he goes to main screen in order to login again etc.
                         //LoginManager.getInstance().logOut();
-                        //finish();
+                        finish();
                         //startActivity(gogoAppMainscreen);
 
                     }

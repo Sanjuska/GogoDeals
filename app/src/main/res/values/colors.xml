@@ -9,5 +9,8 @@
     <color name="grabDeal">#84c13a</color>
     <color name="ungrabDeal">#ec1e28</color>
     <color name="cancelGrabWindow">#FFD2D2D2</color>
+    <color name="buttonColor">#ffffff</color>
+
+
 
 </resources>

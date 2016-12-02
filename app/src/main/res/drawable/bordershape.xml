@@ -13,7 +13,7 @@
         android:angle="0"
         android:centerX="50%"
         android:centerColor="#ffffff"
-        android:startColor="#fcfdfc"
+        android:startColor="#d1d1d1"
         android:endColor="#ffffff"
         android:type="linear"
         android:width="500dp"
@@ -25,11 +25,11 @@
         android:bottom="0dp"
         />
     <size
-        android:width="50dp"
-        android:height="60dp"
+        android:width="60dp"
+        android:height="30dp"
         />
     <stroke
         android:width="3dp"
-        android:color="#6cec45"
+        android:color="#c1c1c1"
         />
 </shape>

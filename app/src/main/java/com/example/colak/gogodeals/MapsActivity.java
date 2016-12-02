@@ -579,6 +579,7 @@ public class MapsActivity extends FragmentActivity implements
             grabbedView = (ImageView) v.findViewById(R.id.grabbedView);
             grabbedView.setVisibility(View.VISIBLE);
             grabButton = (Button) v.findViewById(R.id.grabButton);
+            grabButton.setVisibility(View.INVISIBLE);
 
         } else {
             System.out.println("Deal is not grabbed");
