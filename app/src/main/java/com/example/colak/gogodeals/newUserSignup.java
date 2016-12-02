@@ -1,5 +1,6 @@
 package com.example.colak.gogodeals;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -8,8 +9,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import com.example.colak.gogodeals.R;
 
 public class newUserSignup extends AppCompatActivity{
 
@@ -128,6 +127,9 @@ public class newUserSignup extends AppCompatActivity{
                     regEmail.getText().clear();
                     regEmailConfirmation.getText().clear();
                     regPasswordConfirmation.getText().clear();
+
+                    Intent backToLogIn= new Intent(newUserSignup.this, MainActivity.class);
+                    startActivity(backToLogIn);
 
                 }
             }
