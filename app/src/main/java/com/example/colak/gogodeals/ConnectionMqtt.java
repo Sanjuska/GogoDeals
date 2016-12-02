@@ -1,5 +1,5 @@
 
-package com.example.colak.gogodeals.MqttModule;
+package com.example.colak.gogodeals;
 
 import android.app.Activity;
 import android.util.Log;
@@ -31,7 +31,7 @@ public class ConnectionMqtt extends Activity implements MqttCallback {
 
     static MqttAndroidClient client;
     Activity parent;
-    Parsers parsers;
+    com.example.colak.gogodeals.Parsers parsers;
     String payload;
     String sendTopic;
     String receiveTopic;

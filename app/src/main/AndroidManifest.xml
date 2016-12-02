@@ -44,7 +44,7 @@ package="com.example.colak.gogodeals">
 
     </activity>
 
-    <activity android:name=".MqttModule.newUserSignup">
+    <activity android:name=".newUserSignup">
 
     </activity>
 
