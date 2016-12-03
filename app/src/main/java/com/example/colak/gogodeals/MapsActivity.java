@@ -1,7 +1,6 @@
 package com.example.colak.gogodeals;
 
 import android.Manifest;
-import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
@@ -25,13 +24,12 @@ import android.view.View;
 import android.view.animation.Interpolator;
 import android.view.animation.LinearInterpolator;
 import android.widget.Button;
-import android.widget.CheckBox;
-import android.widget.CompoundButton;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.TextView;
+import android.widget.ToggleButton;
 
 import com.google.android.gms.appindexing.AppIndex;
 import com.google.android.gms.common.ConnectionResult;
@@ -60,8 +58,7 @@ import java.util.ArrayList;
 public class MapsActivity extends FragmentActivity implements
         OnMapReadyCallback,
         GoogleApiClient.ConnectionCallbacks,
-        GoogleApiClient.OnConnectionFailedListener,
-        CompoundButton.OnCheckedChangeListener {
+        GoogleApiClient.OnConnectionFailedListener{
 
     public Deals deals;
 
@@ -95,12 +92,17 @@ public class MapsActivity extends FragmentActivity implements
 
     LinearLayout mainLayout;
 
-    CheckBox cbFood;
-    CheckBox cbClothes;
-    CheckBox cbActiv;
-    CheckBox cbStuff;
-    CheckBox cbRandom;
+    boolean boolFood = true;
+    boolean boolClothes = true;
+    boolean boolActiv = true;
+    boolean boolStuff = true;
+    boolean boolRandom = true;
 
+    ToggleButton toggleFood;
+    ToggleButton toggleClothes;
+    ToggleButton toggleActiv;
+    ToggleButton toggleStuff;
+    ToggleButton toggleRandom;
 
     SharedPreferences preferences;
     // Creating an instance of MarkerOptions to set position
@@ -118,13 +120,11 @@ public class MapsActivity extends FragmentActivity implements
         filterPopup = new PopupWindow(this);
         mainLayout = new LinearLayout(this);
 
-        cbFood = (CheckBox)findViewById(R.id.checkBoxFood);
-        cbClothes = (CheckBox)findViewById(R.id.checkBoxClothes);
-        cbActiv = (CheckBox)findViewById(R.id.checkBoxActivities);
-        cbStuff = (CheckBox)findViewById(R.id.checkBoxStuff);
-        cbRandom = (CheckBox)findViewById(R.id.checkBoxRandom);
-
-        SharedPreferences preferences = this.getPreferences(Context.MODE_PRIVATE);
+        toggleFood = (ToggleButton) findViewById(R.id.toggleFood);
+        toggleClothes = (ToggleButton) findViewById(R.id.toggleClothes);
+        toggleActiv = (ToggleButton) findViewById(R.id.toggleActiv);
+        toggleStuff = (ToggleButton) findViewById(R.id.toggleStuff);
+        toggleRandom = (ToggleButton) findViewById(R.id.toggleRandom);
 
 
         //also changed the version of google play services on gradle.app from 9.6.1 to
@@ -272,6 +272,8 @@ public class MapsActivity extends FragmentActivity implements
 
 
 
+
+
         //Initializing the Options List button and setting an onClick listener to it.
         final ImageButton optionsButton = (ImageButton) findViewById(R.id.optionslistbutton);
         optionsButton.setOnClickListener(new View.OnClickListener() {
@@ -312,6 +314,16 @@ public class MapsActivity extends FragmentActivity implements
                             dealsBackButtonPressed(v);
                         case R.id.filterBackButton:
                             filterBackButtonPressed(v);
+                        case  R.id.toggleFood:
+                            onClickToggleFood(v);
+                        case  R.id.toggleClothes:
+                            onClickToggleClothes(v);
+                        case  R.id.toggleActiv:
+                            onClickToggleActiv(v);
+                        case  R.id.toggleStuff:
+                            onClickToggleStuff(v);
+                        case  R.id.toggleRandom:
+                            onClickToggleRandom(v);
                     break;
                     }
 
@@ -325,42 +337,6 @@ public class MapsActivity extends FragmentActivity implements
                 }
             }
         });
-    }
-
-    public boolean getFromSP(String key){
-        SharedPreferences preferences = getSharedPreferences("com.example.colak.gogodeals", Context.MODE_PRIVATE);
-        return preferences.getBoolean(key, false);
-    }
-    public void saveInSp(String key,boolean value){
-        SharedPreferences preferences = getSharedPreferences("com.example.colak.gogodeals", Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = preferences.edit();
-        editor.putBoolean(key, value);
-        editor.apply();
-
-    }
-
-    @Override
-    public void onCheckedChanged(CompoundButton v,
-                                 boolean isChecked) {
-        switch(v.getId()){
-            case R.id.checkBoxFood:
-                saveInSp("cbFood", !isChecked);
-                break;
-            case R.id.checkBoxClothes:
-                saveInSp("cbClothes", !isChecked);
-                break;
-            case R.id.checkBoxActivities:
-                saveInSp("cbActiv", !isChecked);
-                break;
-
-            case R.id.checkBoxStuff:
-                saveInSp("cbStuff", !isChecked);
-                break;
-            case R.id.checkBoxRandom:
-                saveInSp("cbRandom", !isChecked);
-                break;
-        }
-
     }
 
 
@@ -442,29 +418,81 @@ public class MapsActivity extends FragmentActivity implements
         int screenHeight = size.y;
 
 
-
         View filtersPop = getLayoutInflater().inflate(R.layout.filterslist, null);
         filterPopup.setContentView(filtersPop);
         filterPopup.showAtLocation(mainLayout, Gravity.CENTER, 0 ,0);
         filterPopup.update(screenWidth - 50, screenHeight / 2);
 
-        if(!getFromSP("cbFood")){
-            cbFood.toggle();
-        }
-        if(!getFromSP("cbClothes")){
-            cbClothes.toggle();
-        }
-        if(!getFromSP("cbActiv")){
-            cbActiv.toggle();
-        }
-        if(!getFromSP("cbStuff")){
-            cbStuff.toggle();
-        }
-        if(!getFromSP("cbRandom")){
-            cbRandom.toggle();
-        }
+
 
     }
+
+
+        public void onClickToggleFood(View v) {
+
+                if (toggleFood.isChecked()) {
+                    toggleFood.setChecked(false);
+                    boolFood = false;
+                } else {
+                    toggleFood.setChecked(true);
+                    boolFood = true;
+                }
+
+        }
+
+
+        public void onClickToggleClothes(View v) {
+
+                if (toggleClothes.isChecked()) {
+                    toggleClothes.setChecked(false);
+                    boolClothes = false;
+                } else {
+                    toggleClothes.setChecked(true);
+                    boolClothes = true;
+                }
+
+        }
+
+
+        public void onClickToggleActiv(View v) {
+                if (toggleActiv.isChecked()) {
+                    toggleActiv.setChecked(false);
+                    boolActiv = false;
+                } else {
+                    toggleActiv.setChecked(true);
+                    boolActiv = true;
+                }
+
+        }
+
+
+        public void onClickToggleStuff(View v) {
+                if (toggleStuff.isChecked()) {
+                    toggleStuff.setChecked(false);
+                    boolStuff = false;
+                } else {
+                    toggleStuff.setChecked(true);
+                    boolStuff = true;
+                }
+    }
+
+
+        public void onClickToggleRandom(View v) {
+            try {
+                if (toggleRandom.isChecked()) {
+                    toggleRandom.setChecked(false);
+                    boolRandom = false;
+                } else {
+                    toggleRandom.setChecked(true);
+                    boolRandom = true;
+                }
+            }catch (Exception e) {
+
+            toggleRandom.setChecked(false);
+            onClickToggleRandom(v);
+            }
+        }
+
 
 
 
@@ -597,19 +625,19 @@ public class MapsActivity extends FragmentActivity implements
         filterList.clear();
 
 
-        if(getFromSP("cbFood")){
+        if(boolFood){
             filterList.add("food"); }
 
-        if(getFromSP("cbClothes")){
+        if(boolClothes){
             filterList.add("clothes"); }
 
-        if(getFromSP("cbActiv")){
+        if(boolActiv){
             filterList.add("activities"); }
 
-        if(getFromSP("cbStuff")){
+        if(boolStuff){
             filterList.add("stuff"); }
 
-        if(getFromSP("cbRandom")){
+        if(boolRandom){
             filterList.add("random"); }
 
         if(filterList == null){

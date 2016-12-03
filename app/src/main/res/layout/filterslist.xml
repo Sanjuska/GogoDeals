@@ -22,60 +22,58 @@
         android:elevation="16dp"
         android:gravity="center" />
 
-    <CheckBox
-        android:text="Food &amp; Drinks"
+
+    <ToggleButton
+        android:text="ToggleButton"
         android:layout_width="match_parent"
-        android:id="@+id/checkBoxFood"
-        android:elevation="24dp"
-        android:textSize="18sp"
         android:layout_height="40dp"
-        android:saveEnabled="true"
-        android:checked="true"
-        style="@android:style/Widget.Holo.Light.CompoundButton.CheckBox" />
+        android:id="@+id/toggleFood"
+        android:textOff="NoFood"
+        android:textOn="Food"
+        android:onClick="onClickToggleFood"
+        android:checked="true" />
 
-
-    <CheckBox
-        android:text="Clothes &amp; Hats"
+    <ToggleButton
+        android:text="ToggleButton"
         android:layout_width="match_parent"
-        android:id="@+id/checkBoxClothes"
-        android:elevation="24dp"
-        android:textSize="18sp"
         android:layout_height="40dp"
-        android:saveEnabled="true"
+        android:id="@+id/toggleClothes"
         android:checked="true"
-        style="@android:style/Widget.Holo.Light.CompoundButton.CheckBox" />
+        android:onClick="onClickToggleClothes"
+        android:textOff="NoClothes"
+        android:textOn="Clothes" />
 
-    <CheckBox
-        android:text="Activities"
+    <ToggleButton
+        android:text="ToggleButton"
         android:layout_width="match_parent"
-        android:id="@+id/checkBoxActivities"
-        android:elevation="24dp"
-        android:textSize="18sp"
-        android:layout_height="40dp"
-        android:saveEnabled="true"
-        android:checked="true"
-        style="@android:style/Widget.Holo.Light.CompoundButton.CheckBox" />
-
-    <CheckBox
-        android:text="Stuff"
-        android:layout_width="match_parent"
-        android:id="@+id/checkBoxStuff"
-        android:elevation="24dp"
-        android:textSize="18sp"
-        android:layout_height="40dp"
-        android:saveEnabled="true"
-        android:checked="true"
-        style="@android:style/Widget.Holo.Light.CompoundButton.CheckBox" />
-
-    <CheckBox
-        android:text="Random"
-        android:layout_width="match_parent"
-        android:id="@+id/checkBoxRandom"
-        android:elevation="24dp"
-        android:textSize="18sp"
+        android:id="@+id/toggleActiv"
+        android:layout_weight="0.02"
         android:layout_height="40dp"
         android:checked="true"
-        style="@android:style/Widget.Holo.Light.CompoundButton.CheckBox" />
+        android:onClick="onClickToggleActiv"
+        android:textOn="Activities"
+        android:textOff="NoActivities" />
+
+    <ToggleButton
+        android:text="ToggleButton"
+        android:layout_width="match_parent"
+        android:layout_height="38dp"
+        android:id="@+id/toggleStuff"
+        android:checked="true"
+        android:onClick="onClickToggleStuff"
+        android:textOff="NoStuff"
+        android:textOn="Stuff" />
+
+    <ToggleButton
+        android:text="ToggleButton"
+        android:layout_width="match_parent"
+        android:layout_height="39dp"
+        android:id="@+id/toggleRandom"
+        android:layout_weight="0.04"
+        android:checked="true"
+        android:onClick="onClickToggleRandom"
+        android:textOff="NoRandom"
+        android:textOn="Random" />
 
     <Button
         android:text="Back"
