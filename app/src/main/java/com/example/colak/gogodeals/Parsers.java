@@ -35,7 +35,7 @@ public class Parsers {
                 case "deal/gogodeals/database/deals":
                     try {
                         JSONObject jsonCheck = new JSONObject(new String(message.getPayload()));
-                        Log.i("json checking",jsonCheck.toString());
+                        //Log.i("json checking",jsonCheck.toString());
                         if (!jsonCheck.getString("data").equals("{}")){
                             fetchDealParser(message);
                         }
@@ -95,7 +95,7 @@ public class Parsers {
         JSONArray jsonArray;
         JSONObject jsonObject;
         JSONObject json1;
-        Log.i("json got message ",message.getPayload().toString());
+        //Log.i("json got message ",message.getPayload().toString());
         json1  = new JSONObject(jsonString);
         jsonArray = new JSONArray(json1.getJSONArray("data").toString());
 
@@ -104,7 +104,7 @@ public class Parsers {
         for (int i = 0; i< jsonArray.length();i++){
 
             jsonObject = jsonArray.getJSONObject(i);
-            Log.i("json obect ", jsonObject.toString());
+            //Log.i("json obect ", jsonObject.toString());
             String id = jsonObject.getString("id");
             String name = jsonObject.getString("name");
             int price = jsonObject.getInt("price");
@@ -192,7 +192,7 @@ public class Parsers {
 
 
     private void grabbedDealParser(MqttMessage message) throws JSONException {
-        Log.i("poruka", String.valueOf(message.getPayload()));
+        //Log.i("poruka", String.valueOf(message.getPayload()));
         // message template according to RFC
         /*{
             “id”: “33333333-1011-M012-N210-112233445566”,

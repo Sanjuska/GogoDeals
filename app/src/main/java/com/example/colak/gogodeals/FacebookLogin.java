@@ -96,11 +96,11 @@ public class FacebookLogin extends AppCompatActivity {
                                                             String topic = "deal/gogodeals/user/new";
                                                     Log.i("fbData2: ", topic);
                                                             String payload = "{\"id\":\"1\",\"data\":{\"name\":\""
-                                                                    + name + lastName + "\",\"email\": \"" + Math.random() + "\",\"password\": \"" + object.getString("email") + "\"}}";
+                                                                    + name + " " + lastName + "\",\"email\": \"" + object.getString("email") + "\",\"password\": \"" +  Math.random() + "\"}}";
                                                     Log.i("fbData3: ", payload);
 
                                                     ConnectionMqtt connectionMqtt = new ConnectionMqtt(FacebookLogin.this);
-                                                    connectionMqtt.sendMqtt(topic, payload);
+                                                    connectionMqtt.sendMqtt(payload, topic);
                                                             Log.i("while condition: ", name + email);
 
 
