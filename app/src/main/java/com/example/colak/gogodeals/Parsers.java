@@ -303,7 +303,5 @@ public class Parsers {
         //now load next maps activity screen
         facebookLogin.facebookLoginSuccess();
     }
-
-
 }
 

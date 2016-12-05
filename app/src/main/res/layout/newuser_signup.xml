@@ -15,7 +15,10 @@
         android:layout_alignParentTop="true"
         android:layout_alignParentStart="true"
         android:layout_alignParentEnd="true"
-        android:textColorLink="?attr/colorSwitchThumbNormal" />
+        android:textColorLink="?attr/colorSwitchThumbNormal"
+        android:drawableLeft="@android:drawable/ic_menu_edit"
+        android:background="@drawable/bottom_border_line"
+        style="@style/EditText"/>
 
     <EditText
         android:layout_width="match_parent"
@@ -25,7 +28,10 @@
         android:hint="Email"
         android:layout_below="@+id/regUsername"
         android:layout_alignParentStart="true"
-        android:layout_alignParentEnd="true" />
+        android:layout_alignParentEnd="true"
+        android:drawableLeft="@android:drawable/sym_action_email"
+        android:background="@drawable/bottom_border_line"
+        style="@style/EditText"/>
 
     <EditText
         android:layout_width="match_parent"
@@ -35,41 +41,52 @@
         android:hint="Confirm email "
         android:layout_below="@+id/regEmail"
         android:layout_alignParentStart="true"
-        android:layout_alignParentEnd="true" />
+        android:layout_alignParentEnd="true"
+        android:drawableLeft="@android:drawable/sym_action_email"
+        style="@style/EditText"/>
 
     <EditText
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="33dp"
         android:id="@+id/regPassword"
         android:editable="true"
         android:hint="Password"
         android:layout_below="@+id/regEmailConfirmation"
         android:layout_alignParentStart="true"
-        android:layout_alignParentEnd="true" />
+        android:layout_alignParentEnd="true"
+        android:background="@drawable/bottom_border_line"
+        android:drawableLeft="@android:drawable/ic_secure"
+        style="@style/EditText"/>
 
     <EditText
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="35dp"
         android:id="@+id/regPasswordConfirmation"
         android:editable="true"
         android:hint="Confirm password"
         android:layout_below="@+id/regPassword"
         android:layout_alignParentStart="true"
-        android:layout_alignParentEnd="true" />
+        android:layout_alignParentEnd="true"
+        android:background="@drawable/bottom_border_line"
+        android:drawableLeft="@android:drawable/ic_secure"
+        style="@style/EditText"
+        />
 
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        style="@drawable/buttonshape"
         android:text="Sign Up"
         android:id="@+id/gogosignup"
         android:layout_centerVertical="true"
         android:layout_centerHorizontal="true"
-        android:layout_gravity="center_horizontal" />
+        android:layout_gravity="center_horizontal"
+        android:background="@drawable/buttonshape"
+        style="@style/buttonDesign"/>
 
     <TextView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:id="@+id/signupTips" />
+        android:id="@+id/signupTips"
+        style="@style/TextViewStyleHeader"/>
 
 </LinearLayout>
