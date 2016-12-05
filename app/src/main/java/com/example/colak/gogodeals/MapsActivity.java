@@ -18,18 +18,17 @@ import android.util.Log;
 import android.view.View;
 import android.view.animation.Interpolator;
 import android.view.animation.LinearInterpolator;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.GridLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.ListView;
 import android.widget.PopupWindow;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.colak.gogodeals.Objects.Deal;
 import com.example.colak.gogodeals.Popups.DealsPopup;
 import com.example.colak.gogodeals.Popups.OptionsPopup;
 import com.google.android.gms.appindexing.AppIndex;
@@ -55,37 +54,19 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import java.util.ArrayList;
 import java.util.List;
 
-
 public class MapsActivity extends FragmentActivity implements
         OnMapReadyCallback,
         GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener {
 
-
-
     public static GoogleMap mMap;
-
     GoogleApiClient mGoogleApiClient;
-
     Location mLastLocation;
-
     Marker mPositionMarker;
-
     Marker lastOpened = null;
-
-    /*CheckBox food;
-    CheckBox clothes;
-    CheckBox activities;
-    CheckBox stuff;
-    CheckBox random;*/
-
     Location lastFetched;
     static ArrayList<String> filterList;
-
-
-    boolean isClickedPop = true;
     public static ProgressDialog mProgressDlg;
-
     static PopupWindow popupMessage;
     static PopupWindow popupDealView;
     Button grabButton;
@@ -94,25 +75,17 @@ public class MapsActivity extends FragmentActivity implements
     LocationRequest locationRequest;
     public static String descriptionOfGrabbedDeal;
     public static Deal grabbedDeal;
-
-
     PopupWindow myDealsPopup;
-    ArrayAdapter<Deal> dealAdapter;
     public static List<Deal> dealArrayList;
-    static ListView dealListView;
-
     PopupWindow profilePopup;
     PopupWindow optionsPopup;
     boolean fetched;
     ImageButton optionsButton;
     public static Marker currentMarker;
-
     LinearLayout mainLayout;
-
     // Creating an instance of MarkerOptions to set position
     private GoogleApiClient client;
-
-    FilterHandler filterHandler;
+    private Messages messages;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -122,18 +95,15 @@ public class MapsActivity extends FragmentActivity implements
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
-
         mapFragment.getMapAsync(this);
 
         // ATTENTION: This was auto-generated to implement the App Indexing API.
         // See https://g.co/AppIndexing/AndroidStudio for more information.
         client = new GoogleApiClient.Builder(this).addApi(AppIndex.API).build();
 
-
         //also changed the version of google play services on gradle.app from 9.6.1 to
         //7.5.0 cause of compatibility.
         MapsInitializer.initialize(getApplicationContext());
-
 
         //Sanja && Johan
         //Show my location
@@ -152,53 +122,38 @@ public class MapsActivity extends FragmentActivity implements
                     .build();
         }
 
-
         LocationSettingsRequest.Builder builder = new LocationSettingsRequest.Builder()
                 .addLocationRequest(locationRequest);
         builder.setAlwaysShow(true);
-
-
         fetched = false;
+        messages = new Messages();
         filterList = new ArrayList<>();
         popupMessage = new PopupWindow(this);
         optionsPopup = new PopupWindow(this);
         profilePopup = new PopupWindow(this);
         popupDealView = new PopupWindow(this);
         myDealsPopup = new PopupWindow(this);
-
         mainLayout = new LinearLayout(this);
         filterList = new ArrayList<>();
-
         //create list adapter for deal list
         dealArrayList = new ArrayList<Deal>();
         dealArrayList.add(new Deal());
-
-
-
         // Acquire a reference to the system Location Manager
         locationRequest = LocationRequest.create();
         locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
         locationRequest.setInterval(100);
-
         SetoptionsButton();
-
-
-
     }
-
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
-
-
         try {
             // Customise the styling of the base map using a JSON object defined
             // in a raw resource file.
             boolean success = mMap.setMapStyle(
                     MapStyleOptions.loadRawResourceStyle(
                             this, R.raw.whitegrey));
-
             if (!success) {
                 Log.e("MapsActivityRaw", "Style parsing failed.");
             }
@@ -207,11 +162,12 @@ public class MapsActivity extends FragmentActivity implements
         }
 
         // Add a marker in Gothenburg and move the camera
-
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
+                != PackageManager.PERMISSION_GRANTED &&
+                ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION)
+                        != PackageManager.PERMISSION_GRANTED) {
             return;
         }
-
 
         //GoogleMap settings
         mMap.setMyLocationEnabled(false);
@@ -223,26 +179,18 @@ public class MapsActivity extends FragmentActivity implements
         mMap.setMinZoomPreference(16.0f);
         mMap.setMaxZoomPreference(19.0f);
 
-
         // GoogleMap marker settings
         mMap.setOnMarkerClickListener(
                 new GoogleMap.OnMarkerClickListener() {
-
-
                     boolean doNotMoveCameraToCenterMarker = true;
-
                     public boolean onMarkerClick(Marker marker) {
-
                         currentMarker = marker;
                         if (marker.getTitle().equals("user")) {
-
                         } else {
-
                             // Check if there is an open info window
                             if (lastOpened != null) {
                                 // Close the info window
                                 lastOpened.hideInfoWindow();
-
                                 // Is the marker the same marker that was already open
                                 if (lastOpened.equals(marker)) {
                                     // Nullify the lastOpenned object
@@ -250,8 +198,6 @@ public class MapsActivity extends FragmentActivity implements
                                     // Return so that the info window isn't openned again
                                     return true;
                                 }
-
-
                             }
                             startActivity(new Intent(MapsActivity.this, DealsPopup.class));
                         }
@@ -261,28 +207,7 @@ public class MapsActivity extends FragmentActivity implements
     }
 
 
-
-    public void fetchDeals(String filter) {
-
-        ConnectionMqtt connectionMqtt = new ConnectionMqtt(this);
-
-        String subscribeTopic = "deal/gogodeals/database/deals";
-
-                String payload =   "{ \"id\": \"12345678-1011-M012-N210-112233445566\"," +
-                        " \"data\": {" +
-                        " \"longitude\": " + mLastLocation.getLongitude() + "," +
-                        " \"latitude\": " + mLastLocation.getLatitude() + "," +
-                        " \"filters\": \""+filter+"\"}}";
-
-                String publishTopic = "deal/gogodeals/deal/fetch";
-
-                Log.i("json publish ",payload);
-                connectionMqtt.sendMqtt(payload,publishTopic,subscribeTopic,2);
-
-    }
-
     public void SetoptionsButton(){
-
         optionsButton = (ImageButton) findViewById(R.id.optionslistbutton);
         optionsButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -290,7 +215,6 @@ public class MapsActivity extends FragmentActivity implements
                 startActivity(new Intent(MapsActivity.this, OptionsPopup.class));
             }
         });
-
     }
 
 
@@ -310,7 +234,10 @@ public class MapsActivity extends FragmentActivity implements
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
     public void onConnected(Bundle connectionHint) {
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
+                != PackageManager.PERMISSION_GRANTED
+                && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION)
+                != PackageManager.PERMISSION_GRANTED) {
             return;
         }
         mLastLocation = LocationServices.FusedLocationApi.getLastLocation(
@@ -335,28 +262,11 @@ public class MapsActivity extends FragmentActivity implements
         public void onLocationChanged(Location location) {
             // Called when a new location is found by the network location provider.
             makeUseOfNewLocation(location);
-
-        }
-
-        public void onStatusChanged(String provider, int status, Bundle extras) {
-        }
-
-        public void onProviderEnabled(String provider) {
-        }
-
-        public void onProviderDisabled(String provider) {
         }
     };
 
     protected void startLocationUpdates() {
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            // TODO: Consider calling
-            //    ActivityCompat#requestPermissions
-            // here to request the missing permissions, and then overriding
-            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-            //                                          int[] grantResults)
-            // to handle the case where the user grants the permission. See the documentation
-            // for ActivityCompat#requestPermissions for more details.
             return;
         }
         LocationServices.FusedLocationApi.requestLocationUpdates(
@@ -374,14 +284,10 @@ public class MapsActivity extends FragmentActivity implements
         //locationListener.onLocationChanged(location);
         mMap.animateCamera(CameraUpdateFactory.newCameraPosition(myPosition));
 
-
-
         if (!fetched) {
-
-
                 if (!fetched) {
                     for (String filter : filterList) {
-                        fetchDeals(filter);
+                        messages.fetchDeals(filter,mLastLocation,this);
                         Log.i("json filter ", filter);
                     }
                     fetched = true;
@@ -392,15 +298,13 @@ public class MapsActivity extends FragmentActivity implements
                         lastFetched.getLongitude() + 0.2 < mLastLocation.getLongitude() &&
                         lastFetched.getLongitude() - 0.2 > mLastLocation.getLongitude()) {
                     for (String filter : filterList) {
-                        fetchDeals(filter);
+                        messages.fetchDeals(filter,mLastLocation,this);
                     }
                     lastFetched = mLastLocation;
                 }
 
-
                 mMap.setLatLngBoundsForCameraTarget(new LatLngBounds(myLatLang, myLatLang));
                 if (mPositionMarker == null) {
-
                     mPositionMarker = mMap.addMarker(new MarkerOptions()
                             .flat(true)
                             .icon(BitmapDescriptorFactory
@@ -409,13 +313,9 @@ public class MapsActivity extends FragmentActivity implements
                             .title("user")
                             .position(myLatLang));
                 }
-
                 mPositionMarker.hideInfoWindow();
-
                 animateMarker(mPositionMarker, location); // Helper method for smooth
                 // animation
-
-
             }
         }
 
@@ -424,25 +324,19 @@ public class MapsActivity extends FragmentActivity implements
             final long start = SystemClock.uptimeMillis();
             final LatLng startLatLng = marker.getPosition();
             final long duration = 500;
-
             final Interpolator interpolator = new LinearInterpolator();
-
             handler.post(new Runnable() {
                 @Override
                 public void run() {
                     long elapsed = SystemClock.uptimeMillis() - start;
                     float t = interpolator.getInterpolation((float) elapsed
                             / duration);
-
                     double lng = t * location.getLongitude() + (1 - t)
                             * startLatLng.longitude;
                     double lat = t * location.getLatitude() + (1 - t)
                             * startLatLng.latitude;
-
-
                     marker.setPosition(new LatLng(lat, lng));
                     marker.setRotation(mMap.getCameraPosition().bearing);
-
                     if (t < 1.0) {
                         // Post again 16ms later.
                         handler.postDelayed(this, 16);
@@ -451,21 +345,15 @@ public class MapsActivity extends FragmentActivity implements
             });
         }
 
-
-
             public void buttonPressed(View v) {
 
                 ConnectionMqtt connectionMqtt = new ConnectionMqtt(this);
-
                 String subscribeTopic = "deal/gogodeals/database/info";
-
                 grabButton = ((Button) v.findViewById(R.id.grabButton));
                 grabButton.setVisibility(View.INVISIBLE);
-
                 FrameLayout parentLayout = (FrameLayout) grabButton.getParent();
                 LinearLayout grandParentLayout = (LinearLayout) parentLayout.getParent();
                 GridLayout popUpLayout = (GridLayout) grandParentLayout.getParent();
-
                 //extract deal id
                 TextView idTV = ((TextView) grandParentLayout.findViewById(R.id.idTextView));
                 String deal_id = (String) idTV.getText();

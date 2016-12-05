@@ -11,7 +11,7 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import com.example.colak.gogodeals.Deal;
+import com.example.colak.gogodeals.Objects.Deal;
 import com.example.colak.gogodeals.MapsActivity;
 import com.example.colak.gogodeals.R;
 

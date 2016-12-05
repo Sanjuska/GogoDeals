@@ -2,11 +2,12 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical"
-    android:layout_width="250dp"
-    android:layout_height="400dp"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
     android:layout_gravity="center"
     android:weightSum="1"
-    android:descendantFocusability="blocksDescendants">
+    android:descendantFocusability="blocksDescendants"
+    android:padding="50dp">
 
     <TextView
         android:text="My Deals"
@@ -31,13 +32,12 @@
 
     <Button
         android:text="Back"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         style="@style/buttonDesign"
         android:background="@drawable/buttonshape"
         android:id="@+id/dealsBackButton"
         android:layout_marginLeft="150dp"
         android:elevation="24dp"
-        android:layout_height="wrap_content"
         android:alpha="100"
         android:layout_gravity="right"
         />

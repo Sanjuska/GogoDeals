@@ -113,6 +113,7 @@ public class Parsers {
         }
 
         FilterPopup.filterHandler.set(tmpList);
+
     }
     //}
 

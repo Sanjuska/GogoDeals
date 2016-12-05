@@ -1,4 +1,4 @@
-package com.example.colak.gogodeals;
+package com.example.colak.gogodeals.Objects;
 
 import android.widget.ImageView;
 
