@@ -27,8 +27,6 @@ Connectionmqqt handles the communication with the broker.
 public class ConnectionMqtt extends Activity implements MqttCallback {
     // Variables used in the class
     private static final String TAG = "ConnectionMqtt";
-
-
     MqttAndroidClient client;
     Activity parent;
     Parsers parsers;
@@ -38,7 +36,7 @@ public class ConnectionMqtt extends Activity implements MqttCallback {
     int qot;
 
     /*
-    this is the constructor for connectionmqtt, it takes an activity as input.
+    This is the constructor for connectionmqtt, it takes an activity as input.
     it also instanciates a new parsers class.
      */
 public ConnectionMqtt(Activity activity){

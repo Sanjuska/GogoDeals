@@ -61,34 +61,19 @@ public class GogouserLogin extends AppCompatActivity {
 
         Log.i("loginfielads: ", email + password);
 
-        //gogoUserMqtt.sendMqtt(topic, payload);
         Parsers.gogouserLogin=this;
         mProgressDlg = new ProgressDialog(this);
         mProgressDlg.setMessage("Validating");
         mProgressDlg.setCancelable(false);
         mProgressDlg.show();
-
-      /*  if (logincheck){
-            Intent login = new Intent (GogouserLogin.this, MapsActivity.class);
-            startActivity(login);
-
-        }
-        else {
-            Toast.makeText(getApplicationContext(), "Wrong credentials", Toast.LENGTH_LONG).show();
-        }*/
-
     }
 
     public void loginResultReceived(){
-
         Log.i("8 :", String.valueOf(loginResult));
         if (loginResult){
-
             Toast.makeText(getApplicationContext(), "Login succesfull", Toast.LENGTH_LONG).show();
             Intent login = new Intent (GogouserLogin.this, MapsActivity.class);
             startActivity(login);
-
-
         }
         else {
             Toast.makeText(getApplicationContext(), "Wrong credentials", Toast.LENGTH_LONG).show();

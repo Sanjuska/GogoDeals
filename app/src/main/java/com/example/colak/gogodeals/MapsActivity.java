@@ -80,9 +80,11 @@ public class MapsActivity extends FragmentActivity implements
     Marker mPositionMarker;
 
     Marker lastOpened = null;
-
-    CheckBox food,clothes,activities,stuff,random;
-
+    CheckBox food;
+    CheckBox clothes;
+    CheckBox activities;
+    CheckBox stuff;
+    CheckBox random;
     Location lastFetched;
     ArrayList<String> filterList;
 
