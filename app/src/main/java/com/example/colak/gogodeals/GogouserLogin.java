@@ -68,9 +68,6 @@ public class GogouserLogin extends AppCompatActivity {
         mProgressDlg.setCancelable(false);
         mProgressDlg.show();
 
-
-
-
       /*  if (logincheck){
             Intent login = new Intent (GogouserLogin.this, MapsActivity.class);
             startActivity(login);

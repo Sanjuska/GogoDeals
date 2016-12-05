@@ -60,8 +60,7 @@
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="@color/buttonColor"
-        style="@drawable/bordershape"
+        style="@drawable/buttonshape"
         android:text="Sign Up"
         android:id="@+id/gogosignup"
         android:layout_centerVertical="true"

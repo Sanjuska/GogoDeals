@@ -33,7 +33,7 @@
         android:layout_marginTop="24dp"
         android:onClick="profileButtonPressed"
         android:id="@+id/profileButton"
-        android:background="@drawable/bordershape"
+        android:background="@drawable/buttonshape"
          />
 
     <Button
@@ -43,7 +43,7 @@
         android:id="@+id/dealsButton"
         android:onClick="mydealsButtonPressed"
         android:layout_marginBottom="25dp"
-        android:background="@drawable/bordershape"
+        android:background="@drawable/buttonshape"
         />
 
     <Button
@@ -53,6 +53,6 @@
         android:layout_marginBottom="20dp"
         android:onClick="filterButtonPressed"
         android:id="@+id/filterButton"
-        android:background="@drawable/bordershape"/>
+        android:background="@drawable/buttonshape"/>
 
 </LinearLayout>

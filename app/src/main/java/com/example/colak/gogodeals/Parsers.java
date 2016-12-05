@@ -26,6 +26,8 @@ public class Parsers {
     */
 
     static GogouserLogin gogouserLogin;
+    static FacebookLogin facebookLogin;
+
     public void parse(String topic,MqttMessage message){
         IdentifierSingleton identifierSingleton = IdentifierSingleton.getInstance();
 
@@ -68,6 +70,14 @@ public class Parsers {
                         e.printStackTrace();
                     }
                     break;
+                //check users on database, login from Facebook
+                case "deal/gogodeals/database/facebook":
+                    try {
+                        checkFacebook(message);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                    break;
 
                 //insert new user in databse
                 case "deal/gogodeals/user/new":
@@ -95,7 +105,7 @@ public class Parsers {
         JSONArray jsonArray;
         JSONObject jsonObject;
         JSONObject json1;
-        //Log.i("json got message ",message.getPayload().toString());
+        Log.i("json got message ",message.getPayload().toString());
         json1  = new JSONObject(jsonString);
         jsonArray = new JSONArray(json1.getJSONArray("data").toString());
 
@@ -192,16 +202,6 @@ public class Parsers {
 
 
     private void grabbedDealParser(MqttMessage message) throws JSONException {
-        //Log.i("poruka", String.valueOf(message.getPayload()));
-        // message template according to RFC
-        /*{
-            “id”: “33333333-1011-M012-N210-112233445566”,
-            “data”: {
-            “count”: 99,
-            “id”: “24818880316702720”
-        },
-        }*/
-        //Log.i("MESSAGE to parse", new String(message.getPayload()));
         String dealID;
         int count = 0;
         String verificationID = null;
@@ -265,8 +265,6 @@ public class Parsers {
             Log.i("9 :", "1");
             GogouserLogin.loginResult=false;
             GogouserLogin.mProgressDlg.dismiss();
-
-
         }
 
 
@@ -285,6 +283,25 @@ public class Parsers {
         jsonPassword = new JSONObject(messageString);
         String email = jsonEmail.getString("email");
         String password = jsonPassword.getString("password");*/
+    }
+
+    public void checkFacebook(MqttMessage message) throws JSONException {
+        String id;
+        String messageString = new String(message.getPayload());
+        Log.i("Bubca checkFacebook: ", String.valueOf(message.getPayload()));
+        JSONObject jsonData;
+
+        jsonData = new JSONObject(messageString);
+        jsonData = new JSONObject(jsonData.getString("data"));
+
+        id = jsonData.getString("id");
+
+        MainActivity.userID = id;
+        Log.i("Bubca User", MainActivity.userID);
+        FacebookLogin.mProgressDlg.dismiss();
+
+        //now load next maps activity screen
+        facebookLogin.facebookLoginSuccess();
     }
 
 

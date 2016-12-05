@@ -4,6 +4,7 @@ package com.example.colak.gogodeals;
  * Created by Nikos on 12/11/2016.
  */
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -33,6 +34,8 @@ public class FacebookLogin extends AppCompatActivity {
     private TextView info;
 
     private LoginButton loginButton;
+
+    public static ProgressDialog mProgressDlg;
 
     private CallbackManager callbackManager;
 
@@ -71,8 +74,8 @@ public class FacebookLogin extends AppCompatActivity {
                     public void onSuccess(LoginResult loginResult) {
 
                         //when fb credentials are correct, user logins to gogodeals
-                        Intent gogoApp = new Intent(FacebookLogin.this, MapsActivity.class);
-                        startActivity(gogoApp);
+                        //Intent gogoApp = new Intent(FacebookLogin.this, MapsActivity.class);
+                        //startActivity(gogoApp);
                         JSONObject object;
 
                          //Fetching facebook user data through JSON object: username and email to store it into our db
@@ -93,16 +96,21 @@ public class FacebookLogin extends AppCompatActivity {
                                                     Log.i("FBdata: ", name + " " + lastName);
 
 
-                                                            String topic = "deal/gogodeals/user/new";
+                                                            String topic = "deal/gogodeals/user/facebook";
                                                     Log.i("fbData2: ", topic);
-                                                            String payload = "{\"id\":\"1\",\"data\":{\"name\":\""
-                                                                    + name + " " + lastName + "\",\"email\": \"" + object.getString("email") + "\",\"password\": \"" +  Math.random() + "\"}}";
+                                                            String payload = "{\"id\":\"1\",\"data\":{" +
+                                                                    "\"email\": \"" + object.getString("email") + "\"," +
+                                                                    "\"name\":\"" + name + " " + lastName + "\"},}";
                                                     Log.i("fbData3: ", payload);
 
                                                     ConnectionMqtt connectionMqtt = new ConnectionMqtt(FacebookLogin.this);
                                                     connectionMqtt.sendMqtt(payload, topic);
                                                             Log.i("while condition: ", name + email);
 
+                                                    String userSubscribe = "deal/gogodeals/database/facebook";
+                                                    connectionMqtt.sendMqtt(payload, topic, userSubscribe, 2);
+
+                                                    //loginProgressScreen();
 
                                                 } catch (JSONException e) {
                                                    e.printStackTrace();
@@ -121,7 +129,7 @@ public class FacebookLogin extends AppCompatActivity {
 
                         //when user press back, he goes to main screen in order to login again etc.
                         //LoginManager.getInstance().logOut();
-                        finish();
+                        //finish();
                         //startActivity(gogoAppMainscreen);
 
                     }
@@ -152,6 +160,8 @@ public class FacebookLogin extends AppCompatActivity {
                      }
                 }
         );
+        Log.i("Bubca", "got here");
+        loginProgressScreen();
 
     }
 
@@ -160,6 +170,25 @@ public class FacebookLogin extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
         callbackManager.onActivityResult(requestCode, resultCode, data);
         }
+
+    //show validation screen while waiting for response from GogoDeals Erlang module
+    void loginProgressScreen() {
+        Parsers.facebookLogin=this;
+        mProgressDlg = new ProgressDialog(this);
+        mProgressDlg.setMessage("Validating Facebook login");
+        mProgressDlg.setCancelable(false);
+        mProgressDlg.show();
+
+    }
+
+    //When message is received from GogoDeals Erlang module, load next screen
+    public void facebookLoginSuccess(){
+        Log.i("Bubca", "change screen");
+        //when fb credentials are correct, user logins to gogodeals
+        Intent gogoApp = new Intent(FacebookLogin.this, MapsActivity.class);
+        startActivity(gogoApp);
+        finish();
+    }
 
 
     /*public void saveInfo(){

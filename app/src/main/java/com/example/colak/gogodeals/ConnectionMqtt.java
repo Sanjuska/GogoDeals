@@ -119,15 +119,8 @@ public ConnectionMqtt(Activity activity){
         try {
             encodedPayload = payload.getBytes("UTF-8");
             MqttMessage message = new MqttMessage(encodedPayload);
-            Log.i("json published ",payload);
-            Log.e(TAG, topic);
-            Log.e(TAG, payload);
-            Log.e(TAG, String.valueOf(message));
             client.publish(topic, message);
-            Log.i("json published ",message.toString());
-            //Log.e(TgAG, "Should have sent");
         } catch (UnsupportedEncodingException | MqttException e) {
-            Log.e(TAG, "I FAILED");
             e.printStackTrace();
         }
     }

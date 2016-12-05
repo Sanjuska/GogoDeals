@@ -812,8 +812,8 @@ public class MapsActivity extends FragmentActivity implements
                 //TODO replace the fix user_id with the user_id currently active in the app
                 String payload =   "{ \"id\":\"" + deal_id + "\"," +
                         " \"data\": {" +
-                        " \"user_id\":\"feb00c2b-b4b6-11e6-862e-080027e93e17\"}}";
-                //" \"user_id\":\" + user_id + "\"}}";
+                       // " \"user_id\":\"feb00c2b-b4b6-11e6-862e-080027e93e17\"}}";
+                " \"user_id\":\"" + MainActivity.userID + "\"}}";
 
                 String publishTopic = "deal/gogodeals/deal/save";
                 connectionMqtt.sendMqtt(payload,publishTopic,subscribeTopic,2);
@@ -862,8 +862,8 @@ public class MapsActivity extends FragmentActivity implements
 
             String payload =   "{ \"id\":\"" + deal_id + "\"," +
                     " \"data\": {" +
-                    " \"user_id\":\"feb00c2b-b4b6-11e6-862e-080027e93e17\"}}";
-            //" \"user_id\":\" + user_id + "\"}}";
+                 //   " \"user_id\":\"feb00c2b-b4b6-11e6-862e-080027e93e17\"}}";
+                " \"user_id\":\"" + MainActivity.userID + "\"}}";
 
             String publishTopic = "deal/gogodeals/deal/remove";
             connectionMqtt.sendMqtt(payload,publishTopic);
