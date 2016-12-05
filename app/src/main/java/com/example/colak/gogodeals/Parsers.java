@@ -44,7 +44,7 @@ public class Parsers {
                             fetchDealParser(message);
                         }
                     } catch (JSONException e) {
-                        Log.i("json error fuuck ",message.toString() +e.toString());
+                        Log.e("JsonExeption ",e.toString());
                         e.printStackTrace();
                     }
                     break;

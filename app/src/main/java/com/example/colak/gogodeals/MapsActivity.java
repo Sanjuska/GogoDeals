@@ -244,7 +244,6 @@ public class MapsActivity extends FragmentActivity implements
                 mGoogleApiClient);
         makeUseOfNewLocation(mLastLocation);
         startLocationUpdates();
-
     }
 
     @Override
@@ -286,6 +285,9 @@ public class MapsActivity extends FragmentActivity implements
 
         if (!fetched) {
                 if (!fetched) {
+                    filterList.add("food");
+                    filterList.add("stuff");
+                    filterList.add("random");
                     for (String filter : filterList) {
                         messages.fetchDeals(filter,mLastLocation,this);
                         Log.i("json filter ", filter);
