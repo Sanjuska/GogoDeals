@@ -18,17 +18,13 @@ public class GogouserLogin extends AppCompatActivity {
 
     EditText loginEmail;
     EditText loginPassword;
-
     Button loginBtn;
-
     static ConnectionMqtt gogoUserMqtt;
-    Parsers logincheck;
-
     public static ProgressDialog mProgressDlg;
     public static boolean loginResult;
-
     public static String email;
     public static String password;
+
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

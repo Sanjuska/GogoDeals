@@ -110,10 +110,9 @@ public class Parsers {
             tmpJson2 = tmpArray.getJSONObject(i);
             String filter = tmpJson2.getString("filter");
             tmpList.add(filter);
+            Log.i("json filter ",filter);
         }
-
         FilterPopup.filterHandler.set(tmpList);
-
     }
     //}
 
@@ -128,17 +127,12 @@ public class Parsers {
     private void fetchDealParser(MqttMessage message) throws JSONException {
 
         String jsonString = new String(message.getPayload());
-
-
-
         JSONArray jsonArray;
         JSONObject jsonObject;
         JSONObject json1;
         Log.i("json got message ",message.getPayload().toString());
         json1  = new JSONObject(jsonString);
         jsonArray = new JSONArray(json1.getJSONArray("data").toString());
-
-
 
         for (int i = 0; i< jsonArray.length();i++){
 
@@ -158,11 +152,7 @@ public class Parsers {
             int count = jsonObject.getInt("count");
             String client_id = jsonObject.getString("client_id");
             String companyName = jsonObject.getString("client_name");
-
-
             LatLng latlng = new LatLng(latitude,longitude);
-
-
                 if(filters.equals("clothes")) {
                     //Deal marker on the map including popup
                     MapsActivity.mMap.addMarker(new MarkerOptions()
@@ -171,7 +161,6 @@ public class Parsers {
                             .icon(BitmapDescriptorFactory
                                     .fromResource(R.drawable.clothes))
                             .snippet(companyName + "€" + description + "€" + price + "€" + count + "€" + duration + "€" + picture + "€" + id));
-
                 }else if(filters.equals("food")){
                     //Deal marker on the map including popup
                    MapsActivity.mMap.addMarker(new MarkerOptions()
@@ -180,7 +169,6 @@ public class Parsers {
                         .icon(BitmapDescriptorFactory
                                 .fromResource(R.drawable.food))
                            .snippet(companyName + "€" + description + "€" + price + "€" + count + "€" + duration + "€" + picture + "€" + id));
-
                 }else if(filters.equals("alcohol")){
                     //Deal marker on the map including popup
                     MapsActivity.mMap.addMarker(new MarkerOptions()
@@ -206,12 +194,8 @@ public class Parsers {
                                 .fromResource(R.drawable.stuff))
                            .snippet(companyName + "€" + description + "€" + price + "€" + count + "€" + duration + "€" + picture + "€" + id));
                 }
-
-
         }
-
         }
-
     /**
      * Get the id from a MqttMessage
      * @param message
@@ -229,12 +213,10 @@ public class Parsers {
         return null;
     }
 
-
     private void grabbedDealParser(MqttMessage message) throws JSONException {
         String dealID;
         int count = 0;
         String verificationID = null;
-
         // Split upp payload messageString into components
         String jsonString = new String(message.getPayload());
         JSONObject jsonData;
@@ -243,23 +225,17 @@ public class Parsers {
         jsonData = new JSONObject(jsonData.getString("data"));
         count = jsonData.getInt("count");
         verificationID = jsonData.getString("id");
-
         MapsActivity.grabbedView.setVisibility(View.VISIBLE);
-
         // update unit in popup
         TextView units = ((TextView) MapsActivity.popupMessage.getContentView().findViewById(R.id.units));
         units.setText(String.valueOf(count));
-
         // add deal to list
         //TextView description = (TextView) MapsActivity.popupMessage.getContentView().findViewById(R.id.description);
-
         //MapsActivity.dealArrayList.add(MapsActivity.descriptionOfGrabbedDeal);
         MapsActivity.grabbedDeal.setVerificationID(verificationID);
         MapsActivity.dealArrayList.add(MapsActivity.grabbedDeal);
-
         // add code to deal in list
         MapsActivity.mProgressDlg.dismiss();
-
     }
 
     public void checkEmail(MqttMessage message) throws JSONException {
@@ -269,25 +245,17 @@ public class Parsers {
         String messageString = new String(message.getPayload());
         Log.i("fetchEmail: ", String.valueOf(message.getPayload()));
         JSONObject jsonData;
-
         jsonData = new JSONObject(messageString);
-
         jsonData = new JSONObject(jsonData.getString("data"));
-
         emailData = jsonData.getString("email");
         passwordData = jsonData.getString("password");
         id = jsonData.getString("id");
-
         if (emailData.equals(GogouserLogin.email) && passwordData.equals(GogouserLogin.password)){
-
             GogouserLogin.loginResult=true;
-
             MainActivity.userID = id;
             Log.i("User", MainActivity.userID);
             GogouserLogin.mProgressDlg.dismiss();
-
             gogouserLogin.loginResultReceived();
-
         }
         else {
             Log.i("7 :", "1");
@@ -295,23 +263,6 @@ public class Parsers {
             GogouserLogin.loginResult=false;
             GogouserLogin.mProgressDlg.dismiss();
         }
-
-
-
-       /* “id”: “12345678-1011-M012-N210-112233445566”,
-        “data”: {
-            “id”: “0a1e53be-ac55-11e6-a0a1-8c705aaa0186”,
-            “name”: “Bob Bobson”,
-            “email”: “Bob@Bobson.se”,
-            “password”: “Bobson123”,
-            “filters”: null,
-            “deals”: null
-            }
-*/
-        /*jsonEmail = new JSONObject(messageString);
-        jsonPassword = new JSONObject(messageString);
-        String email = jsonEmail.getString("email");
-        String password = jsonPassword.getString("password");*/
     }
 
     public void checkFacebook(MqttMessage message) throws JSONException {
@@ -319,16 +270,12 @@ public class Parsers {
         String messageString = new String(message.getPayload());
         Log.i("Bubca checkFacebook: ", String.valueOf(message.getPayload()));
         JSONObject jsonData;
-
         jsonData = new JSONObject(messageString);
         jsonData = new JSONObject(jsonData.getString("data"));
-
         id = jsonData.getString("id");
-
         MainActivity.userID = id;
         Log.i("Bubca User", MainActivity.userID);
         FacebookLogin.mProgressDlg.dismiss();
-
         //now load next maps activity screen
         facebookLogin.facebookLoginSuccess();
     }

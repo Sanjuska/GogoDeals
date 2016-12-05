@@ -27,8 +27,6 @@ Connectionmqqt handles the communication with the broker.
 public class ConnectionMqtt extends Activity implements MqttCallback {
     // Variables used in the class
     private static final String TAG = "ConnectionMqtt";
-
-
     MqttAndroidClient client;
     Activity parent;
     Parsers parsers;
@@ -50,8 +48,6 @@ public ConnectionMqtt(Activity activity){
 }
     public ConnectionMqtt(){
     }
-
-
     /*
     sentmqtt is called from other classe and takes a payload and a topic and starts the connection
     and publishing to the broker. This method only publish and dont subscribe.
@@ -76,21 +72,18 @@ public ConnectionMqtt(Activity activity){
         open();
     }
 
-
     //create and establish an MQTT-ConnectionMqtt
     public void open() {
         String clientId = MqttClient.generateClientId();
         client = new MqttAndroidClient(parent.getApplicationContext(), "tcp://176.10.136.208:1883",
                 clientId);
         client.setCallback(this);
-
         try {
             IMqttToken token = client.connect();
             token.setActionCallback(new IMqttActionListener() {
                 @Override
                 public void onSuccess(IMqttToken asyncActionToken) {
                     // We are connected
-
                     if (receiveTopic.equals("")){
                         publish(payload,sendTopic);
                         Log.i("json published payload ",payload);
@@ -99,18 +92,15 @@ public ConnectionMqtt(Activity activity){
                         subscribe(receiveTopic,qot);
                     }
                 }
-
                 @Override
                 public void onFailure(IMqttToken asyncActionToken, Throwable exception) {
                     // Something went wrong e.g. ConnectionMqtt timeout or firewall problems
                     Log.d(TAG, "onFailure");
-
                 }
             });
         } catch (MqttException e) {
             e.printStackTrace();
         }
-
     }
 
     // This method publishes the payload to the given topic.
@@ -134,18 +124,13 @@ public ConnectionMqtt(Activity activity){
                     // The message was published
                     Log.i("json subscribed to ",topic);
                     publish(payload,sendTopic);
-
-
                 }
-
                 @Override
                 public void onFailure(IMqttToken asyncActionToken,
                                       Throwable exception) {
                     // The subscription could not be performed, maybe the user was not
                     // authorized to subscribe on the specified topic e.g. using wildcards
-
                 }
-
             });
         } catch (MqttException e) {
             e.printStackTrace();
@@ -172,15 +157,17 @@ public ConnectionMqtt(Activity activity){
     // When a message arrive from a subsribed topic this method calls the parsers class method parse.
     public void messageArrived(String topic, MqttMessage message) throws MqttException {
         parsers.parse(topic,message);
-
+        close();
+        Log.i("Connection ","closed after message arrived");
     }
 
     //Called when publish has been completed and accepted by broker.
     public void deliveryComplete(IMqttDeliveryToken token){
-
+        if (receiveTopic.equals("")) {
+            close();
+            Log.i("Connection ", "closed after publish");
+        }
     }
-
-
 }
 
 
