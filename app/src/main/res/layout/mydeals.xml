@@ -38,7 +38,6 @@
         android:layout_marginLeft="150dp"
         android:elevation="24dp"
         android:layout_height="wrap_content"
-        android:onClick="dealsBackButtonPressed"
         android:alpha="100"
         android:layout_gravity="right"
         />

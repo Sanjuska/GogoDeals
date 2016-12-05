@@ -5,4 +5,10 @@ package com.example.colak.gogodeals;
  */
 
 public class Listeners {
+
+    public void setListeners() {
+
+
+    }
+
 }

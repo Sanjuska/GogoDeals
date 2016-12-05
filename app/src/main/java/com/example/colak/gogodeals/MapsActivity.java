@@ -2,13 +2,9 @@ package com.example.colak.gogodeals;
 
 import android.Manifest;
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.Color;
-import android.graphics.Point;
-import android.graphics.drawable.ColorDrawable;
 import android.location.Location;
 import android.os.Build;
 import android.os.Bundle;
@@ -18,18 +14,12 @@ import android.support.annotation.NonNull;
 import android.support.annotation.RequiresApi;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
-import android.util.Base64;
 import android.util.Log;
-import android.view.Display;
-import android.view.Gravity;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.animation.Interpolator;
 import android.view.animation.LinearInterpolator;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.CheckBox;
 import android.widget.FrameLayout;
 import android.widget.GridLayout;
 import android.widget.ImageButton;
@@ -40,6 +30,8 @@ import android.widget.PopupWindow;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.colak.gogodeals.Popups.DealsPopup;
+import com.example.colak.gogodeals.Popups.OptionsPopup;
 import com.google.android.gms.appindexing.AppIndex;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -81,10 +73,14 @@ public class MapsActivity extends FragmentActivity implements
 
     Marker lastOpened = null;
 
-    CheckBox food,clothes,activities,stuff,random;
+    /*CheckBox food;
+    CheckBox clothes;
+    CheckBox activities;
+    CheckBox stuff;
+    CheckBox random;*/
 
     Location lastFetched;
-    ArrayList<String> filterList;
+    static ArrayList<String> filterList;
 
 
     boolean isClickedPop = true;
@@ -94,12 +90,12 @@ public class MapsActivity extends FragmentActivity implements
     static PopupWindow popupDealView;
     Button grabButton;
     Button ungrabButton;
-    static ImageView grabbedView;
+    public static ImageView grabbedView;
     LocationRequest locationRequest;
     public static String descriptionOfGrabbedDeal;
     public static Deal grabbedDeal;
 
-    PopupWindow filterPopup;
+
     PopupWindow myDealsPopup;
     ArrayAdapter<Deal> dealAdapter;
     public static List<Deal> dealArrayList;
@@ -108,55 +104,36 @@ public class MapsActivity extends FragmentActivity implements
     PopupWindow profilePopup;
     PopupWindow optionsPopup;
     boolean fetched;
+    ImageButton optionsButton;
+    public static Marker currentMarker;
 
     LinearLayout mainLayout;
 
     // Creating an instance of MarkerOptions to set position
     private GoogleApiClient client;
 
+    FilterHandler filterHandler;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        fetched = false;
-        filterList = new ArrayList<>();
         super.onCreate(savedInstanceState);
-        popupMessage = new PopupWindow(this);
-        optionsPopup = new PopupWindow(this);
-        profilePopup = new PopupWindow(this);
-        popupDealView = new PopupWindow(this);
-        myDealsPopup = new PopupWindow(this);
-        filterPopup = new PopupWindow(this);
-        mainLayout = new LinearLayout(this);
-        filterList = new ArrayList<>();
+        setContentView(R.layout.activity_maps);
 
-        //create list adapter for deal list
-        dealArrayList = new ArrayList<Deal>();
-        dealArrayList.add(new Deal());
+        // Obtain the SupportMapFragment and get notified when the map is ready to be used.
+        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
+                .findFragmentById(R.id.map);
 
-        food = (CheckBox) findViewById(R.id.checkBoxFood);
-        clothes = (CheckBox) findViewById(R.id.checkBoxClothes);
-        activities = (CheckBox) findViewById(R.id.checkBoxActivites);
-        stuff = (CheckBox) findViewById(R.id.checkBoxStuff);
-        random = (CheckBox) findViewById(R.id.checkBoxRandom);
-        
+        mapFragment.getMapAsync(this);
 
-
+        // ATTENTION: This was auto-generated to implement the App Indexing API.
+        // See https://g.co/AppIndexing/AndroidStudio for more information.
+        client = new GoogleApiClient.Builder(this).addApi(AppIndex.API).build();
 
 
         //also changed the version of google play services on gradle.app from 9.6.1 to
         //7.5.0 cause of compatibility.
         MapsInitializer.initialize(getApplicationContext());
-        setContentView(R.layout.activity_maps);
 
-        // Obtain the SupportMapFragment and get notified when the map is ready to be used.
-       SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
-                .findFragmentById(R.id.map);
-        mapFragment.getMapAsync(this);
-
-
-
-        // ATTENTION: This was auto-generated to implement the App Indexing API.
-        // See https://g.co/AppIndexing/AndroidStudio for more information.
-        client = new GoogleApiClient.Builder(this).addApi(AppIndex.API).build();
 
         //Sanja && Johan
         //Show my location
@@ -176,14 +153,34 @@ public class MapsActivity extends FragmentActivity implements
         }
 
 
+        LocationSettingsRequest.Builder builder = new LocationSettingsRequest.Builder()
+                .addLocationRequest(locationRequest);
+        builder.setAlwaysShow(true);
+
+
+        fetched = false;
+        filterList = new ArrayList<>();
+        popupMessage = new PopupWindow(this);
+        optionsPopup = new PopupWindow(this);
+        profilePopup = new PopupWindow(this);
+        popupDealView = new PopupWindow(this);
+        myDealsPopup = new PopupWindow(this);
+
+        mainLayout = new LinearLayout(this);
+        filterList = new ArrayList<>();
+
+        //create list adapter for deal list
+        dealArrayList = new ArrayList<Deal>();
+        dealArrayList.add(new Deal());
+
+
+
         // Acquire a reference to the system Location Manager
         locationRequest = LocationRequest.create();
         locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
         locationRequest.setInterval(100);
 
-        LocationSettingsRequest.Builder builder = new LocationSettingsRequest.Builder()
-                .addLocationRequest(locationRequest);
-        builder.setAlwaysShow(true);
+        SetoptionsButton();
 
 
 
@@ -236,6 +233,7 @@ public class MapsActivity extends FragmentActivity implements
 
                     public boolean onMarkerClick(Marker marker) {
 
+                        currentMarker = marker;
                         if (marker.getTitle().equals("user")) {
 
                         } else {
@@ -255,90 +253,11 @@ public class MapsActivity extends FragmentActivity implements
 
 
                             }
-                            Bitmap icon;
-
-
-                            View popup = getContent(marker);
-                            popupMessage.setContentView(popup);
-                            popupMessage.showAtLocation(mainLayout, Gravity.CENTER, 0, 0);
-                            Display display = getWindowManager().getDefaultDisplay();
-                            Point size = new Point();
-                            display.getSize(size);
-                            int screenWidth = size.x;
-                            int screenHeight = size.y;
-                            popupMessage.update(screenWidth - 50, screenHeight / 2);
-
-                            popupMessage.setOutsideTouchable(true);
-                            popupMessage.setFocusable(true);
-                            popupMessage.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-                            popup.setOnTouchListener(new View.OnTouchListener() {
-                                @Override
-                                public boolean onTouch(View v, MotionEvent event) {
-                                    return true;
-                                }
-                            });
-
-
-                            // Re-assign the last openned such that we can close it later
-                            lastOpened = marker;
+                            startActivity(new Intent(MapsActivity.this, DealsPopup.class));
                         }
                         return doNotMoveCameraToCenterMarker;
                     }
                 });
-
-        //Initializing the Options List button and setting an onClick listener to it.
-        final ImageButton hamburgerButton = (ImageButton) findViewById(R.id.optionslistbutton);
-        hamburgerButton.setOnClickListener(new View.OnClickListener() {
-
-            //Function which handles the user pressing the Options List button. If the button is clicked already the popup will be dismissed instead of appearing again.
-            //Populating the content view with options_list_popup and shows it on top of the main layout in the centre.
-            //Dismisses all other popups when called. While open it handles the options lists buttons by switch case which calls the appropriate function when pressed.
-            //Boolean isClickedPop is used to ensure that the Options List popup is dismissed if the Options List button is pressed while the popup is open and vice versa.
-            public void onClick(View v) {
-                if (isClickedPop == true) {
-                    isClickedPop = false;
-
-                    Display display = getWindowManager().getDefaultDisplay();
-                    Point size = new Point();
-                    display.getSize(size);
-                    int screenWidth = size.x;
-                    int screenHeight = size.y;
-
-                    View optPop = getLayoutInflater().inflate(R.layout.options_list_popup, null);
-                    optionsPopup.setContentView(optPop);
-                    optionsPopup.showAtLocation(mainLayout, Gravity.CENTER, 0, 0);
-                    optionsPopup.update(screenWidth - 50, screenHeight / 2);
-
-                    profilePopup.dismiss();
-                    myDealsPopup.dismiss();
-                    filterPopup.dismiss();
-
-                    switch (v.getId()) {
-                        case R.id.profileButton:
-                            profileButtonPressed(v);
-                        case R.id.dealsButton:
-                            mydealsButtonPressed(v);
-                        case R.id.filterButton:
-                            filterButtonPressed(v);
-                        case R.id.profileBackButton:
-                            profileBackButtonPressed(v);
-                        case R.id.dealsBackButton:
-                            dealsBackButtonPressed(v);
-                        case R.id.filterBackButton:
-                            filterBackButtonPressed(v);
-                            break;
-                    }
-
-                } else {
-                    isClickedPop = true;
-                    optionsPopup.dismiss();
-                    profilePopup.dismiss();
-                    myDealsPopup.dismiss();
-                    filterPopup.dismiss();
-
-                }
-            }
-        });
     }
 
 
@@ -348,7 +267,6 @@ public class MapsActivity extends FragmentActivity implements
         ConnectionMqtt connectionMqtt = new ConnectionMqtt(this);
 
         String subscribeTopic = "deal/gogodeals/database/deals";
-
 
                 String payload =   "{ \"id\": \"12345678-1011-M012-N210-112233445566\"," +
                         " \"data\": {" +
@@ -361,160 +279,19 @@ public class MapsActivity extends FragmentActivity implements
                 Log.i("json publish ",payload);
                 connectionMqtt.sendMqtt(payload,publishTopic,subscribeTopic,2);
 
-
-
-
     }
 
-    //Function called by the switch case when back button on My Profile is pressed which dismisses the My Profile popup.
-    public void profileBackButtonPressed(View v){
-        profilePopup.dismiss();
-    }
-    //Function called by the switch case when back button on My Deal is pressed which dismisses the My Deal popup.
-    public void dealsBackButtonPressed(View v){
-        myDealsPopup.dismiss();
-    }
-    //Function called by the switch case when back button on Deal Filters is pressed which dismisses the Deal Filters popup.
-    public void filterBackButtonPressed(View v){
-        filterPopup.dismiss();
-    }
+    public void SetoptionsButton(){
 
-    // Opens the popup with My Profile on click.
-    public void profileButtonPressed(View v){
-
-        Display display = getWindowManager().getDefaultDisplay();
-        Point size = new Point();
-        display.getSize(size);
-        int screenWidth = size.x;
-        int screenHeight = size.y;
-
-        View profPop = getLayoutInflater().inflate(R.layout.myprofile, null);
-        profilePopup.setContentView(profPop);
-        profilePopup.showAtLocation(mainLayout, Gravity.CENTER, 0, 0);
-        profilePopup.update(screenWidth - 50, screenHeight / 2);
-    }
-
-    // Opens the popupwith My Deal on click.
-    public void mydealsButtonPressed(View v){
-
-        Display display = getWindowManager().getDefaultDisplay();
-        Point size = new Point();
-        display.getSize(size);
-        int screenWidth = size.x;
-        int screenHeight = size.y;
-
-       View myDealsPop = getLayoutInflater().inflate(R.layout.mydeals, null);
-        myDealsPopup.setContentView(myDealsPop);
-        dealAdapter= new ArrayAdapter<Deal>(MapsActivity.this, android.R.layout.simple_list_item_1,dealArrayList);
-        dealListView = ((ListView) myDealsPopup.getContentView().findViewById(R.id.dealList));
-        dealListView.setAdapter(dealAdapter);
-         dealListView.setClickable(true);
-        dealListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-
+        optionsButton = (ImageButton) findViewById(R.id.optionslistbutton);
+        optionsButton.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-
-                //Extract deal from the clicke list item
-                Deal deal = (Deal)parent.getItemAtPosition(position);
-
-                // Create popup window with deal based on the extracted deal
-                View popup = getContent(deal);
-                popupDealView.setContentView(popup);
-                popupDealView.showAtLocation(mainLayout, Gravity.CENTER, 0, 0);
-                Display display = getWindowManager().getDefaultDisplay();
-                Point size = new Point();
-                display.getSize(size);
-                int screenWidth = size.x;
-                int screenHeight = size.y;
-                popupDealView.update(screenWidth - 50, screenHeight / 2);
-                popupDealView.setOutsideTouchable(true);
-                popupDealView.setFocusable(true);
-                popupDealView.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-                popupMessage.setOutsideTouchable(true);
-                popupMessage.setFocusable(true);
-                popupMessage.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-                popup.setOnTouchListener(new View.OnTouchListener() {
-                    @Override
-                    public boolean onTouch(View v, MotionEvent event) {
-                        return true;
-                    }
-                });
-
-
-                //remember which deal is being shown, so that it can be removed if ungrabbed
-                grabbedDeal = deal;
-
+            public void onClick(View v) {
+                startActivity(new Intent(MapsActivity.this, OptionsPopup.class));
             }
         });
 
-        myDealsPopup.showAtLocation(mainLayout, Gravity.CENTER, 0, 0);
-        myDealsPopup.update(screenWidth - 50, screenHeight / 2);
     }
-
-    // Opens the popup with Deal Filters on click.
-    public void filterButtonPressed(View v){
-
-        Display display = getWindowManager().getDefaultDisplay();
-        Point size = new Point();
-        display.getSize(size);
-        int screenWidth = size.x;
-        int screenHeight = size.y;
-
-        View filtersPop = getLayoutInflater().inflate(R.layout.filterslist, null);
-        filterPopup.setContentView(filtersPop);
-        filterPopup.showAtLocation(mainLayout, Gravity.CENTER, 0 ,0);
-        filterPopup.update(screenWidth - 50, screenHeight / 2);
-    }
-
-
-    public void onCheckboxClicked (View v){
-
-        switch(v.getId()) {
-            case R.id.checkBoxFood:
-                if(food.isChecked()){
-                    filterList.add("food");
-                }
-                else{
-                    filterList.remove(filterList.indexOf("food"));
-                }
-
-            case R.id.checkBoxClothes:
-                if(clothes.isChecked()){
-                    filterList.add("clothes");
-                }
-                else{
-                    filterList.remove(filterList.indexOf("clothes"));
-                }
-
-            case R.id.checkBoxActivites:
-                if(activities.isChecked()){
-                    filterList.add("activities");
-                }
-                else{
-                    filterList.remove(filterList.indexOf("activities"));
-                }
-
-            case R.id.checkBoxStuff:
-                if(stuff.isChecked()){
-                    filterList.add("stuff");
-                }
-                else{
-                    filterList.remove(filterList.indexOf("stuff"));
-                }
-
-            case R.id.checkBoxRandom:
-                if(random.isChecked()){
-                    filterList.add("random");
-                }
-                else{
-                    filterList.remove(filterList.indexOf("random"));
-                }
-                break;
-        }
-    }
-
-
-
 
 
     @Override
@@ -523,109 +300,6 @@ public class MapsActivity extends FragmentActivity implements
         super.onStart();
     }
 
-
-    public View getContent(Marker marker) {
-        View v = getLayoutInflater().inflate(R.layout.deal_pop_up, null);
-
-
-        // Getting view from the layout file info_window_layout
-       // String[] components = marker.getSnippet().split(";");
-        String[] components = marker.getSnippet().split("€");
-        Log.i("json getsnippet ",marker.getSnippet().toString());
-
-        TextView company = (TextView) v.findViewById(R.id.company);
-        company.setText(components[0]);
-
-        TextView description = (TextView) v.findViewById(R.id.description);
-        description.setText(components[1]);
-
-        TextView price = ((TextView) v.findViewById(R.id.price));
-        price.setText(components[2]);
-
-        TextView units = ((TextView) v.findViewById(R.id.units));
-        units.setText(components[3]);
-        Log.d("InfoWindow units:", components[2]);
-
-        TextView duration = ((TextView) v.findViewById(R.id.duration));
-        duration.setText(components[4]);
-        //Log.d("InfoWindow description:", components[1]);
-
-        ImageView dealPicture = (ImageView) v.findViewById(R.id.dealPicture);
-        //Converting String byte picture to an ImageView
-        //String base = components[6];
-        String base = components[5].split(",")[1];
-        byte[] decodedString = Base64.decode(base, Base64.DEFAULT);
-        Bitmap decodedByte = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
-        dealPicture.setImageBitmap(decodedByte);
-        Log.d("InfoWindow picture:", components[5]);
-
-
-        /*int icon;
-        icon = R.drawable.grabbed;
-        grabbedView.setImageDrawable(ContextCompat.getDrawable(getApplicationContext(), icon));
-        grabbedView.setVisibility(View.INVISIBLE);*/
-
-        //TextView id = ((TextView) v.findViewById(R.id.idTextView));
-       // id.setText(components[6]);
-        TextView id = ((TextView) v.findViewById(R.id.idTextView));
-        id.setText(components[6]);
-
-        Deal shownDeal = new Deal((String) company.getText(), (String) duration.getText(), (String) price.getText(), dealPicture, (String) description.getText(), (String) id.getText());
-
-        if (dealArrayList.contains(shownDeal)) {
-            System.out.println("Deal already grabbed");
-            grabbedView = (ImageView) v.findViewById(R.id.grabbedView);
-            grabbedView.setVisibility(View.VISIBLE);
-            grabButton = (Button) v.findViewById(R.id.grabButton);
-            grabButton.setVisibility(View.INVISIBLE);
-
-        } else {
-            System.out.println("Deal is not grabbed");
-            grabbedView = (ImageView) v.findViewById(R.id.grabbedView);
-            grabbedView.setVisibility(View.INVISIBLE);
-            grabButton = (Button) v.findViewById(R.id.grabButton);
-            grabButton.setVisibility(View.VISIBLE);
-
-
-        }
-
-        return v;
-    }
-
-    public View getContent(Deal deal) {
-        View v = getLayoutInflater().inflate(R.layout.deal_pop_up, null);
-
-        TextView company = (TextView) v.findViewById(R.id.company);
-        company.setText(deal.getCompany());
-
-        TextView description = (TextView) v.findViewById(R.id.description);
-        description.setText(deal.getDescription());
-
-        TextView price = ((TextView) v.findViewById(R.id.price));
-        price.setText(deal.getPrice());
-
-        TextView verificationHeader = ((TextView) v.findViewById(R.id.verificationHeader));
-        verificationHeader.setText("Verification code");
-
-        TextView units = ((TextView) v.findViewById(R.id.units));
-        units.setText(deal.getVerificationID());
-
-        TextView duration = ((TextView) v.findViewById(R.id.duration));
-        duration.setText(deal.getDuration());
-
-        ImageView dealPicture = (ImageView) v.findViewById(R.id.dealPicture);
-        dealPicture = deal.getPicture();
-
-        grabbedView = (ImageView) v.findViewById(R.id.grabbedView);
-        grabbedView.setVisibility(View.INVISIBLE);
-        grabButton = (Button) v.findViewById(R.id.grabButton);
-        grabButton.setVisibility(View.INVISIBLE);
-        ungrabButton = (Button) v.findViewById(R.id.ungrabButton);
-        ungrabButton.setVisibility(View.VISIBLE);
-
-        // Returning the view containing InfoWindow contents
-        return v;
-    }
 
     @Override
     public void onStop() {
@@ -653,8 +327,6 @@ public class MapsActivity extends FragmentActivity implements
     @Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
     }
-
-
 
 
     // Define a listener that responds to location updates
@@ -702,18 +374,9 @@ public class MapsActivity extends FragmentActivity implements
         //locationListener.onLocationChanged(location);
         mMap.animateCamera(CameraUpdateFactory.newCameraPosition(myPosition));
 
-        filterList.add("food");
-        filterList.add("activities");
-        filterList.add("random");
-        filterList.add("stuff");
-        filterList.add("clothes");
+
 
         if (!fetched) {
-
-                filterList.add("activities");
-                filterList.add("random");
-                filterList.add("stuff");
-                filterList.add("clothes");
 
 
                 if (!fetched) {

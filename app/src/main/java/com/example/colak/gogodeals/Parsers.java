@@ -4,6 +4,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
+import com.example.colak.gogodeals.Popups.FilterPopup;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -13,6 +14,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
 import java.util.UUID;
 
 /**
@@ -70,6 +72,14 @@ public class Parsers {
                         e.printStackTrace();
                     }
                     break;
+
+                case "deal/gogodeals/database/filters":
+                    try {
+                        setFilters(message);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                    break;
                 //check users on database, login from Facebook
                 case "deal/gogodeals/database/facebook":
                     try {
@@ -87,6 +97,23 @@ public class Parsers {
                     break;
             }
         }
+
+    private void setFilters(MqttMessage message) throws JSONException {
+
+        ArrayList tmpList = null;
+        JSONObject tmpObj = new JSONObject(new String(message.getPayload().toString()));
+        JSONArray tmpArray;
+        tmpArray = new JSONArray(tmpObj.getJSONArray("data").toString());
+
+        for (int i = 0; i< tmpArray.length();i++) {
+            JSONObject tmpJson2;
+            tmpJson2 = tmpArray.getJSONObject(i);
+            String filter = tmpJson2.getString("filter");
+            tmpList.add(filter);
+        }
+
+        FilterPopup.filterHandler.set(tmpList);
+    }
     //}
 
 
@@ -100,6 +127,7 @@ public class Parsers {
     private void fetchDealParser(MqttMessage message) throws JSONException {
 
         String jsonString = new String(message.getPayload());
+
 
 
         JSONArray jsonArray;

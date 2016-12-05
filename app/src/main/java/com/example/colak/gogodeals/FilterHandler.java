@@ -1,5 +1,6 @@
 package com.example.colak.gogodeals;
 
+import android.app.Activity;
 import android.widget.CompoundButton;
 
 import java.util.ArrayList;
@@ -21,21 +22,41 @@ public class FilterHandler extends MapsActivity implements CompoundButton.OnChec
      * Initializes the an empty ArrayList<String> of filters, the checkboxes and connect the
      * checkboxes to a listener
      */
-    public FilterHandler(){
+    public FilterHandler(Activity activity){
         filters = new ArrayList<>();
-        filters.add("food");
 
-        food = (CompoundButton) findViewById(R.id.checkBoxFood);
-        clothes = (CompoundButton) findViewById(R.id.checkBoxClothes);
-        activities = (CompoundButton) findViewById(R.id.checkBoxActivites);
-        stuff = (CompoundButton) findViewById(R.id.checkBoxStuff);
-        random = (CompoundButton) findViewById(R.id.checkBoxRandom);
+        food = (CompoundButton) activity.findViewById(R.id.checkBoxFood);
+        clothes = (CompoundButton) activity.findViewById(R.id.checkBoxClothes);
+        activities = (CompoundButton) activity.findViewById(R.id.checkBoxActivites);
+        stuff = (CompoundButton) activity.findViewById(R.id.checkBoxStuff);
+        random = (CompoundButton) activity.findViewById(R.id.checkBoxRandom);
 
         food.setOnCheckedChangeListener(this);
         clothes.setOnCheckedChangeListener(this);
         activities.setOnCheckedChangeListener(this);
         stuff.setOnCheckedChangeListener(this);
         random.setOnCheckedChangeListener(this);
+        getFilters();
+    }
+
+    private void getFilters() {
+        ConnectionMqtt connectionMqtt = new ConnectionMqtt(this);
+        String subscribeTopic = "deal/gogodeals/databse/filters";
+        String payload =   "{ \"id\": \"12345678-1011-M012-N210-112233445566\"," +
+                " \"data\": {" + null +"\"}}";
+        String publishTopic = "deal/gogodeals/user/filters";
+        connectionMqtt.sendMqtt(payload,publishTopic,subscribeTopic,2);
+    }
+
+    public void SetFilters(){
+        ConnectionMqtt connectionMqtt = new ConnectionMqtt(this);
+        String payload =   "{ \"id\": \"12345678-1011-M012-N210-112233445566\"," +
+                " \"data\": {" +
+                " \"id\": \"12345678-1011-M012-N210-112233445566\"," +
+                " \"filters\": \""+ get().toString() +"\"}}";
+        String publishTopic = "deal/gogodeals/user/filter";
+        connectionMqtt.sendMqtt(payload,publishTopic);
+
     }
 
     /**
