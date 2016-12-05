@@ -18,7 +18,6 @@
         android:paddingLeft="15dp"
         android:drawablePadding="10dp"
         android:drawableLeft="@android:drawable/sym_action_email"
-        style="@style/EditText"
         />
 
 
@@ -28,21 +27,19 @@
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:hint="   Password"
         android:id="@+id/loginPassword"
+
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
         android:paddingLeft="15dp"
         android:drawablePadding="10dp"
         android:paddingBottom="20dp"
-        android:drawableLeft="@android:drawable/ic_secure"
-        style="@style/EditText"
-        />
+        android:drawableLeft="@android:drawable/ic_secure"  />
 
     <Button
         android:text="Sign in"
         android:background="@color/buttonLogInColor"
         style="@drawable/buttonshape"
-        android:layout_width="248dp"
+        android:layout_width="140dp"
         android:layout_height="wrap_content"
-        android:id="@+id/loginBtn"
-        />
+        android:id="@+id/loginBtn" />
 </LinearLayout>
