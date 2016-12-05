@@ -6,6 +6,6 @@
     android:scaleType="fitXY"
     android:fitsSystemWindows="true"
     android:background="@drawable/intro"
-    tools:context=".MqttModule.Intro">
+    tools:context=".Intro">
 
 </RelativeLayout>

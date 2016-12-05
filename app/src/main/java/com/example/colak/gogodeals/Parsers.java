@@ -24,6 +24,10 @@ public class Parsers {
     /*This method takes a topic and a payload message and depending what topic it is
     it calls the correct method corresponding to that topic.
     */
+
+    static GogouserLogin gogouserLogin;
+    static FacebookLogin facebookLogin;
+
     public void parse(String topic,MqttMessage message){
         IdentifierSingleton identifierSingleton = IdentifierSingleton.getInstance();
 
@@ -33,7 +37,7 @@ public class Parsers {
                 case "deal/gogodeals/database/deals":
                     try {
                         JSONObject jsonCheck = new JSONObject(new String(message.getPayload()));
-                        Log.i("json checking",jsonCheck.toString());
+                        //Log.i("json checking",jsonCheck.toString());
                         if (!jsonCheck.getString("data").equals("{}")){
                             fetchDealParser(message);
                         }
@@ -57,9 +61,28 @@ public class Parsers {
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
-
+                    break;
+                //check users on database
+                case "deal/gogodeals/database/users":
+                    try {
+                        checkEmail(message);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                    break;
+                //check users on database, login from Facebook
+                case "deal/gogodeals/database/facebook":
+                    try {
+                        checkFacebook(message);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
                     break;
 
+                //insert new user in databse
+                case "deal/gogodeals/user/new":
+
+                    break;
                 default:
                     break;
             }
@@ -91,7 +114,7 @@ public class Parsers {
         for (int i = 0; i< jsonArray.length();i++){
 
             jsonObject = jsonArray.getJSONObject(i);
-            Log.i("json obect ", jsonObject.toString());
+            //Log.i("json obect ", jsonObject.toString());
             String id = jsonObject.getString("id");
             String name = jsonObject.getString("name");
             int price = jsonObject.getInt("price");
@@ -160,8 +183,6 @@ public class Parsers {
 
         }
 
-
-
     /**
      * Get the id from a MqttMessage
      * @param message
@@ -181,16 +202,6 @@ public class Parsers {
 
 
     private void grabbedDealParser(MqttMessage message) throws JSONException {
-        Log.i("poruka", String.valueOf(message.getPayload()));
-        // message template according to RFC
-        /*{
-            “id”: “33333333-1011-M012-N210-112233445566”,
-            “data”: {
-            “count”: 99,
-            “id”: “24818880316702720”
-        },
-        }*/
-        //Log.i("MESSAGE to parse", new String(message.getPayload()));
         String dealID;
         int count = 0;
         String verificationID = null;
@@ -222,6 +233,75 @@ public class Parsers {
 
     }
 
+    public void checkEmail(MqttMessage message) throws JSONException {
+        String emailData;
+        String passwordData;
+        String id;
+        String messageString = new String(message.getPayload());
+        Log.i("fetchEmail: ", String.valueOf(message.getPayload()));
+        JSONObject jsonData;
 
+        jsonData = new JSONObject(messageString);
+
+        jsonData = new JSONObject(jsonData.getString("data"));
+
+        emailData = jsonData.getString("email");
+        passwordData = jsonData.getString("password");
+        id = jsonData.getString("id");
+
+        if (emailData.equals(GogouserLogin.email) && passwordData.equals(GogouserLogin.password)){
+
+            GogouserLogin.loginResult=true;
+
+            MainActivity.userID = id;
+            Log.i("User", MainActivity.userID);
+            GogouserLogin.mProgressDlg.dismiss();
+
+            gogouserLogin.loginResultReceived();
+
+        }
+        else {
+            Log.i("7 :", "1");
+            Log.i("9 :", "1");
+            GogouserLogin.loginResult=false;
+            GogouserLogin.mProgressDlg.dismiss();
+        }
+
+
+
+       /* “id”: “12345678-1011-M012-N210-112233445566”,
+        “data”: {
+            “id”: “0a1e53be-ac55-11e6-a0a1-8c705aaa0186”,
+            “name”: “Bob Bobson”,
+            “email”: “Bob@Bobson.se”,
+            “password”: “Bobson123”,
+            “filters”: null,
+            “deals”: null
+            }
+*/
+        /*jsonEmail = new JSONObject(messageString);
+        jsonPassword = new JSONObject(messageString);
+        String email = jsonEmail.getString("email");
+        String password = jsonPassword.getString("password");*/
+    }
+
+    public void checkFacebook(MqttMessage message) throws JSONException {
+        String id;
+        String messageString = new String(message.getPayload());
+        Log.i("Bubca checkFacebook: ", String.valueOf(message.getPayload()));
+        JSONObject jsonData;
+
+        jsonData = new JSONObject(messageString);
+        jsonData = new JSONObject(jsonData.getString("data"));
+
+        id = jsonData.getString("id");
+
+        MainActivity.userID = id;
+        Log.i("Bubca User", MainActivity.userID);
+        FacebookLogin.mProgressDlg.dismiss();
+
+        //now load next maps activity screen
+        facebookLogin.facebookLoginSuccess();
+    }
 }
 

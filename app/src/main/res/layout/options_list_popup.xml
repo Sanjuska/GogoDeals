@@ -8,20 +8,22 @@
     android:layout_gravity="center"
     android:focusableInTouchMode="false"
     android:focusable="false"
-    android:background="#648B79"
-    android:weightSum="1">
+    android:weightSum="1"
+    android:alpha="0.5"
+    >
 
     <TextView
         android:text="Options"
         android:layout_width="match_parent"
         android:id="@+id/textView6"
-        android:textSize="19sp"
+        android:textSize="15sp"
         android:layout_weight="0.17"
         android:textStyle="normal|bold"
         android:textAlignment="center"
         android:elevation="16dp"
         android:gravity="center"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        />
 
     <Button
         android:text="My Profile"
@@ -31,6 +33,7 @@
         android:layout_marginTop="24dp"
         android:onClick="profileButtonPressed"
         android:id="@+id/profileButton"
+        android:background="@drawable/buttonshape"
          />
 
     <Button
@@ -39,14 +42,17 @@
         android:layout_height="wrap_content"
         android:id="@+id/dealsButton"
         android:onClick="mydealsButtonPressed"
-        android:layout_marginBottom="25dp" />
+        android:layout_marginBottom="25dp"
+        android:background="@drawable/buttonshape"
+        />
 
     <Button
     android:text="Deal Filters"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:layout_marginBottom="20dp"
         android:onClick="filterButtonPressed"
-        android:id="@+id/filterButton" />
+        android:id="@+id/filterButton"
+        android:background="@drawable/buttonshape"/>
 
 </LinearLayout>

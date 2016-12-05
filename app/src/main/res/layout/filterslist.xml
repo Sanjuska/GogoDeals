@@ -8,7 +8,7 @@
     android:focusable="false"
     android:focusableInTouchMode="false"
     android:weightSum="1"
-    android:background="#648B79">
+    android:background="#ffffff">
 
     <TextView
         android:text="My Profile"
@@ -20,7 +20,8 @@
         android:textStyle="normal|bold"
         android:textAlignment="center"
         android:elevation="16dp"
-        android:gravity="center" />
+        android:gravity="center"
+        style="@style/TextViewStyleHeader"/>
 
     <CheckBox
         android:text="Food &amp; Drinks"
@@ -64,7 +65,7 @@
         android:layout_height="40dp"
         android:checked="true"
         android:onClick="onCheckboxClicked"
-        style="@android:style/Widget.Holo.Light.CompoundButton.CheckBox" />
+        style="@android:style/Widget.Holo.Light.CompoundButton.CheckBox"  />
 
     <CheckBox
         android:text="Random"
@@ -85,7 +86,9 @@
         android:elevation="24dp"
         android:layout_height="wrap_content"
         android:onClick="filterBackButtonPressed"
-        android:layout_gravity="right" />
+        android:layout_gravity="right"
+        android:background="@drawable/buttonshape"
+        style="@style/buttonDesign"/>
 
 
 </LinearLayout>

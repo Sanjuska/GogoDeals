@@ -22,6 +22,7 @@ import android.util.Base64;
 import android.util.Log;
 import android.view.Display;
 import android.view.Gravity;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.animation.Interpolator;
 import android.view.animation.LinearInterpolator;
@@ -272,8 +273,14 @@ public class MapsActivity extends FragmentActivity implements
                             popupMessage.setOutsideTouchable(true);
                             popupMessage.setFocusable(true);
                             popupMessage.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                            popup.setOnTouchListener(new View.OnTouchListener() {
+                                @Override
+                                public boolean onTouch(View v, MotionEvent event) {
+                                    return true;
+                                }
+                            });
 
-                            //marker.showInfoWindow();
+
                             // Re-assign the last openned such that we can close it later
                             lastOpened = marker;
                         }
@@ -400,11 +407,7 @@ public class MapsActivity extends FragmentActivity implements
 
        View myDealsPop = getLayoutInflater().inflate(R.layout.mydeals, null);
         myDealsPopup.setContentView(myDealsPop);
-        //myDealsPop.setFocusable(false);
-        //myDealsPop.setClickable(false);
-        //dealAdapter = new ArrayAdapter<Deal>(MapsActivity.this,R.layout.list_row, dealArrayList);
         dealAdapter= new ArrayAdapter<Deal>(MapsActivity.this, android.R.layout.simple_list_item_1,dealArrayList);
-       // dealListView =((ListView) findViewById(R.id.dealList));
         dealListView = ((ListView) myDealsPopup.getContentView().findViewById(R.id.dealList));
         dealListView.setAdapter(dealAdapter);
          dealListView.setClickable(true);
@@ -412,6 +415,7 @@ public class MapsActivity extends FragmentActivity implements
 
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+
                 //Extract deal from the clicke list item
                 Deal deal = (Deal)parent.getItemAtPosition(position);
 
@@ -425,10 +429,19 @@ public class MapsActivity extends FragmentActivity implements
                 int screenWidth = size.x;
                 int screenHeight = size.y;
                 popupDealView.update(screenWidth - 50, screenHeight / 2);
-
                 popupDealView.setOutsideTouchable(true);
                 popupDealView.setFocusable(true);
                 popupDealView.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                popupMessage.setOutsideTouchable(true);
+                popupMessage.setFocusable(true);
+                popupMessage.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                popup.setOnTouchListener(new View.OnTouchListener() {
+                    @Override
+                    public boolean onTouch(View v, MotionEvent event) {
+                        return true;
+                    }
+                });
+
 
                 //remember which deal is being shown, so that it can be removed if ungrabbed
                 grabbedDeal = deal;
@@ -567,12 +580,15 @@ public class MapsActivity extends FragmentActivity implements
             grabbedView.setVisibility(View.VISIBLE);
             grabButton = (Button) v.findViewById(R.id.grabButton);
             grabButton.setVisibility(View.INVISIBLE);
+
         } else {
             System.out.println("Deal is not grabbed");
             grabbedView = (ImageView) v.findViewById(R.id.grabbedView);
             grabbedView.setVisibility(View.INVISIBLE);
             grabButton = (Button) v.findViewById(R.id.grabButton);
             grabButton.setVisibility(View.VISIBLE);
+
+
         }
 
         return v;
@@ -796,8 +812,8 @@ public class MapsActivity extends FragmentActivity implements
                 //TODO replace the fix user_id with the user_id currently active in the app
                 String payload =   "{ \"id\":\"" + deal_id + "\"," +
                         " \"data\": {" +
-                        " \"user_id\":\"feb00c2b-b4b6-11e6-862e-080027e93e17\"}}";
-                //" \"user_id\":\" + user_id + "\"}}";
+                       // " \"user_id\":\"feb00c2b-b4b6-11e6-862e-080027e93e17\"}}";
+                " \"user_id\":\"" + MainActivity.userID + "\"}}";
 
                 String publishTopic = "deal/gogodeals/deal/save";
                 connectionMqtt.sendMqtt(payload,publishTopic,subscribeTopic,2);
@@ -819,6 +835,18 @@ public class MapsActivity extends FragmentActivity implements
                 mProgressDlg = new ProgressDialog(this);
                 mProgressDlg.setMessage("Grabbing deal");
                 mProgressDlg.setCancelable(false);
+                grabButton.setVisibility(View.INVISIBLE);
+                final Handler handler = new Handler();
+                final Runnable runnable = new Runnable() {
+
+
+                    @Override
+                    public void run() {
+                        popupMessage.dismiss(); // hide dialog
+                    }
+                };
+                handler.removeCallbacks(runnable); // cancel the running action (the hiding process)
+                handler.postDelayed(runnable, 3000); // start a new hiding process that will trigger after 5 seconds
                 mProgressDlg.show();
             }
 
@@ -834,8 +862,8 @@ public class MapsActivity extends FragmentActivity implements
 
             String payload =   "{ \"id\":\"" + deal_id + "\"," +
                     " \"data\": {" +
-                    " \"user_id\":\"feb00c2b-b4b6-11e6-862e-080027e93e17\"}}";
-            //" \"user_id\":\" + user_id + "\"}}";
+                 //   " \"user_id\":\"feb00c2b-b4b6-11e6-862e-080027e93e17\"}}";
+                " \"user_id\":\"" + MainActivity.userID + "\"}}";
 
             String publishTopic = "deal/gogodeals/deal/remove";
             connectionMqtt.sendMqtt(payload,publishTopic);

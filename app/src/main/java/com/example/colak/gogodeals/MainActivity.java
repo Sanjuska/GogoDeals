@@ -8,10 +8,12 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.facebook.CallbackManager;
+import com.example.colak.gogodeals.R;
 import com.facebook.login.widget.LoginButton;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
+    private static final String TAG = "";
     private TextView info;
 
     private LoginButton loginButton;
@@ -26,16 +28,19 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private IdentifierSingleton identifierSingleton;
 
+    public static String userID;
+
+    ConnectionMqtt connection1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main_screen);
 
-        welcometext = (TextView)findViewById(R.id.welcometext);
+        welcometext = (TextView) findViewById(R.id.welcometext);
         mainLogin = (Button) findViewById(R.id.mainLogin);
-        mainsignup = (Button)findViewById(R.id.mainsignup);
-        gogoProfile = (Button)findViewById(R.id.gogoProfile);
+        mainsignup = (Button) findViewById(R.id.mainsignup);
+        gogoProfile = (Button) findViewById(R.id.gogoProfile);
 
         /*
             This is the first instantiation of the IdentifierSingleton. This is needed for the
@@ -45,8 +50,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         mainLogin.setOnClickListener(this);
         mainsignup.setOnClickListener(this);
-    }
+        gogoProfile.setOnClickListener(this);
 
+    }
 
 
     @Override
@@ -55,9 +61,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public void onClick(View v) {
         switch (v.getId()) {
             //login for facebook users
+
             case R.id.mainLogin:
-                Intent gogoApp1 = new Intent(MainActivity.this, UserLogin.class);
-                startActivity(gogoApp1);
+                Intent gogoApp = new Intent(MainActivity.this, FacebookLogin.class);
+                startActivity(gogoApp);
+
+
                 break;
 
             //registration for non facebook users
@@ -65,6 +74,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 Intent gogoApp2 = new Intent(MainActivity.this, newUserSignup.class);
                 startActivity(gogoApp2);
                 break;
+
+            case R.id.gogoProfile:
+                Intent gogoApp3 = new Intent(MainActivity.this, GogouserLogin.class);
+                startActivity(gogoApp3);
+                break;
+
+
+            }
         }
     }
-}
