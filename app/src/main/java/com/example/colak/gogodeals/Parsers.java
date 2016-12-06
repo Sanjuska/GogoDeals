@@ -201,6 +201,7 @@ public class Parsers {
     }
 
 
+    //Grab deal parser for extracting data about verification number and dealID
     private void grabbedDealParser(MqttMessage message) throws JSONException {
         String dealID;
         int count = 0;
@@ -266,38 +267,20 @@ public class Parsers {
             GogouserLogin.loginResult=false;
             GogouserLogin.mProgressDlg.dismiss();
         }
-
-
-
-       /* “id”: “12345678-1011-M012-N210-112233445566”,
-        “data”: {
-            “id”: “0a1e53be-ac55-11e6-a0a1-8c705aaa0186”,
-            “name”: “Bob Bobson”,
-            “email”: “Bob@Bobson.se”,
-            “password”: “Bobson123”,
-            “filters”: null,
-            “deals”: null
-            }
-*/
-        /*jsonEmail = new JSONObject(messageString);
-        jsonPassword = new JSONObject(messageString);
-        String email = jsonEmail.getString("email");
-        String password = jsonPassword.getString("password");*/
     }
 
+    // Extracting information about user ID from facebook message
+    // We need that to connect user_id and grabbed deal
     public void checkFacebook(MqttMessage message) throws JSONException {
         String id;
         String messageString = new String(message.getPayload());
-        Log.i("Bubca checkFacebook: ", String.valueOf(message.getPayload()));
         JSONObject jsonData;
-
         jsonData = new JSONObject(messageString);
         jsonData = new JSONObject(jsonData.getString("data"));
-
         id = jsonData.getString("id");
 
+        //Connect id with specific user
         MainActivity.userID = id;
-        Log.i("Bubca User", MainActivity.userID);
         FacebookLogin.mProgressDlg.dismiss();
 
         //now load next maps activity screen

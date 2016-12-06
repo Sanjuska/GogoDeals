@@ -29,10 +29,7 @@
         android:id="@+id/checkBoxFood"
         android:elevation="24dp"
         android:textSize="18sp"
-        android:layout_height="40dp"
-        android:checked="true"
-        android:onClick="onCheckboxClicked"
-        style="@android:style/Widget.Holo.Light.CompoundButton.CheckBox" />
+        android:layout_height="40dp" />
 
     <CheckBox
         android:text="Clothes &amp; Hats"
@@ -40,10 +37,7 @@
         android:id="@+id/checkBoxClothes"
         android:elevation="24dp"
         android:textSize="18sp"
-        android:layout_height="40dp"
-        android:checked="true"
-        android:onClick="onCheckboxClicked"
-        style="@android:style/Widget.Holo.Light.CompoundButton.CheckBox" />
+        android:layout_height="40dp" />
 
     <CheckBox
         android:text="Activites"
@@ -51,10 +45,7 @@
         android:id="@+id/checkBoxActivites"
         android:elevation="24dp"
         android:textSize="18sp"
-        android:layout_height="40dp"
-        android:checked="true"
-        android:onClick="onCheckboxClicked"
-        style="@android:style/Widget.Holo.Light.CompoundButton.CheckBox" />
+        android:layout_height="40dp" />
 
     <CheckBox
         android:text="Stuff"
@@ -62,10 +53,7 @@
         android:id="@+id/checkBoxStuff"
         android:elevation="24dp"
         android:textSize="18sp"
-        android:layout_height="40dp"
-        android:checked="true"
-        android:onClick="onCheckboxClicked"
-        style="@android:style/Widget.Holo.Light.CompoundButton.CheckBox"  />
+        android:layout_height="40dp" />
 
     <CheckBox
         android:text="Random"
@@ -73,10 +61,7 @@
         android:id="@+id/checkBoxRandom"
         android:elevation="24dp"
         android:textSize="18sp"
-        android:layout_height="40dp"
-        android:checked="true"
-        android:onClick="onCheckboxClicked"
-        style="@android:style/Widget.Holo.Light.CompoundButton.CheckBox" />
+        android:layout_height="40dp" />
 
     <Button
         android:text="Back"
