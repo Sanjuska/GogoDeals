@@ -36,13 +36,13 @@ public class FilterHandler extends MapsActivity implements CompoundButton.OnChec
         activities.setOnCheckedChangeListener(this);
         stuff.setOnCheckedChangeListener(this);
         random.setOnCheckedChangeListener(this);
-        getFilters();
+        getFilters(activity);
     }
 
-    private void getFilters() {
-        ConnectionMqtt connectionMqtt = new ConnectionMqtt(this);
-        String subscribeTopic = "deal/gogodeals/databse/filters";
-        String payload =   "{ \"id\": \"12345678-1011-M012-N210-112233445566\"," +
+    private void getFilters(Activity activity) {
+        ConnectionMqtt connectionMqtt = new ConnectionMqtt(activity);
+        String subscribeTopic = "deal/gogodeals/database/filters";
+        String payload =   "{ \"id\": \""+ IdentifierSingleton.USER + "\"," +
                 " \"data\": {" + null +"\"}}";
         String publishTopic = "deal/gogodeals/user/filters";
         connectionMqtt.sendMqtt(payload,publishTopic,subscribeTopic,2);
@@ -50,11 +50,11 @@ public class FilterHandler extends MapsActivity implements CompoundButton.OnChec
 
     public void SetFilters(){
         ConnectionMqtt connectionMqtt = new ConnectionMqtt(this);
-        String payload =   "{ \"id\": \"12345678-1011-M012-N210-112233445566\"," +
+        String payload =   "{ \"id\": \"" + IdentifierSingleton.USER + "\"," +
                 " \"data\": {" +
-                " \"id\": \"12345678-1011-M012-N210-112233445566\"," +
+                "\"id\": \"" + IdentifierSingleton.USER + "\"," +
                 " \"filters\": \""+ get().toString() +"\"}}";
-        String publishTopic = "deal/gogodeals/user/filter";
+        String publishTopic = "deal/gogodeals/user/update";
         connectionMqtt.sendMqtt(payload,publishTopic);
 
     }

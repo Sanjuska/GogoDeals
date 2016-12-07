@@ -11,8 +11,9 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import com.example.colak.gogodeals.Objects.Deal;
 import com.example.colak.gogodeals.MapsActivity;
+import com.example.colak.gogodeals.Messages;
+import com.example.colak.gogodeals.Objects.Deal;
 import com.example.colak.gogodeals.R;
 
 /**
@@ -27,19 +28,49 @@ public class SavedDealsPopup extends Activity {
     Button grabButton;
     Button ungrabButton;
     Button dealsBackButton;
+    Messages messages;
+    TextView idTV;
+    TextView description;
+    TextView company;
+    TextView duration;
+    TextView price;
+    ImageView picture;
+    TextView units;
+    ImageView dealPicture;
+    TextView verificationHeader;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.mydeals);
-        //dealListView = MapsActivity.dealArrayList;
+        messages = new Messages();
+        MapsActivity.grabbedDeal = new Deal();
+
+        dealListView = (ListView) findViewById(R.id.dealList);
+        idTV = (TextView) findViewById(R.id.idTextView);
+        description = (TextView) findViewById(R.id.description);
+        company = (TextView) findViewById(R.id.company);
+        duration = (TextView) findViewById(R.id.duration);
+        price = (TextView) findViewById(R.id.price);
+        picture = (ImageView) findViewById(R.id.dealPicture);
+        company = (TextView) findViewById(R.id.company);
+        description = (TextView) findViewById(R.id.description);
+        price = ((TextView) findViewById(R.id.price));
+        grabbedView = (ImageView) findViewById(R.id.grabbedView);
+        units = ((TextView) findViewById(R.id.units));
+        duration = ((TextView) findViewById(R.id.duration));
+        dealPicture = (ImageView) findViewById(R.id.dealPicture);
+        verificationHeader = ((TextView) findViewById(R.id.verificationHeader));
         postCreate();
     }
 
     private void postCreate() {
 
-        dealsBackButton = (Button) findViewById(R.id.dealsBackButton);
 
+
+
+        dealsBackButton = (Button) findViewById(R.id.dealsBackButton);
         dealsBackButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -48,9 +79,8 @@ public class SavedDealsPopup extends Activity {
             }
         });
 
-        dealListView = ((ListView) findViewById(R.id.dealList));
-        dealAdapter = new ArrayAdapter<Deal>(SavedDealsPopup.this, android.R.layout.simple_list_item_1, MapsActivity.dealArrayList);
 
+        dealAdapter = new ArrayAdapter<Deal>(SavedDealsPopup.this, android.R.layout.simple_list_item_1, MapsActivity.dealArrayList);
         dealListView.setAdapter(dealAdapter);
         dealListView.setClickable(true);
         dealListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -73,35 +103,15 @@ public class SavedDealsPopup extends Activity {
         });
     }
             public void getContent(Deal deal) {
-                View v = getLayoutInflater().inflate(R.layout.deal_pop_up, null);
-
-                TextView company = (TextView) v.findViewById(R.id.company);
                 company.setText(deal.getCompany());
-
-                TextView description = (TextView) v.findViewById(R.id.description);
                 description.setText(deal.getDescription());
-
-                TextView price = ((TextView) v.findViewById(R.id.price));
                 price.setText(deal.getPrice());
-
-                TextView verificationHeader = ((TextView) v.findViewById(R.id.verificationHeader));
                 verificationHeader.setText("Verification code");
-
-                TextView units = ((TextView) v.findViewById(R.id.units));
                 units.setText(deal.getVerificationID());
-
-                TextView duration = ((TextView) v.findViewById(R.id.duration));
                 duration.setText(deal.getDuration());
-
-                ImageView dealPicture = (ImageView) v.findViewById(R.id.dealPicture);
                 dealPicture = deal.getPicture();
-
-                grabbedView = (ImageView) v.findViewById(R.id.grabbedView);
                 grabbedView.setVisibility(View.INVISIBLE);
-                grabButton = (Button) v.findViewById(R.id.grabButton);
                 grabButton.setVisibility(View.INVISIBLE);
-                ungrabButton = (Button) v.findViewById(R.id.ungrabButton);
                 ungrabButton.setVisibility(View.VISIBLE);
-
             }
         }

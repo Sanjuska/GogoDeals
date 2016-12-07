@@ -4,6 +4,8 @@ import android.app.Activity;
 import android.location.Location;
 import android.util.Log;
 
+import com.example.colak.gogodeals.Popups.DealsPopup;
+
 /**
  * Created by Johan Laptop on 2016-12-05.
  */
@@ -25,5 +27,26 @@ public class Messages {
         String publishTopic = "deal/gogodeals/deal/fetch";
         Log.i("json publish ",payload);
         connectionMqtt.sendMqtt(payload,publishTopic,subscribeTopic,2);
+    }
+
+    public void saveDeal(CharSequence idTv,Activity activity){
+        ConnectionMqtt connectionMqtt = new ConnectionMqtt(activity);
+        String subscribeTopic = "deal/gogodeals/database/info";
+        String publishTopic = "deal/gogodeals/deal/save";
+        String deal_id = idTv.toString();
+        String payload =   "{ \"id\":\"" + deal_id + "\"," +
+                " \"data\": {" +
+                " \"user_id\":\"" + MainActivity.userID + "\"}}";
+        connectionMqtt.sendMqtt(payload,publishTopic,subscribeTopic,2);
+    }
+
+    public void removeDeal(CharSequence idTv, DealsPopup activity){
+        ConnectionMqtt connectionMqtt = new ConnectionMqtt(activity);
+        String deal_id = idTv.toString();
+        String publishTopic = "deal/gogodeals/deal/remove";
+        String payload =   "{ \"id\":\"" + deal_id + "\"," +
+                " \"data\": {" +
+                " \"user_id\":\"" + MainActivity.userID + "\"}}";
+        connectionMqtt.sendMqtt(payload,publishTopic);
     }
 }

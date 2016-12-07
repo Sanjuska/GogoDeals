@@ -1,16 +1,20 @@
 package com.example.colak.gogodeals.Popups;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Base64;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.example.colak.gogodeals.Messages;
 import com.example.colak.gogodeals.Objects.Deal;
 import com.example.colak.gogodeals.MapsActivity;
 import com.example.colak.gogodeals.R;
@@ -22,22 +26,80 @@ import com.google.android.gms.maps.model.Marker;
 
 public class DealsPopup extends Activity {
 
+
     Button grabButton;
-    ImageView grabbedView;
+    public static ImageView grabbedView;
     TextView description;
     TextView company;
     TextView price;
-    TextView units;
+    public static TextView units;
     TextView duration;
     ImageView dealPicture;
     TextView id;
+    Button ungrabButton;
+    Messages messages;
+    public static ProgressDialog mProgressDlg;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.deal_pop_up);
+        ungrabButton = (Button) findViewById(R.id.ungrabButton);
+        grabButton = (Button) findViewById(R.id.grabButton);
+        messages = new Messages();
         getContent(MapsActivity.currentMarker);
+        postCreate();
+    }
+
+    private void postCreate(){
+
+        if (MapsActivity.dealArrayList.contains(id.getText().toString())){
+            grabButton.setVisibility(View.INVISIBLE);
+        }
+
+        grabButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                grabButton.setVisibility(View.INVISIBLE);
+                //extract deal id
+                messages.saveDeal(id.getText(),DealsPopup.this);
+                //extract description of deal, to be stored in grabbed deal list on successful grab
+                //Deal grabbing
+                MapsActivity.grabbedDeal = new Deal((String) company.getText(), (String) duration.getText(), (String) price.getText(), dealPicture, (String) description.getText(), id.getText().toString());
+                mProgressDlg = new ProgressDialog(DealsPopup.this);
+                mProgressDlg.setMessage("Grabbing deal");
+                mProgressDlg.setCancelable(false);
+
+
+
+
+                mProgressDlg.show();
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        finish();
+                    }
+                },3000);
+            }
+        });
+
+        ungrabButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                //extract deal id
+                String deal_id = (String) id.getText();
+
+                //extract description of deal, to be stored in grabbed deal list on successful grab
+                MapsActivity.dealArrayList.remove(MapsActivity.grabbedDeal);
+                finish();
+                Toast toast = Toast.makeText(getApplicationContext(), "Deal ungrabbed", Toast.LENGTH_SHORT);
+                toast.show();
+                messages.removeDeal(id.getText(),DealsPopup.this);
+            }
+        });
+
     }
 
     public void getContent(Marker marker) {

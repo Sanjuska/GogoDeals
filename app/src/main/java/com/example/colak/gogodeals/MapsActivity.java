@@ -1,7 +1,6 @@
 package com.example.colak.gogodeals;
 
 import android.Manifest;
-import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
@@ -18,15 +17,9 @@ import android.util.Log;
 import android.view.View;
 import android.view.animation.Interpolator;
 import android.view.animation.LinearInterpolator;
-import android.widget.Button;
-import android.widget.FrameLayout;
-import android.widget.GridLayout;
 import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
-import android.widget.TextView;
-import android.widget.Toast;
 
 import com.example.colak.gogodeals.Objects.Deal;
 import com.example.colak.gogodeals.Popups.DealsPopup;
@@ -65,15 +58,10 @@ public class MapsActivity extends FragmentActivity implements
     Marker mPositionMarker;
     Marker lastOpened = null;
     Location lastFetched;
-    static ArrayList<String> filterList;
-    public static ProgressDialog mProgressDlg;
-    static PopupWindow popupMessage;
-    static PopupWindow popupDealView;
-    Button grabButton;
-    Button ungrabButton;
-    public static ImageView grabbedView;
+    ArrayList<String> filterList;
+    PopupWindow popupMessage;
+    PopupWindow popupDealView;
     LocationRequest locationRequest;
-    public static String descriptionOfGrabbedDeal;
     public static Deal grabbedDeal;
     PopupWindow myDealsPopup;
     public static List<Deal> dealArrayList;
@@ -134,7 +122,6 @@ public class MapsActivity extends FragmentActivity implements
         popupDealView = new PopupWindow(this);
         myDealsPopup = new PopupWindow(this);
         mainLayout = new LinearLayout(this);
-        filterList = new ArrayList<>();
         //create list adapter for deal list
         dealArrayList = new ArrayList<Deal>();
         dealArrayList.add(new Deal());
@@ -300,7 +287,7 @@ public class MapsActivity extends FragmentActivity implements
                         lastFetched.getLongitude() + 0.2 < mLastLocation.getLongitude() &&
                         lastFetched.getLongitude() - 0.2 > mLastLocation.getLongitude()) {
                     for (String filter : filterList) {
-                        messages.fetchDeals(filter,mLastLocation,this);
+                        new Messages().fetchDeals(filter,mLastLocation,this);
                     }
                     lastFetched = mLastLocation;
                 }
@@ -345,87 +332,5 @@ public class MapsActivity extends FragmentActivity implements
                     }
                 }
             });
-        }
-
-            public void buttonPressed(View v) {
-
-                ConnectionMqtt connectionMqtt = new ConnectionMqtt(this);
-                String subscribeTopic = "deal/gogodeals/database/info";
-                grabButton = ((Button) v.findViewById(R.id.grabButton));
-                grabButton.setVisibility(View.INVISIBLE);
-                FrameLayout parentLayout = (FrameLayout) grabButton.getParent();
-                LinearLayout grandParentLayout = (LinearLayout) parentLayout.getParent();
-                GridLayout popUpLayout = (GridLayout) grandParentLayout.getParent();
-                //extract deal id
-                TextView idTV = ((TextView) grandParentLayout.findViewById(R.id.idTextView));
-                String deal_id = (String) idTV.getText();
-
-                //TODO replace the fix user_id with the user_id currently active in the app
-                String payload =   "{ \"id\":\"" + deal_id + "\"," +
-                        " \"data\": {" +
-                       // " \"user_id\":\"feb00c2b-b4b6-11e6-862e-080027e93e17\"}}";
-                " \"user_id\":\"" + MainActivity.userID + "\"}}";
-
-                String publishTopic = "deal/gogodeals/deal/save";
-                connectionMqtt.sendMqtt(payload,publishTopic,subscribeTopic,2);
-
-                //extract description of deal, to be stored in grabbed deal list on successful grab
-                TextView description = ((TextView) popUpLayout.findViewById(R.id.description));
-                descriptionOfGrabbedDeal = (String) description.getText();
-
-                //Deal grabbing
-                TextView company = ((TextView) popUpLayout.findViewById(R.id.company));
-                TextView duration = ((TextView) popUpLayout.findViewById(R.id.duration));
-                TextView price = ((TextView) popUpLayout.findViewById(R.id.price));
-                ImageView picture = ((ImageView) popUpLayout.findViewById(R.id.dealPicture));
-                //TextView description = ((TextView) popUpLayout.findViewById(R.id.description));
-
-                grabbedDeal = new Deal((String) company.getText(), (String) duration.getText(), (String) price.getText(), picture, (String) description.getText(), deal_id);
-
-                //closePopUpButton = (ImageButton) v.findViewById(R.id.cancelButton);
-                mProgressDlg = new ProgressDialog(this);
-                mProgressDlg.setMessage("Grabbing deal");
-                mProgressDlg.setCancelable(false);
-                grabButton.setVisibility(View.INVISIBLE);
-                final Handler handler = new Handler();
-                final Runnable runnable = new Runnable() {
-
-
-                    @Override
-                    public void run() {
-                        popupMessage.dismiss(); // hide dialog
-                    }
-                };
-                handler.removeCallbacks(runnable); // cancel the running action (the hiding process)
-                handler.postDelayed(runnable, 3000); // start a new hiding process that will trigger after 5 seconds
-                mProgressDlg.show();
-            }
-
-        public void ungrabButtonPressed(View v) {
-            ConnectionMqtt connectionMqtt = new ConnectionMqtt(this);
-            FrameLayout parentLayout = (FrameLayout) ungrabButton.getParent();
-            LinearLayout grandParentLayout = (LinearLayout) parentLayout.getParent();
-            GridLayout popUpLayout = (GridLayout) grandParentLayout.getParent();
-
-            //extract deal id
-            TextView idTV = ((TextView) grandParentLayout.findViewById(R.id.idTextView));
-            String deal_id = (String) idTV.getText();
-
-            String payload =   "{ \"id\":\"" + deal_id + "\"," +
-                    " \"data\": {" +
-                 //   " \"user_id\":\"feb00c2b-b4b6-11e6-862e-080027e93e17\"}}";
-                " \"user_id\":\"" + MainActivity.userID + "\"}}";
-
-            String publishTopic = "deal/gogodeals/deal/remove";
-            connectionMqtt.sendMqtt(payload,publishTopic);
-
-            //extract description of deal, to be stored in grabbed deal list on successful grab
-            TextView description = ((TextView) popUpLayout.findViewById(R.id.description));
-            MapsActivity.dealArrayList.remove(grabbedDeal);
-            popupDealView.dismiss();
-
-            Toast toast = Toast.makeText(getApplicationContext(), "Deal ungrabbed", Toast.LENGTH_SHORT);
-            toast.show();
-
         }
         }

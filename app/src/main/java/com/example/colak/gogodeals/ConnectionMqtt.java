@@ -157,14 +157,12 @@ public ConnectionMqtt(Activity activity){
     // When a message arrive from a subsribed topic this method calls the parsers class method parse.
     public void messageArrived(String topic, MqttMessage message) throws MqttException {
         parsers.parse(topic,message);
-        close();
         Log.i("Connection ","closed after message arrived");
     }
 
     //Called when publish has been completed and accepted by broker.
     public void deliveryComplete(IMqttDeliveryToken token){
         if (receiveTopic.equals("")) {
-            close();
             Log.i("Connection ", "closed after publish");
         }
     }

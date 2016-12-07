@@ -2,8 +2,8 @@ package com.example.colak.gogodeals;
 
 import android.util.Log;
 import android.view.View;
-import android.widget.TextView;
 
+import com.example.colak.gogodeals.Popups.DealsPopup;
 import com.example.colak.gogodeals.Popups.FilterPopup;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
@@ -225,17 +225,17 @@ public class Parsers {
         jsonData = new JSONObject(jsonData.getString("data"));
         count = jsonData.getInt("count");
         verificationID = jsonData.getString("id");
-        MapsActivity.grabbedView.setVisibility(View.VISIBLE);
+        DealsPopup.grabbedView.setVisibility(View.VISIBLE);
         // update unit in popup
-        TextView units = ((TextView) MapsActivity.popupMessage.getContentView().findViewById(R.id.units));
-        units.setText(String.valueOf(count));
+        DealsPopup.units.setText(String.valueOf(count));
         // add deal to list
         //TextView description = (TextView) MapsActivity.popupMessage.getContentView().findViewById(R.id.description);
         //MapsActivity.dealArrayList.add(MapsActivity.descriptionOfGrabbedDeal);
         MapsActivity.grabbedDeal.setVerificationID(verificationID);
         MapsActivity.dealArrayList.add(MapsActivity.grabbedDeal);
+        Log.i("grab ","deal put in array");
         // add code to deal in list
-        MapsActivity.mProgressDlg.dismiss();
+        DealsPopup.mProgressDlg.dismiss();
     }
 
     public void checkEmail(MqttMessage message) throws JSONException {
@@ -250,6 +250,7 @@ public class Parsers {
         emailData = jsonData.getString("email");
         passwordData = jsonData.getString("password");
         id = jsonData.getString("id");
+        IdentifierSingleton.set(id);
         if (emailData.equals(GogouserLogin.email) && passwordData.equals(GogouserLogin.password)){
             GogouserLogin.loginResult=true;
             MainActivity.userID = id;
@@ -273,6 +274,7 @@ public class Parsers {
         jsonData = new JSONObject(messageString);
         jsonData = new JSONObject(jsonData.getString("data"));
         id = jsonData.getString("id");
+        IdentifierSingleton.set(id);
         MainActivity.userID = id;
         Log.i("Bubca User", MainActivity.userID);
         FacebookLogin.mProgressDlg.dismiss();
