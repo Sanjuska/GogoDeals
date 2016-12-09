@@ -1,10 +1,12 @@
 package com.example.colak.gogodeals;
 
+import android.content.Intent;
 import android.util.Log;
 import android.view.View;
 
 import com.example.colak.gogodeals.Popups.DealsPopup;
 import com.example.colak.gogodeals.Popups.FilterPopup;
+import com.example.colak.gogodeals.Popups.OptionsPopup;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -14,7 +16,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.ArrayList;
 import java.util.UUID;
 
 /**
@@ -93,6 +94,10 @@ public class Parsers {
                 case "deal/gogodeals/user/new":
 
                     break;
+
+                case "deal/gogodeals/database/update":
+                    putFilters();
+                    break;
                 default:
                     break;
             }
@@ -100,20 +105,28 @@ public class Parsers {
 
     private void setFilters(MqttMessage message) throws JSONException {
 
-        ArrayList tmpList = null;
-        JSONObject tmpObj = new JSONObject(new String(message.getPayload().toString()));
-        JSONArray tmpArray;
-        tmpArray = new JSONArray(tmpObj.getJSONArray("data").toString());
+        JSONObject tmpObj = new JSONObject(new String(message.getPayload()));
+        JSONObject tmpObj2 = new JSONObject(tmpObj.get("data").toString());
+        String tmpString = new String(tmpObj2.get("filters").toString());
 
-        for (int i = 0; i< tmpArray.length();i++) {
-            JSONObject tmpJson2;
-            tmpJson2 = tmpArray.getJSONObject(i);
-            String filter = tmpJson2.getString("filter");
-            tmpList.add(filter);
-            Log.i("json filter ",filter);
+        String [] tmpArray = tmpString.split(",");
+        MapsActivity.filterList.clear();
+        for (int i = 1;i<tmpArray.length;i++) {
+            String filter = tmpArray[i];
+            filter.replace(" ","");
+            Log.i("filter added",tmpArray[i]);
+                MapsActivity.filterList.add(filter);
         }
-        FilterPopup.filterHandler.set(tmpList);
-    }
+
+        if (!MapsActivity.firstLoad){
+            MapsActivity.firstLoad = true;
+        }else {
+            Log.i("filters start ", MapsActivity.filterList.toString());
+            OptionsPopup.optionsPopup.startActivity(new Intent(OptionsPopup.optionsPopup, FilterPopup.class));
+            OptionsPopup.mProgressDlg.dismiss();
+            OptionsPopup.optionsPopup.finish();
+        }
+        }
     //}
 
 
@@ -137,7 +150,6 @@ public class Parsers {
         for (int i = 0; i< jsonArray.length();i++){
 
             jsonObject = jsonArray.getJSONObject(i);
-            //Log.i("json obect ", jsonObject.toString());
             String id = jsonObject.getString("id");
             String name = jsonObject.getString("name");
             int price = jsonObject.getInt("price");
@@ -233,7 +245,7 @@ public class Parsers {
         //MapsActivity.dealArrayList.add(MapsActivity.descriptionOfGrabbedDeal);
         MapsActivity.grabbedDeal.setVerificationID(verificationID);
         MapsActivity.dealArrayList.add(MapsActivity.grabbedDeal);
-        Log.i("grab ","deal put in array");
+        Log.i("grabbed ",MapsActivity.grabbedDeal.toString());
         // add code to deal in list
         DealsPopup.mProgressDlg.dismiss();
     }
@@ -280,6 +292,13 @@ public class Parsers {
         FacebookLogin.mProgressDlg.dismiss();
         //now load next maps activity screen
         facebookLogin.facebookLoginSuccess();
+    }
+
+    public void putFilters(){
+        Log.i("filter ","finish");
+        FilterPopup.mProgressDlg.dismiss();
+        FilterPopup.filterPopup.finish();
+
     }
 }
 

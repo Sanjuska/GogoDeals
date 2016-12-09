@@ -3,6 +3,7 @@ package com.example.colak.gogodeals.Popups;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -15,6 +16,8 @@ import com.example.colak.gogodeals.MapsActivity;
 import com.example.colak.gogodeals.Messages;
 import com.example.colak.gogodeals.Objects.Deal;
 import com.example.colak.gogodeals.R;
+
+import java.util.List;
 
 /**
  * Created by Johan Laptop on 2016-12-05.
@@ -44,9 +47,6 @@ public class SavedDealsPopup extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.mydeals);
-        messages = new Messages();
-        MapsActivity.grabbedDeal = new Deal();
-
         dealListView = (ListView) findViewById(R.id.dealList);
         idTV = (TextView) findViewById(R.id.idTextView);
         description = (TextView) findViewById(R.id.description);
@@ -62,13 +62,13 @@ public class SavedDealsPopup extends Activity {
         duration = ((TextView) findViewById(R.id.duration));
         dealPicture = (ImageView) findViewById(R.id.dealPicture);
         verificationHeader = ((TextView) findViewById(R.id.verificationHeader));
+
+        messages = new Messages();
+        MapsActivity.grabbedDeal = new Deal();
         postCreate();
     }
 
     private void postCreate() {
-
-
-
 
         dealsBackButton = (Button) findViewById(R.id.dealsBackButton);
         dealsBackButton.setOnClickListener(new View.OnClickListener() {
@@ -79,8 +79,9 @@ public class SavedDealsPopup extends Activity {
             }
         });
 
-
-        dealAdapter = new ArrayAdapter<Deal>(SavedDealsPopup.this, android.R.layout.simple_list_item_1, MapsActivity.dealArrayList);
+        List<Deal> arrayList = MapsActivity.dealArrayList;
+        Log.i("grab ",arrayList.toString());
+        dealAdapter = new ArrayAdapter<Deal>(SavedDealsPopup.this, android.R.layout.simple_list_item_1, arrayList);
         dealListView.setAdapter(dealAdapter);
         dealListView.setClickable(true);
         dealListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -90,7 +91,7 @@ public class SavedDealsPopup extends Activity {
 
                 //Extract deal from the clicke list item
                 Deal deal = (Deal) parent.getItemAtPosition(position);
-
+                Log.i("grab ",deal.toString());
                 // Create popup window with deal based on the extracted deal
                 getContent(deal);
 

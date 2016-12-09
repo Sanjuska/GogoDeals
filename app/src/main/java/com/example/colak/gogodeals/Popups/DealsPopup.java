@@ -48,15 +48,12 @@ public class DealsPopup extends Activity {
         ungrabButton = (Button) findViewById(R.id.ungrabButton);
         grabButton = (Button) findViewById(R.id.grabButton);
         messages = new Messages();
-        getContent(MapsActivity.currentMarker);
         postCreate();
+        getContent(MapsActivity.currentMarker);
     }
 
     private void postCreate(){
 
-        if (MapsActivity.dealArrayList.contains(id.getText().toString())){
-            grabButton.setVisibility(View.INVISIBLE);
-        }
 
         grabButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -70,10 +67,6 @@ public class DealsPopup extends Activity {
                 mProgressDlg = new ProgressDialog(DealsPopup.this);
                 mProgressDlg.setMessage("Grabbing deal");
                 mProgressDlg.setCancelable(false);
-
-
-
-
                 mProgressDlg.show();
                 new Handler().postDelayed(new Runnable() {
                     @Override
@@ -137,6 +130,10 @@ public class DealsPopup extends Activity {
         id.setText(components[6]);
 
         Deal shownDeal = new Deal((String) company.getText(), (String) duration.getText(), (String) price.getText(), dealPicture, (String) description.getText(), (String) id.getText());
+
+
+        Log.i("grab ", MapsActivity.dealArrayList.toString());
+        Log.i("grab ", shownDeal.toString());
 
         if (MapsActivity.dealArrayList.contains(shownDeal)) {
 

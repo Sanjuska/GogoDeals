@@ -18,8 +18,6 @@ import android.view.View;
 import android.view.animation.Interpolator;
 import android.view.animation.LinearInterpolator;
 import android.widget.ImageButton;
-import android.widget.LinearLayout;
-import android.widget.PopupWindow;
 
 import com.example.colak.gogodeals.Objects.Deal;
 import com.example.colak.gogodeals.Popups.DealsPopup;
@@ -58,19 +56,14 @@ public class MapsActivity extends FragmentActivity implements
     Marker mPositionMarker;
     Marker lastOpened = null;
     Location lastFetched;
-    ArrayList<String> filterList;
-    PopupWindow popupMessage;
-    PopupWindow popupDealView;
+    public static boolean firstLoad;
+    public static ArrayList<String> filterList;
     LocationRequest locationRequest;
     public static Deal grabbedDeal;
-    PopupWindow myDealsPopup;
     public static List<Deal> dealArrayList;
-    PopupWindow profilePopup;
-    PopupWindow optionsPopup;
     boolean fetched;
     ImageButton optionsButton;
     public static Marker currentMarker;
-    LinearLayout mainLayout;
     // Creating an instance of MarkerOptions to set position
     private GoogleApiClient client;
     private Messages messages;
@@ -80,6 +73,7 @@ public class MapsActivity extends FragmentActivity implements
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
 
+        firstLoad = false;
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
@@ -88,6 +82,8 @@ public class MapsActivity extends FragmentActivity implements
         // ATTENTION: This was auto-generated to implement the App Indexing API.
         // See https://g.co/AppIndexing/AndroidStudio for more information.
         client = new GoogleApiClient.Builder(this).addApi(AppIndex.API).build();
+
+
 
         //also changed the version of google play services on gradle.app from 9.6.1 to
         //7.5.0 cause of compatibility.
@@ -115,13 +111,8 @@ public class MapsActivity extends FragmentActivity implements
         builder.setAlwaysShow(true);
         fetched = false;
         messages = new Messages();
+        messages.getFilters(this);
         filterList = new ArrayList<>();
-        popupMessage = new PopupWindow(this);
-        optionsPopup = new PopupWindow(this);
-        profilePopup = new PopupWindow(this);
-        popupDealView = new PopupWindow(this);
-        myDealsPopup = new PopupWindow(this);
-        mainLayout = new LinearLayout(this);
         //create list adapter for deal list
         dealArrayList = new ArrayList<Deal>();
         dealArrayList.add(new Deal());
@@ -272,9 +263,6 @@ public class MapsActivity extends FragmentActivity implements
 
         if (!fetched) {
                 if (!fetched) {
-                    filterList.add("food");
-                    filterList.add("stuff");
-                    filterList.add("random");
                     for (String filter : filterList) {
                         messages.fetchDeals(filter,mLastLocation,this);
                         Log.i("json filter ", filter);

@@ -49,4 +49,29 @@ public class Messages {
                 " \"user_id\":\"" + MainActivity.userID + "\"}}";
         connectionMqtt.sendMqtt(payload,publishTopic);
     }
+
+    public void getFilters(Activity activity) {
+        ConnectionMqtt connectionMqtt = new ConnectionMqtt(activity);
+        String subscribeTopic = "deal/gogodeals/database/filters";
+        String payload =   "{ \"id\": \""+ IdentifierSingleton.USER + "\"," +
+                " \"data\": {\"crap\": \"hi\" }}";
+        String publishTopic = "deal/gogodeals/user/filter";
+        Log.i("filter get",payload);
+        connectionMqtt.sendMqtt(payload,publishTopic,subscribeTopic,2);
+    }
+
+    public void SetFilters(Activity activity, String strings){
+        ConnectionMqtt connectionMqtt = new ConnectionMqtt(activity);
+
+        Log.i("filter ",strings);
+
+        String payload =   "{ \"id\": \"" + IdentifierSingleton.USER + "\"," +
+                " \"data\": {" +
+             //    "\"id\": \"" + IdentifierSingleton.USER + "\"," +
+                " \"filters\": \""+ strings +"\"}}";
+        String publishTopic = "deal/gogodeals/user/update";
+        String returnTopic = "deal/gogodeals/database/update";
+        connectionMqtt.sendMqtt(payload,publishTopic,returnTopic,2);
+
+    }
 }

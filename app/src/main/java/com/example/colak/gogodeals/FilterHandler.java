@@ -17,6 +17,7 @@ public class FilterHandler extends MapsActivity implements CompoundButton.OnChec
     public CompoundButton activities;
     public CompoundButton stuff;
     public CompoundButton random;
+    Messages messages;
 
     /**
      * Initializes the an empty ArrayList<String> of filters, the checkboxes and connect the
@@ -24,7 +25,7 @@ public class FilterHandler extends MapsActivity implements CompoundButton.OnChec
      */
     public FilterHandler(Activity activity){
         filters = new ArrayList<>();
-
+        messages = new Messages();
         food = (CompoundButton) activity.findViewById(R.id.checkBoxFood);
         clothes = (CompoundButton) activity.findViewById(R.id.checkBoxClothes);
         activities = (CompoundButton) activity.findViewById(R.id.checkBoxActivites);
@@ -36,35 +37,26 @@ public class FilterHandler extends MapsActivity implements CompoundButton.OnChec
         activities.setOnCheckedChangeListener(this);
         stuff.setOnCheckedChangeListener(this);
         random.setOnCheckedChangeListener(this);
-        getFilters(activity);
     }
 
-    private void getFilters(Activity activity) {
-        ConnectionMqtt connectionMqtt = new ConnectionMqtt(activity);
-        String subscribeTopic = "deal/gogodeals/database/filters";
-        String payload =   "{ \"id\": \""+ IdentifierSingleton.USER + "\"," +
-                " \"data\": {" + null +"\"}}";
-        String publishTopic = "deal/gogodeals/user/filters";
-        connectionMqtt.sendMqtt(payload,publishTopic,subscribeTopic,2);
-    }
 
-    public void SetFilters(){
-        ConnectionMqtt connectionMqtt = new ConnectionMqtt(this);
-        String payload =   "{ \"id\": \"" + IdentifierSingleton.USER + "\"," +
-                " \"data\": {" +
-                "\"id\": \"" + IdentifierSingleton.USER + "\"," +
-                " \"filters\": \""+ get().toString() +"\"}}";
-        String publishTopic = "deal/gogodeals/user/update";
-        connectionMqtt.sendMqtt(payload,publishTopic);
-
-    }
 
     /**
      * Getter for the ArrayList<String> of filters
      * @return
      */
-    public ArrayList<String> get(){
-        return filters;
+    public String get(){
+        StringBuilder returnStringBuilder = new StringBuilder();
+        for (String filter : filters){
+            if (filter.equals(filters.get(filters.size()-1))){
+                returnStringBuilder.append(filter);
+            }else {
+                returnStringBuilder.append(filter + ", ");
+            }
+        }
+        String returnString = returnStringBuilder.toString();
+
+        return returnString;
     }
 
     /**
@@ -101,7 +93,7 @@ public class FilterHandler extends MapsActivity implements CompoundButton.OnChec
      * @param filter
      * @param check
      */
-    private void check(String filter, Boolean check){
+    public void check(String filter, Boolean check){
         if(check){
             add(filter);
         } else {
