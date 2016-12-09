@@ -295,9 +295,13 @@ public class Parsers {
     }
 
     public void putFilters(){
-        Log.i("filter ","finish");
+        FilterPopup.filterPopup.startActivity(new Intent(FilterPopup.filterPopup,OptionsPopup.class));
         FilterPopup.mProgressDlg.dismiss();
         FilterPopup.filterPopup.finish();
+        Log.i("filter ","finish");
+
+
+
 
     }
 }

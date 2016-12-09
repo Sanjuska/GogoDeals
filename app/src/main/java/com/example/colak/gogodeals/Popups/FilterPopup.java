@@ -58,7 +58,6 @@ public class FilterPopup extends Activity {
             @Override
             public void onClick(View v) {
                 messages.SetFilters(FilterPopup.this,filterHandler.get().toString());
-                MapsActivity.filterList = filterHandler.filters;
                 mProgressDlg = new ProgressDialog(FilterPopup.this);
                 mProgressDlg.setMessage("Setting filters");
                 mProgressDlg.setCancelable(false);

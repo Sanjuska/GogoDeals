@@ -66,7 +66,7 @@ public class MapsActivity extends FragmentActivity implements
     public static Marker currentMarker;
     // Creating an instance of MarkerOptions to set position
     private GoogleApiClient client;
-    private Messages messages;
+    public static Messages messages;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
