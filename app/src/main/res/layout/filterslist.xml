@@ -2,13 +2,14 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:orientation="vertical" android:layout_width="250dp"
-    android:layout_height="400dp"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent"
     android:layout_gravity="center"
     android:focusable="false"
     android:focusableInTouchMode="false"
     android:weightSum="1"
-    android:background="#ffffff">
+    android:background="#ffffff"
+    android:padding="50dp">
 
     <TextView
         android:text="My Profile"
@@ -29,7 +30,8 @@
         android:id="@+id/checkBoxFood"
         android:elevation="24dp"
         android:textSize="18sp"
-        android:layout_height="40dp" />
+        android:layout_height="40dp"
+        android:checked="false" />
 
     <CheckBox
         android:text="Clothes &amp; Hats"
@@ -37,7 +39,8 @@
         android:id="@+id/checkBoxClothes"
         android:elevation="24dp"
         android:textSize="18sp"
-        android:layout_height="40dp" />
+        android:layout_height="40dp"
+        android:checked="false" />
 
     <CheckBox
         android:text="Activites"
@@ -45,7 +48,8 @@
         android:id="@+id/checkBoxActivites"
         android:elevation="24dp"
         android:textSize="18sp"
-        android:layout_height="40dp" />
+        android:layout_height="40dp"
+        android:checked="false" />
 
     <CheckBox
         android:text="Stuff"
@@ -53,7 +57,8 @@
         android:id="@+id/checkBoxStuff"
         android:elevation="24dp"
         android:textSize="18sp"
-        android:layout_height="40dp" />
+        android:layout_height="40dp"
+        android:checked="false" />
 
     <CheckBox
         android:text="Random"
@@ -61,7 +66,8 @@
         android:id="@+id/checkBoxRandom"
         android:elevation="24dp"
         android:textSize="18sp"
-        android:layout_height="40dp" />
+        android:layout_height="40dp"
+        android:checked="false" />
 
     <Button
         android:text="Back"
@@ -70,7 +76,6 @@
         android:layout_marginLeft="150dp"
         android:elevation="24dp"
         android:layout_height="wrap_content"
-        android:onClick="filterBackButtonPressed"
         android:layout_gravity="right"
         android:background="@drawable/buttonshape"
         style="@style/buttonDesign"/>

@@ -63,9 +63,16 @@ package="com.example.colak.gogodeals">
 
     <activity
         android:name=".MapsActivity"
-        android:label="@string/title_activity_maps">
+        android:label="@string/title_activity_maps"/>
 
-    </activity>
+    <activity android:name=".Popups.FilterPopup"
+        android:theme="@android:style/Theme.Dialog"/>
+    <activity android:name=".Popups.OptionsPopup"
+        android:theme="@android:style/Theme.Dialog"/>
+    <activity android:name=".Popups.DealsPopup"
+        android:theme="@android:style/Theme.Dialog"/>
+    <activity android:name=".Popups.SavedDealsPopup"
+        android:theme="@android:style/Theme.Dialog"/>
 
 
 </application>
