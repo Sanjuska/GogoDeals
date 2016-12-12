@@ -6,6 +6,6 @@
     android:scaleType="fitXY"
     android:fitsSystemWindows="true"
     android:background="@drawable/intro"
-    tools:context=".Intro">
+    tools:context=".Controllers.Intro">
 
 </RelativeLayout>

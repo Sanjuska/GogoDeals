@@ -1,4 +1,4 @@
-package com.example.colak.gogodeals;
+package com.example.colak.gogodeals.Controllers;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -7,8 +7,9 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
-import com.facebook.CallbackManager;
+import com.example.colak.gogodeals.Objects.IdentifierSingleton;
 import com.example.colak.gogodeals.R;
+import com.facebook.CallbackManager;
 import com.facebook.login.widget.LoginButton;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
@@ -29,9 +30,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private IdentifierSingleton identifierSingleton;
 
     public static String userID;
-
-    ConnectionMqtt connection1;
-
+    
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

@@ -1,4 +1,4 @@
-package com.example.colak.gogodeals;
+package com.example.colak.gogodeals.Controllers;
 
 /**
  * Created by Nikos on 12/11/2016.
@@ -12,6 +12,8 @@ import android.util.Log;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.colak.gogodeals.Objects.Messages;
+import com.example.colak.gogodeals.R;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
@@ -39,18 +41,10 @@ public class FacebookLogin extends AppCompatActivity {
 
     private CallbackManager callbackManager;
 
-    //private JSONObject fbObject;
-
-    //public static String fbname, fbemail;
-
-    ConnectionMqtt connection1;
-
     @Override
         protected void onCreate ( final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-
-        connection1 = new ConnectionMqtt(this);
 
         //facebook initialization
         FacebookSdk.sdkInitialize(this.getApplicationContext());
@@ -95,22 +89,7 @@ public class FacebookLogin extends AppCompatActivity {
                                                     String email = object.getString("email");
                                                     Log.i("FBdata: ", name + " " + lastName);
 
-
-                                                            String topic = "deal/gogodeals/user/facebook";
-                                                    Log.i("fbData2: ", topic);
-                                                            String payload = "{\"id\":\"1\",\"data\":{" +
-                                                                    "\"email\": \"" + object.getString("email") + "\"," +
-                                                                    "\"name\":\"" + name + " " + lastName + "\"},}";
-                                                    Log.i("fbData3: ", payload);
-
-                                                    ConnectionMqtt connectionMqtt = new ConnectionMqtt(FacebookLogin.this);
-                                                    connectionMqtt.sendMqtt(payload, topic);
-                                                            Log.i("while condition: ", name + email);
-
-                                                    String userSubscribe = "deal/gogodeals/database/facebook";
-                                                    connectionMqtt.sendMqtt(payload, topic, userSubscribe, 2);
-
-                                                    //loginProgressScreen();
+                                                    Messages.saveFacebook(name,email,lastName,object);
 
                                                 } catch (JSONException e) {
                                                    e.printStackTrace();
@@ -125,22 +104,9 @@ public class FacebookLogin extends AppCompatActivity {
                         request.setParameters(parameters);
                         request.executeAsync();
 
-                        //connection1 = new ConnectionMqtt(FacebookLogin.this);
-
-                        //when user press back, he goes to main screen in order to login again etc.
-                        //LoginManager.getInstance().logOut();
-                        //finish();
-                        //startActivity(gogoAppMainscreen);
 
                     }
-                    /*public void mattiasMethod() {
-                        try {
-                            fbemail = fbObject.getString("email");
-                            Log.i("fbemail: ", fbemail);
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-                    }*/
+
 
                     @Override
                      public void onCancel() {
@@ -189,27 +155,5 @@ public class FacebookLogin extends AppCompatActivity {
         startActivity(gogoApp);
         finish();
     }
-
-
-    /*public void saveInfo(){
-        SharedPreferences preferences = getSharedPreferences("FBcredentials", Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = preferences.edit();
-        editor.putString("FBname",Name);
-        editor.putString("FBemail", Email);
-        editor.putString("Authentication_Status","true");
-        editor.apply();
-    }
-
-    public void seeInfo(){
-        SharedPreferences preferences = getSharedPreferences("FBcredentials", Context.MODE_PRIVATE);
-        //FBname = preferences.getString("FBname", Name);
-        //FBemail = preferences.getString("FBemail", Email);
-        Log.i("FB ", Name + Email);
-        *//*String topic = "deal/gogodeals/user/new";
-        String payload = "{\"id\":\"1\",\"data\":{\"username\":\""
-                + Name + "\",\"password\": \"" + Math.random()+Math.random() + "\",\"email\": \"" + Email + "\"},}";
-        connection1.sendMqtt1(topic, payload);*//*
-    }*/
-
 }
 

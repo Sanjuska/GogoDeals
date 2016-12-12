@@ -1,11 +1,13 @@
-package com.example.colak.gogodeals;
+package com.example.colak.gogodeals.Controllers;
 
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 
-    //Sanja
+import com.example.colak.gogodeals.R;
+
+//Sanja
 //This class loads the splash screen and switches over to Main Activity after 2 seconds.
     public class Intro extends Activity {
         private final int SPLASH_DISPLAY_DURATION = 2000;

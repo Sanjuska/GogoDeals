@@ -1,4 +1,4 @@
-package com.example.colak.gogodeals;
+package com.example.colak.gogodeals.Controllers;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
@@ -9,6 +9,9 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
+
+import com.example.colak.gogodeals.Objects.ConnectionMqtt;
+import com.example.colak.gogodeals.R;
 
 /**
  * Created by Nikos on 01/12/2016.

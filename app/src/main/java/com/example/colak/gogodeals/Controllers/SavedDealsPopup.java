@@ -1,4 +1,4 @@
-package com.example.colak.gogodeals.Popups;
+package com.example.colak.gogodeals.Controllers;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -12,8 +12,7 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import com.example.colak.gogodeals.MapsActivity;
-import com.example.colak.gogodeals.Messages;
+import com.example.colak.gogodeals.Objects.Messages;
 import com.example.colak.gogodeals.Objects.Deal;
 import com.example.colak.gogodeals.R;
 

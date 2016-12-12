@@ -1,4 +1,4 @@
-package com.example.colak.gogodeals.Popups;
+package com.example.colak.gogodeals.Controllers;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
@@ -14,9 +14,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.colak.gogodeals.Messages;
+import com.example.colak.gogodeals.Objects.Messages;
 import com.example.colak.gogodeals.Objects.Deal;
-import com.example.colak.gogodeals.MapsActivity;
 import com.example.colak.gogodeals.R;
 import com.google.android.gms.maps.model.Marker;
 
@@ -37,7 +36,6 @@ public class DealsPopup extends Activity {
     ImageView dealPicture;
     TextView id;
     Button ungrabButton;
-    Messages messages;
     public static ProgressDialog mProgressDlg;
 
 
@@ -47,7 +45,6 @@ public class DealsPopup extends Activity {
         setContentView(R.layout.deal_pop_up);
         ungrabButton = (Button) findViewById(R.id.ungrabButton);
         grabButton = (Button) findViewById(R.id.grabButton);
-        messages = new Messages();
         postCreate();
         getContent(MapsActivity.currentMarker);
     }
@@ -60,7 +57,7 @@ public class DealsPopup extends Activity {
             public void onClick(View v) {
                 grabButton.setVisibility(View.INVISIBLE);
                 //extract deal id
-                messages.saveDeal(id.getText(),DealsPopup.this);
+                Messages.saveDeal(id.getText(),DealsPopup.this);
                 //extract description of deal, to be stored in grabbed deal list on successful grab
                 //Deal grabbing
                 MapsActivity.grabbedDeal = new Deal((String) company.getText(), (String) duration.getText(), (String) price.getText(), dealPicture, (String) description.getText(), id.getText().toString());
@@ -89,7 +86,7 @@ public class DealsPopup extends Activity {
                 finish();
                 Toast toast = Toast.makeText(getApplicationContext(), "Deal ungrabbed", Toast.LENGTH_SHORT);
                 toast.show();
-                messages.removeDeal(id.getText(),DealsPopup.this);
+                Messages.removeDeal(id.getText(),DealsPopup.this);
             }
         });
 

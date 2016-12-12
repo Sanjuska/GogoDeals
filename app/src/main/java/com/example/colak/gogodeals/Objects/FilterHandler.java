@@ -1,7 +1,10 @@
-package com.example.colak.gogodeals;
+package com.example.colak.gogodeals.Objects;
 
 import android.app.Activity;
 import android.widget.CompoundButton;
+
+import com.example.colak.gogodeals.Controllers.MapsActivity;
+import com.example.colak.gogodeals.R;
 
 import java.util.ArrayList;
 
@@ -17,7 +20,6 @@ public class FilterHandler extends MapsActivity implements CompoundButton.OnChec
     public CompoundButton activities;
     public CompoundButton stuff;
     public CompoundButton random;
-    Messages messages;
 
     /**
      * Initializes the an empty ArrayList<String> of filters, the checkboxes and connect the
@@ -25,7 +27,6 @@ public class FilterHandler extends MapsActivity implements CompoundButton.OnChec
      */
     public FilterHandler(Activity activity){
         filters = new ArrayList<>();
-        messages = new Messages();
         food = (CompoundButton) activity.findViewById(R.id.checkBoxFood);
         clothes = (CompoundButton) activity.findViewById(R.id.checkBoxClothes);
         activities = (CompoundButton) activity.findViewById(R.id.checkBoxActivites);

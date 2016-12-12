@@ -1,8 +1,10 @@
 
-package com.example.colak.gogodeals;
+package com.example.colak.gogodeals.Objects;
 
 import android.app.Activity;
 import android.util.Log;
+
+import com.example.colak.gogodeals.Controllers.Parsers;
 
 import org.eclipse.paho.android.service.MqttAndroidClient;
 import org.eclipse.paho.client.mqttv3.IMqttActionListener;

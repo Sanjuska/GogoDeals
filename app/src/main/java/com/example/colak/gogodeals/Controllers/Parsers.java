@@ -1,12 +1,12 @@
-package com.example.colak.gogodeals;
+package com.example.colak.gogodeals.Controllers;
 
 import android.content.Intent;
 import android.util.Log;
 import android.view.View;
 
-import com.example.colak.gogodeals.Popups.DealsPopup;
-import com.example.colak.gogodeals.Popups.FilterPopup;
-import com.example.colak.gogodeals.Popups.OptionsPopup;
+import com.example.colak.gogodeals.Objects.IdentifierSingleton;
+import com.example.colak.gogodeals.Objects.Messages;
+import com.example.colak.gogodeals.R;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -116,6 +116,10 @@ public class Parsers {
             filter.replace(" ","");
             Log.i("filter added",tmpArray[i]);
                 MapsActivity.filterList.add(filter);
+        }
+
+        for (String filter : MapsActivity.filterList) {
+            new Messages().fetchDeals(filter,MapsActivity.mLastLocation,MapsActivity.mapsActivity);
         }
 
         if (!MapsActivity.firstLoad){
@@ -295,6 +299,9 @@ public class Parsers {
     }
 
     public void putFilters(){
+        for (String filter : MapsActivity.filterList) {
+            new Messages().fetchDeals(filter,MapsActivity.mLastLocation,MapsActivity.mapsActivity);
+        }
         FilterPopup.filterPopup.startActivity(new Intent(FilterPopup.filterPopup,OptionsPopup.class));
         FilterPopup.mProgressDlg.dismiss();
         FilterPopup.filterPopup.finish();
