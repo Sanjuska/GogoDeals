@@ -4,8 +4,6 @@ import android.app.Activity;
 import android.location.Location;
 import android.util.Log;
 
-import com.example.colak.gogodeals.Controllers.MainActivity;
-
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -17,14 +15,16 @@ public class Messages {
 
     public ConnectionMqtt connectionMqtt;
 
+
     public Messages(Activity activity){
         this.connectionMqtt = new ConnectionMqtt(activity);
+
     }
 
 
     public void fetchDeals(String filter, Location mLastLocation){
         String subscribeTopic = "deal/gogodeals/database/deals";
-        String payload =   "{ \"id\": \"12345678-1011-M012-N210-112233445566\"," +
+        String payload =   "{ \"id\": \"" + IdentifierSingleton.USER +"\"," +
                 " \"data\": {" +
                 " \"longitude\": " + mLastLocation.getLongitude() + "," +
                 " \"latitude\": " + mLastLocation.getLatitude() + "," +
@@ -40,7 +40,7 @@ public class Messages {
         String deal_id = idTv.toString();
         String payload =   "{ \"id\":\"" + deal_id + "\"," +
                 " \"data\": {" +
-                " \"user_id\":\"" + MainActivity.userID + "\"}}";
+                " \"user_id\":\"" + IdentifierSingleton.USER + "\"}}";
         connectionMqtt.sendMqtt(payload,publishTopic,subscribeTopic,2);
     }
 
@@ -49,7 +49,7 @@ public class Messages {
         String publishTopic = "deal/gogodeals/deal/remove";
         String payload =   "{ \"id\":\"" + deal_id + "\"," +
                 " \"data\": {" +
-                " \"user_id\":\"" + MainActivity.userID + "\"}}";
+                " \"user_id\":\"" + IdentifierSingleton.USER + "\"}}";
         connectionMqtt.sendMqtt(payload,publishTopic);
     }
 
@@ -62,13 +62,13 @@ public class Messages {
         connectionMqtt.sendMqtt(payload,publishTopic,subscribeTopic,2);
     }
 
-    public void SetFilters(String strings){
+    public void SetFilters(String filters){
 
-        Log.i("filter ",strings);
+        Log.i("filter message ",filters);
 
-        String payload =   "{ \"id\": \"" + IdentifierSingleton.USER + "\"," +
+        String payload =   "{ \"id\": \"" + IdentifierSingleton.USER    + "\"," +
                 " \"data\": {" +
-                " \"filters\": \""+ strings +"\"}}";
+                " \"filters\": \""+ filters +"\"}}";
         String publishTopic = "deal/gogodeals/user/update";
         String returnTopic = "deal/gogodeals/database/update";
         connectionMqtt.sendMqtt(payload,publishTopic,returnTopic,2);

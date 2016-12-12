@@ -25,49 +25,50 @@
         style="@style/TextViewStyleHeader"/>
 
     <CheckBox
-        android:text="Food &amp; Drinks"
+        android:text="Food"
+        android:textColor="@color/editline"
         android:layout_width="match_parent"
         android:id="@+id/checkBoxFood"
         android:elevation="24dp"
         android:textSize="18sp"
         android:layout_height="40dp"
-        android:checked="false" />
+        />
 
     <CheckBox
-        android:text="Clothes &amp; Hats"
+        android:text="Clothes"
+        android:textColor="@color/editline"
         android:layout_width="match_parent"
         android:id="@+id/checkBoxClothes"
         android:elevation="24dp"
         android:textSize="18sp"
-        android:layout_height="40dp"
-        android:checked="false" />
+        android:layout_height="40dp" />
 
     <CheckBox
         android:text="Activites"
+        android:textColor="@color/editline"
         android:layout_width="match_parent"
         android:id="@+id/checkBoxActivites"
         android:elevation="24dp"
         android:textSize="18sp"
-        android:layout_height="40dp"
-        android:checked="false" />
+        android:layout_height="40dp" />
 
     <CheckBox
         android:text="Stuff"
+        android:textColor="@color/editline"
         android:layout_width="match_parent"
         android:id="@+id/checkBoxStuff"
         android:elevation="24dp"
         android:textSize="18sp"
-        android:layout_height="40dp"
-        android:checked="false" />
+        android:layout_height="40dp" />
 
     <CheckBox
         android:text="Random"
+        android:textColor="@color/editline"
         android:layout_width="match_parent"
         android:id="@+id/checkBoxRandom"
         android:elevation="24dp"
         android:textSize="18sp"
-        android:layout_height="40dp"
-        android:checked="false" />
+        android:layout_height="40dp" />
 
     <Button
         android:text="Back"

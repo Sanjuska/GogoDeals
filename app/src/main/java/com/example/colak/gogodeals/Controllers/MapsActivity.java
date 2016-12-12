@@ -21,7 +21,6 @@ import android.view.animation.LinearInterpolator;
 import android.widget.ImageButton;
 
 import com.example.colak.gogodeals.Objects.Deal;
-import com.example.colak.gogodeals.Objects.FilterHandler;
 import com.example.colak.gogodeals.R;
 import com.google.android.gms.appindexing.AppIndex;
 import com.google.android.gms.common.ConnectionResult;
@@ -59,7 +58,6 @@ public class MapsActivity extends FragmentActivity implements
     Marker lastOpened = null;
     Location lastFetched;
     public static boolean firstLoad;
-    public static ArrayList<String> filterList;
     LocationRequest locationRequest;
     public static Deal grabbedDeal;
     public static List<Deal> dealArrayList;
@@ -68,14 +66,13 @@ public class MapsActivity extends FragmentActivity implements
     public static Marker currentMarker;
     // Creating an instance of MarkerOptions to set position
     private GoogleApiClient client;
-    public static FilterHandler filterHandler;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
         mapsActivity = this;
-        firstLoad = false;
+        firstLoad = true;
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
@@ -112,7 +109,6 @@ public class MapsActivity extends FragmentActivity implements
                 .addLocationRequest(locationRequest);
         builder.setAlwaysShow(true);
         fetched = false;
-        filterList = new ArrayList<>();
         //create list adapter for deal list
         dealArrayList = new ArrayList<Deal>();
         dealArrayList.add(new Deal());
@@ -271,7 +267,7 @@ public class MapsActivity extends FragmentActivity implements
                         lastFetched.getLatitude() - 0.2 > mLastLocation.getLatitude() &&
                         lastFetched.getLongitude() + 0.2 < mLastLocation.getLongitude() &&
                         lastFetched.getLongitude() - 0.2 > mLastLocation.getLongitude()) {
-                    for (String filter : filterList) {
+                    for (String filter : MainActivity.filterList) {
                         MainActivity.messages.fetchDeals(filter,mLastLocation);
                     }
                     lastFetched = mLastLocation;

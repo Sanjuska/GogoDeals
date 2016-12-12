@@ -48,7 +48,7 @@ public class OptionsPopup extends Activity {
             public void onClick(View v) {
                 MainActivity.messages.getFilters();
                 mProgressDlg = new ProgressDialog(OptionsPopup.this);
-                mProgressDlg.setMessage("Checking filters");
+                mProgressDlg.setMessage("Getting filter");
                 mProgressDlg.setCancelable(false);
                 mProgressDlg.show();
             }

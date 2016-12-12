@@ -1,8 +1,10 @@
 package com.example.colak.gogodeals.Objects;
 
 import android.app.Activity;
+import android.util.Log;
 import android.widget.CompoundButton;
 
+import com.example.colak.gogodeals.Controllers.MainActivity;
 import com.example.colak.gogodeals.Controllers.MapsActivity;
 import com.example.colak.gogodeals.R;
 
@@ -26,7 +28,8 @@ public class FilterHandler extends MapsActivity implements CompoundButton.OnChec
      * checkboxes to a listener
      */
     public FilterHandler(Activity activity){
-        filters = new ArrayList<>();
+
+        filters = MainActivity.filterList;
         food = (CompoundButton) activity.findViewById(R.id.checkBoxFood);
         clothes = (CompoundButton) activity.findViewById(R.id.checkBoxClothes);
         activities = (CompoundButton) activity.findViewById(R.id.checkBoxActivites);
@@ -38,6 +41,10 @@ public class FilterHandler extends MapsActivity implements CompoundButton.OnChec
         activities.setOnCheckedChangeListener(this);
         stuff.setOnCheckedChangeListener(this);
         random.setOnCheckedChangeListener(this);
+
+
+
+
     }
 
 
@@ -84,6 +91,8 @@ public class FilterHandler extends MapsActivity implements CompoundButton.OnChec
      */
     private void remove(String filter){
         if(filters.contains(filter)){
+            Log.i("filter chec remove",filter);
+            Log.i("filter list",get());
             filters.remove(filter);
         }
     }
@@ -95,9 +104,12 @@ public class FilterHandler extends MapsActivity implements CompoundButton.OnChec
      * @param check
      */
     public void check(String filter, Boolean check){
+
         if(check){
+
             add(filter);
         } else {
+
             remove(filter);
         }
     }

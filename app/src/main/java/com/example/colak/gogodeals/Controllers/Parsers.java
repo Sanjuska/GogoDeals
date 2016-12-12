@@ -9,11 +9,13 @@ import com.example.colak.gogodeals.R;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+
 import org.eclipse.paho.client.mqttv3.MqttMessage;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
 import java.util.UUID;
 
 /**
@@ -26,9 +28,8 @@ public class Parsers {
     it calls the correct method corresponding to that topic.
     */
 
+    public static IdentifierSingleton identifierSingleton = IdentifierSingleton.getInstance();
     public void parse(String topic,MqttMessage message){
-        IdentifierSingleton identifierSingleton = IdentifierSingleton.getInstance();
-
         // Checks if this message is related to this instance of the application or to this user
         //if(IdentifierSingleton.SESSION == get_id(message) || IdentifierSingleton.USER == get_id(message)) {
             switch (topic) {
@@ -100,33 +101,37 @@ public class Parsers {
 
     private void setFilters(MqttMessage message) throws JSONException {
 
+
         JSONObject tmpObj = new JSONObject(new String(message.getPayload()));
         JSONObject tmpObj2 = new JSONObject(tmpObj.get("data").toString());
         String tmpString = new String(tmpObj2.get("filters").toString());
+        Log.i("filters in string",tmpString);
+        String [] tmpArray =  tmpString.split(",");
 
-        String [] tmpArray = tmpString.split(",");
-        MapsActivity.filterList.clear();
-        for (int i = 1;i<tmpArray.length;i++) {
-            String filter = tmpArray[i];
-            filter.replace(" ","");
-            Log.i("filter added",tmpArray[i]);
-                MapsActivity.filterList.add(filter);
+        ArrayList<String> replaceArray = new ArrayList<>();
+        for (String tmp : tmpArray) {
+            String returnString = tmp.trim();
+            replaceArray.add(returnString);
+            Log.i("filter added",returnString);
+
         }
 
-        for (String filter : MapsActivity.filterList) {
+       MainActivity.filterList = replaceArray;
+
+        for (String filter : MainActivity.filterList) {
             MainActivity.messages.fetchDeals(filter,MapsActivity.mLastLocation);
         }
 
-        if (!MapsActivity.firstLoad){
-            MapsActivity.firstLoad = true;
-        }else {
-            Log.i("filters start ", MapsActivity.filterList.toString());
+        if (MapsActivity.firstLoad){
+            //do nothing
+            MapsActivity.firstLoad = false;
+        }else{
             OptionsPopup.optionsPopup.startActivity(new Intent(OptionsPopup.optionsPopup, FilterPopup.class));
             OptionsPopup.mProgressDlg.dismiss();
             OptionsPopup.optionsPopup.finish();
         }
+
         }
-    //}
 
 
     /*
@@ -284,20 +289,20 @@ public class Parsers {
         JSONObject jsonData;
         jsonData = new JSONObject(messageString);
         jsonData = new JSONObject(jsonData.getString("data"));
-        Log.i("Bubca checkFacebook: ",jsonData.toString());
-        /*id = jsonData.getString("id");
+        id = jsonData.getString("id");
+        Log.i("connection before id ",id);
         IdentifierSingleton.set(id);
-        MainActivity.userID = id;*/
-        Log.i("Bubca User", MainActivity.userID);
+        Log.i("connection after id ",id);
         FacebookLogin.mProgressDlg.dismiss();
         //now load next maps activity screen
         Intent gogoApp = new Intent(FacebookLogin.faceBookLogin, MapsActivity.class);
         FacebookLogin.faceBookLogin.startActivity(gogoApp);
+
         FacebookLogin.faceBookLogin.finish();
     }
 
     public void putFilters(){
-        for (String filter : MapsActivity.filterList) {
+        for (String filter : FilterPopup.filterHandler.returnFilterList()) {
             MainActivity.messages.fetchDeals(filter,MapsActivity.mLastLocation);
         }
         FilterPopup.filterPopup.startActivity(new Intent(FilterPopup.filterPopup,OptionsPopup.class));
