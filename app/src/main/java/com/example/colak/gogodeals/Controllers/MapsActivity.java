@@ -263,10 +263,7 @@ public class MapsActivity extends FragmentActivity implements
         mMap.animateCamera(CameraUpdateFactory.newCameraPosition(myPosition));
 
                 if (!fetched) {
-                    for (String filter : filterList) {
-                        MainActivity.messages.getFilters();
-                        Log.i("json filter ", filter);
-                    }
+                    MainActivity.messages.getFilters();
                     fetched = true;
                 } else if (lastFetched != null &&
                         mLastLocation != null &&
