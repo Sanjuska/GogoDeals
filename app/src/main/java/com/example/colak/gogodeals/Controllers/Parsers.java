@@ -5,12 +5,10 @@ import android.util.Log;
 import android.view.View;
 
 import com.example.colak.gogodeals.Objects.IdentifierSingleton;
-import com.example.colak.gogodeals.Objects.Messages;
 import com.example.colak.gogodeals.R;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
-
 import org.eclipse.paho.client.mqttv3.MqttMessage;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -27,9 +25,6 @@ public class Parsers {
     /*This method takes a topic and a payload message and depending what topic it is
     it calls the correct method corresponding to that topic.
     */
-
-    static GogouserLogin gogouserLogin;
-    static FacebookLogin facebookLogin;
 
     public void parse(String topic,MqttMessage message){
         IdentifierSingleton identifierSingleton = IdentifierSingleton.getInstance();
@@ -119,7 +114,7 @@ public class Parsers {
         }
 
         for (String filter : MapsActivity.filterList) {
-            new Messages().fetchDeals(filter,MapsActivity.mLastLocation,MapsActivity.mapsActivity);
+            MainActivity.messages.fetchDeals(filter,MapsActivity.mLastLocation);
         }
 
         if (!MapsActivity.firstLoad){
@@ -272,7 +267,7 @@ public class Parsers {
             MainActivity.userID = id;
             Log.i("User", MainActivity.userID);
             GogouserLogin.mProgressDlg.dismiss();
-            gogouserLogin.loginResultReceived();
+            //gogouserLogin.loginResultReceived();
         }
         else {
             Log.i("7 :", "1");
@@ -285,22 +280,25 @@ public class Parsers {
     public void checkFacebook(MqttMessage message) throws JSONException {
         String id;
         String messageString = new String(message.getPayload());
-        Log.i("Bubca checkFacebook: ", String.valueOf(message.getPayload()));
+
         JSONObject jsonData;
         jsonData = new JSONObject(messageString);
         jsonData = new JSONObject(jsonData.getString("data"));
-        id = jsonData.getString("id");
+        Log.i("Bubca checkFacebook: ",jsonData.toString());
+        /*id = jsonData.getString("id");
         IdentifierSingleton.set(id);
-        MainActivity.userID = id;
+        MainActivity.userID = id;*/
         Log.i("Bubca User", MainActivity.userID);
         FacebookLogin.mProgressDlg.dismiss();
         //now load next maps activity screen
-        facebookLogin.facebookLoginSuccess();
+        Intent gogoApp = new Intent(FacebookLogin.faceBookLogin, MapsActivity.class);
+        FacebookLogin.faceBookLogin.startActivity(gogoApp);
+        FacebookLogin.faceBookLogin.finish();
     }
 
     public void putFilters(){
         for (String filter : MapsActivity.filterList) {
-            new Messages().fetchDeals(filter,MapsActivity.mLastLocation,MapsActivity.mapsActivity);
+            MainActivity.messages.fetchDeals(filter,MapsActivity.mLastLocation);
         }
         FilterPopup.filterPopup.startActivity(new Intent(FilterPopup.filterPopup,OptionsPopup.class));
         FilterPopup.mProgressDlg.dismiss();

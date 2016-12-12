@@ -6,8 +6,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
-
-import com.example.colak.gogodeals.Objects.Messages;
 import com.example.colak.gogodeals.R;
 
 /**
@@ -48,7 +46,7 @@ public class OptionsPopup extends Activity {
         filterButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Messages.getFilters(OptionsPopup.this);
+                MainActivity.messages.getFilters();
                 mProgressDlg = new ProgressDialog(OptionsPopup.this);
                 mProgressDlg.setMessage("Checking filters");
                 mProgressDlg.setCancelable(false);

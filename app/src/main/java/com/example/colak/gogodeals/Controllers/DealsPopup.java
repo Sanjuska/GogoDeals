@@ -13,8 +13,6 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import com.example.colak.gogodeals.Objects.Messages;
 import com.example.colak.gogodeals.Objects.Deal;
 import com.example.colak.gogodeals.R;
 import com.google.android.gms.maps.model.Marker;
@@ -57,7 +55,7 @@ public class DealsPopup extends Activity {
             public void onClick(View v) {
                 grabButton.setVisibility(View.INVISIBLE);
                 //extract deal id
-                Messages.saveDeal(id.getText(),DealsPopup.this);
+                MainActivity.messages.saveDeal(id.getText());
                 //extract description of deal, to be stored in grabbed deal list on successful grab
                 //Deal grabbing
                 MapsActivity.grabbedDeal = new Deal((String) company.getText(), (String) duration.getText(), (String) price.getText(), dealPicture, (String) description.getText(), id.getText().toString());
@@ -86,7 +84,7 @@ public class DealsPopup extends Activity {
                 finish();
                 Toast toast = Toast.makeText(getApplicationContext(), "Deal ungrabbed", Toast.LENGTH_SHORT);
                 toast.show();
-                Messages.removeDeal(id.getText(),DealsPopup.this);
+                MainActivity.messages.removeDeal(id.getText());
             }
         });
 

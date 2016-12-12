@@ -9,7 +9,6 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.colak.gogodeals.Objects.ConnectionMqtt;
 import com.example.colak.gogodeals.Objects.Messages;
 import com.example.colak.gogodeals.R;
 
@@ -21,13 +20,12 @@ public class newUserSignup extends AppCompatActivity{
     EditText regEmailConfirmation;
     EditText regPassword;
     EditText regPasswordConfirmation;
-
+    Messages messages;
     TextView signupTips;
 
     Button gogosignup;
 
 
-    static ConnectionMqtt connection1;
     @Override
 
     //Connect class with xml file
@@ -37,8 +35,8 @@ public class newUserSignup extends AppCompatActivity{
             //opens newuser_signup layout screen
             setContentView(R.layout.newuser_signup);
 
-            //setting an mqtt connection from ConnectionMqtt class
-            connection1 = new ConnectionMqtt(this);
+
+
 
             //newuser_signup xml fields-buttons-text
             regUsername = (EditText) findViewById(R.id.regUsername); //username field
@@ -48,7 +46,7 @@ public class newUserSignup extends AppCompatActivity{
             regPasswordConfirmation = (EditText) findViewById(R.id.regPasswordConfirmation); //password confirmation field
             gogosignup = (Button) findViewById(R.id.gogosignup); //signup button
             signupTips = (TextView) findViewById(R.id.signupTips); //textview on bottom of screen
-
+            messages = new Messages(this);
 
 
             //signup tips on bottom of user screen
@@ -113,7 +111,7 @@ public class newUserSignup extends AppCompatActivity{
 
                     Toast.makeText(getApplicationContext(), "Welcome:" + regUser, Toast.LENGTH_SHORT).show();
 
-                    Messages.saveAlternativeUser(regUser,regPass,regMail);
+                    messages.saveAlternativeUser(regUser,regPass,regMail);
                     //clear fields
                     regUsername.getText().clear();
                     regPassword.getText().clear();

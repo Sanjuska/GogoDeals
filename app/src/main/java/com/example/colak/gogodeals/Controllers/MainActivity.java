@@ -8,6 +8,7 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.example.colak.gogodeals.Objects.IdentifierSingleton;
+import com.example.colak.gogodeals.Objects.Messages;
 import com.example.colak.gogodeals.R;
 import com.facebook.CallbackManager;
 import com.facebook.login.widget.LoginButton;
@@ -18,7 +19,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private TextView info;
 
     private LoginButton loginButton;
-
+    public static Messages messages;
     private CallbackManager callbackManager;
 
     private Button mainLogin;
@@ -30,12 +31,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private IdentifierSingleton identifierSingleton;
 
     public static String userID;
-    
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main_screen);
-
+        messages = new Messages(this);
+        userID = "";
         welcometext = (TextView) findViewById(R.id.welcometext);
         mainLogin = (Button) findViewById(R.id.mainLogin);
         mainsignup = (Button) findViewById(R.id.mainsignup);

@@ -6,7 +6,6 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 
-import com.example.colak.gogodeals.Objects.Messages;
 import com.example.colak.gogodeals.R;
 
 /**
@@ -50,7 +49,7 @@ public class FilterPopup extends Activity {
         backButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Messages.SetFilters(FilterPopup.this,MapsActivity.filterHandler.get().toString());
+                MainActivity.messages.SetFilters(MapsActivity.filterHandler.get().toString());
                 mProgressDlg = new ProgressDialog(FilterPopup.this);
                 mProgressDlg.setMessage("Setting filters");
                 mProgressDlg.setCancelable(false);

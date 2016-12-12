@@ -4,6 +4,7 @@ package com.example.colak.gogodeals.Controllers;
  * Created by Nikos on 12/11/2016.
  */
 
+import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
@@ -11,8 +12,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import com.example.colak.gogodeals.Objects.Messages;
 import com.example.colak.gogodeals.R;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
@@ -34,7 +33,7 @@ public class FacebookLogin extends AppCompatActivity {
 
     private static final String TAG = "Test@ " ;
     private TextView info;
-
+    public static Activity faceBookLogin;
     private LoginButton loginButton;
 
     public static ProgressDialog mProgressDlg;
@@ -44,14 +43,12 @@ public class FacebookLogin extends AppCompatActivity {
     @Override
         protected void onCreate ( final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-
         //facebook initialization
         FacebookSdk.sdkInitialize(this.getApplicationContext());
         callbackManager = CallbackManager.Factory.create();
         setContentView(R.layout.mainactivity);
         info = (TextView) findViewById(R.id.info);
-
+        faceBookLogin = this;
         //facebook login button
         loginButton = (LoginButton) findViewById(R.id.login_button);
 
@@ -89,7 +86,7 @@ public class FacebookLogin extends AppCompatActivity {
                                                     String email = object.getString("email");
                                                     Log.i("FBdata: ", name + " " + lastName);
 
-                                                    Messages.saveFacebook(name,email,lastName,object);
+                                                   MainActivity.messages.saveFacebook(name,email,lastName,object);
 
                                                 } catch (JSONException e) {
                                                    e.printStackTrace();
@@ -139,7 +136,6 @@ public class FacebookLogin extends AppCompatActivity {
 
     //show validation screen while waiting for response from GogoDeals Erlang module
     void loginProgressScreen() {
-        Parsers.facebookLogin=this;
         mProgressDlg = new ProgressDialog(this);
         mProgressDlg.setMessage("Validating Facebook login");
         mProgressDlg.setCancelable(false);
@@ -147,13 +143,5 @@ public class FacebookLogin extends AppCompatActivity {
 
     }
 
-    //When message is received from GogoDeals Erlang module, load next screen
-    public void facebookLoginSuccess(){
-        Log.i("Bubca", "change screen");
-        //when fb credentials are correct, user logins to gogodeals
-        Intent gogoApp = new Intent(FacebookLogin.this, MapsActivity.class);
-        startActivity(gogoApp);
-        finish();
-    }
 }
 

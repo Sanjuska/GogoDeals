@@ -11,8 +11,6 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
-
-import com.example.colak.gogodeals.Objects.Messages;
 import com.example.colak.gogodeals.Objects.Deal;
 import com.example.colak.gogodeals.R;
 
@@ -30,7 +28,6 @@ public class SavedDealsPopup extends Activity {
     Button grabButton;
     Button ungrabButton;
     Button dealsBackButton;
-    Messages messages;
     TextView idTV;
     TextView description;
     TextView company;
@@ -61,8 +58,6 @@ public class SavedDealsPopup extends Activity {
         duration = ((TextView) findViewById(R.id.duration));
         dealPicture = (ImageView) findViewById(R.id.dealPicture);
         verificationHeader = ((TextView) findViewById(R.id.verificationHeader));
-
-        messages = new Messages();
         MapsActivity.grabbedDeal = new Deal();
         postCreate();
     }

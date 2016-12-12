@@ -22,7 +22,6 @@ import android.widget.ImageButton;
 
 import com.example.colak.gogodeals.Objects.Deal;
 import com.example.colak.gogodeals.Objects.FilterHandler;
-import com.example.colak.gogodeals.Objects.Messages;
 import com.example.colak.gogodeals.R;
 import com.google.android.gms.appindexing.AppIndex;
 import com.google.android.gms.common.ConnectionResult;
@@ -69,7 +68,6 @@ public class MapsActivity extends FragmentActivity implements
     public static Marker currentMarker;
     // Creating an instance of MarkerOptions to set position
     private GoogleApiClient client;
-    Messages messages;
     public static FilterHandler filterHandler;
 
     @Override
@@ -114,7 +112,6 @@ public class MapsActivity extends FragmentActivity implements
                 .addLocationRequest(locationRequest);
         builder.setAlwaysShow(true);
         fetched = false;
-        messages = new Messages();
         filterList = new ArrayList<>();
         //create list adapter for deal list
         dealArrayList = new ArrayList<Deal>();
@@ -267,7 +264,7 @@ public class MapsActivity extends FragmentActivity implements
 
                 if (!fetched) {
                     for (String filter : filterList) {
-                        new Messages().getFilters(this);
+                        MainActivity.messages.getFilters();
                         Log.i("json filter ", filter);
                     }
                     fetched = true;
@@ -278,7 +275,7 @@ public class MapsActivity extends FragmentActivity implements
                         lastFetched.getLongitude() + 0.2 < mLastLocation.getLongitude() &&
                         lastFetched.getLongitude() - 0.2 > mLastLocation.getLongitude()) {
                     for (String filter : filterList) {
-                        new Messages().fetchDeals(filter,mLastLocation,this);
+                        MainActivity.messages.fetchDeals(filter,mLastLocation);
                     }
                     lastFetched = mLastLocation;
                 }

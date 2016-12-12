@@ -9,8 +9,6 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
-
-import com.example.colak.gogodeals.Objects.ConnectionMqtt;
 import com.example.colak.gogodeals.R;
 
 /**
@@ -22,7 +20,6 @@ public class GogouserLogin extends AppCompatActivity {
     EditText loginEmail;
     EditText loginPassword;
     Button loginBtn;
-    static ConnectionMqtt gogoUserMqtt;
     public static ProgressDialog mProgressDlg;
     public static boolean loginResult;
     public static String email;
@@ -31,7 +28,6 @@ public class GogouserLogin extends AppCompatActivity {
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        gogoUserMqtt = new ConnectionMqtt(this);
         setContentView(R.layout.gogo_profile_login);
 
         loginEmail = (EditText) findViewById(R.id.loginEmail);
@@ -51,16 +47,8 @@ public class GogouserLogin extends AppCompatActivity {
         email = loginEmail.getText().toString();
         password = loginPassword.getText().toString();
 
-        String topic = "deal/gogodeals/user/info";
-        String payload = "{\"id\":\"12345678-1011-M012-N210-112233445566\",\"data\":{\"email\":\""
-                + email + "\",\"password\": \"" + password + "\"},}";
+        MainActivity.messages.alternativeUserLogin(email,password);
 
-        String userSubscribe = "deal/gogodeals/database/users";
-        gogoUserMqtt.sendMqtt(payload, topic, userSubscribe, 2);
-
-        Log.i("loginfielads: ", email + password);
-
-        Parsers.gogouserLogin=this;
         mProgressDlg = new ProgressDialog(this);
         mProgressDlg.setMessage("Validating");
         mProgressDlg.setCancelable(false);

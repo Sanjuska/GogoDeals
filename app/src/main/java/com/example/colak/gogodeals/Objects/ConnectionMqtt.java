@@ -48,8 +48,6 @@ public ConnectionMqtt(Activity activity){
     sendTopic= "";
     receiveTopic ="";
 }
-    public ConnectionMqtt(){
-    }
     /*
     sentmqtt is called from other classe and takes a payload and a topic and starts the connection
     and publishing to the broker. This method only publish and dont subscribe.
@@ -78,6 +76,7 @@ public ConnectionMqtt(Activity activity){
     public void open() {
         String clientId = MqttClient.generateClientId();
         client = new MqttAndroidClient(parent.getApplicationContext(), "tcp://54.154.153.243:1883",
+        //client = new MqttAndroidClient(parent.getApplicationContext(), "tcp://176.10.136.208:1883",
                 clientId);
         client.setCallback(this);
         try {
@@ -86,10 +85,9 @@ public ConnectionMqtt(Activity activity){
                 @Override
                 public void onSuccess(IMqttToken asyncActionToken) {
                     // We are connected
+                    Log.i("connection","connection established");
                     if (receiveTopic.equals("")){
                         publish(payload,sendTopic);
-                        Log.i("json published payload ",payload);
-                        Log.i("json publish topic",sendTopic );
                     }else{
                         subscribe(receiveTopic,qot);
                     }
@@ -111,6 +109,7 @@ public ConnectionMqtt(Activity activity){
         try {
             encodedPayload = payload.getBytes("UTF-8");
             MqttMessage message = new MqttMessage(encodedPayload);
+            Log.i("connection","before publish");
             client.publish(topic, message);
         } catch (UnsupportedEncodingException | MqttException e) {
             e.printStackTrace();
@@ -159,8 +158,8 @@ public ConnectionMqtt(Activity activity){
 
     // When a message arrive from a subsribed topic this method calls the parsers class method parse.
     public void messageArrived(String topic, MqttMessage message) throws MqttException {
+        Log.i("connection","before parsing");
         parsers.parse(topic,message);
-        Log.i("Connection ","closed after message arrived");
     }
 
     //Called when publish has been completed and accepted by broker.
