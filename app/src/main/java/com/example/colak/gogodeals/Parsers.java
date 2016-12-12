@@ -58,7 +58,7 @@ public class Parsers {
 
                     break;
 
-                case "Gro/*":
+                case "Gro/me@gmail.com/fetch-lists":
                     try {
                         grocodeFetchParser(message);
                     } catch (JSONException e) {
@@ -80,28 +80,35 @@ public class Parsers {
 
     private void grocodeFetchParser(MqttMessage message) throws JSONException {
         String payload = new String(message.getPayload());
-        JSONArray jsonArray = new JSONArray(new JSONObject(payload).getJSONArray("data").toString());
+        Log.i("Gro", payload);
+        if(payload.contains("data")) {
+            Log.i("Gro in if", payload);
+            JSONArray jsonArray = new JSONArray(new JSONObject(payload).getJSONArray("data").toString());
+            GrocodeHandler.getDeals(jsonArray);
+        }
 
-        GrocodeHandler.getDeals(jsonArray);
     }
 
     private void grocodeListParser(MqttMessage message) throws JSONException {
         String payload = new String(message.getPayload());
-        JSONArray jsonArray = new JSONArray(new JSONObject(payload).getJSONArray("data").toString());
+        Log.i("This the payload: ", payload);
+        if(payload.contains("data")) {
+            JSONArray jsonArray = new JSONArray(new JSONObject(payload).getJSONArray("data").toString());
 
-        ArrayList<Deal> deals = new ArrayList<>();
+            ArrayList<Deal> deals = new ArrayList<>();
 
-        for(int i = 0; i < jsonArray.length(); i++){
-            deals.add(new Deal(
-                jsonArray.getJSONObject(i).getString("client_name"),
-                jsonArray.getJSONObject(i).getString("duration"),
-                jsonArray.getJSONObject(i).getString("price"),
-                null,
-                jsonArray.getJSONObject(i).getString("description"),
-                jsonArray.getJSONObject(i).getString("id")));
+            for (int i = 0; i < jsonArray.length(); i++) {
+                deals.add(new Deal(
+                        jsonArray.getJSONObject(i).getString("client_name"),
+                        jsonArray.getJSONObject(i).getString("duration"),
+                        jsonArray.getJSONObject(i).getString("price"),
+                        null,
+                        jsonArray.getJSONObject(i).getString("description"),
+                        jsonArray.getJSONObject(i).getString("id")));
+            }
+
+            MapsActivity.grocodeArrayList.addAll(deals);
         }
-
-        IdentifierSingleton.USER.setGrocode(deals);
     }
     //}
 
@@ -197,7 +204,7 @@ public class Parsers {
 
 
         }
-        MapsActivity.dealMqtt.close();
+       // MapsActivity.dealMqtt.close();
     }
 
     /**

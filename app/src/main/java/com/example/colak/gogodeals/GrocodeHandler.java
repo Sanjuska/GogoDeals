@@ -36,18 +36,15 @@ public class GrocodeHandler {
     public static void getFromGrocode(ConnectionMqtt c){
         connectionMqtt = c;
 
-        String subscribeTopic = "Gro/" + IdentifierSingleton.USER.getEmail();
-
+        String subscribeTopic = "Gro/me@gmail.com/fetch-lists"; //+ IdentifierSingleton.USER.getEmail();
 
         String payload =
-                "{ " +
-                        " \"client_id\": \"" + IdentifierSingleton.USER.getEmail() +  "\"," +
-                        " \"list\": \"food\"" +
-                        " \"request\": \"fetch\"," +
-                        " \"data\": \"\" " +
+                "{" +
+                        " \"client_id\": \"me@gmail.com\"," +
+                        " \"request\": \"fetch-lists\"" +
                 "}";
 
-        String publishTopic = "Gro/" + IdentifierSingleton.USER.getEmail();
+        String publishTopic = "Gro/me@gmail.com/fetch-lists"; // + IdentifierSingleton.USER.getEmail();
 
         connectionMqtt.sendMqtt(payload,publishTopic,subscribeTopic,2);
     }

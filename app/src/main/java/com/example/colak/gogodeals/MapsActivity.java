@@ -122,8 +122,8 @@ public class MapsActivity extends FragmentActivity implements
     // Creating an instance of MarkerOptions to set position
     private GoogleApiClient client;
     private ListView grocodeListView;
-    private ArrayAdapter<Deal> grocodeAdapter;
-    private ArrayList<Deal> grocodeArrayList;
+    public static ArrayAdapter<Deal> grocodeAdapter;
+    public static ArrayList<Deal> grocodeArrayList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -143,6 +143,9 @@ public class MapsActivity extends FragmentActivity implements
         //create list adapter for deal list
         dealArrayList = new ArrayList<Deal>();
         dealArrayList.add(new Deal());
+
+        grocodeArrayList = new ArrayList<>();
+        grocodeArrayList.add(new Deal());
 
         food = (CheckBox) findViewById(R.id.checkBoxFood);
         clothes = (CheckBox) findViewById(R.id.checkBoxClothes);
@@ -386,9 +389,12 @@ public class MapsActivity extends FragmentActivity implements
         //myDealsPop.setFocusable(false);
         //myDealsPop.setClickable(false);
         //dealAdapter = new ArrayAdapter<Deal>(MapsActivity.this,R.layout.list_row, dealArrayList);
-        grocodeAdapter= new ArrayAdapter<Deal>(MapsActivity.this, android.R.layout.simple_list_item_1,IdentifierSingleton.USER.getGrocode());
+//        if(IdentifierSingleton.USER.getGrocode() != null){
+//            grocodeArrayList.addAll(IdentifierSingleton.USER.getGrocode());
+//        }
+        grocodeAdapter= new ArrayAdapter<Deal>(MapsActivity.this, android.R.layout.simple_list_item_1,grocodeArrayList);
         // dealListView =((ListView) findViewById(R.id.dealList));
-        grocodeListView = ((ListView) myDealsPopup.getContentView().findViewById(R.id.grocodeListView));
+        grocodeListView = ((ListView) grocodePopup.getContentView().findViewById(R.id.grocodeListView));
         grocodeListView.setAdapter(grocodeAdapter);
         grocodeListView.setClickable(true);
         grocodeListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -420,8 +426,8 @@ public class MapsActivity extends FragmentActivity implements
             }
         });
 
-        myDealsPopup.showAtLocation(mainLayout, Gravity.CENTER, 0, 0);
-        myDealsPopup.update(screenWidth - 50, screenHeight / 2);
+        grocodePopup.showAtLocation(mainLayout, Gravity.CENTER, 0, 0);
+        grocodePopup.update(screenWidth - 50, screenHeight / 2);
     }
 
 
@@ -598,6 +604,13 @@ public class MapsActivity extends FragmentActivity implements
 
     @Override
     public void onStart() {
+        if (mGoogleApiClient == null) {
+            mGoogleApiClient = new GoogleApiClient.Builder(this)
+                    .addConnectionCallbacks(this)
+                    .addOnConnectionFailedListener(this)
+                    .addApi(LocationServices.API)
+                    .build();
+        }
         mGoogleApiClient.connect();
         super.onStart();
     }

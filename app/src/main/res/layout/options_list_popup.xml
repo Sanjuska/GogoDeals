@@ -55,6 +55,6 @@
         android:layout_height="wrap_content"
         android:id="@+id/grocodeButton"
         android:layout_weight="0.17"
-        android:onClick="grocodeButtonPressed(MapsActivity)" />
+        android:onClick="grocodeButtonPressed" />
 
 </LinearLayout>
