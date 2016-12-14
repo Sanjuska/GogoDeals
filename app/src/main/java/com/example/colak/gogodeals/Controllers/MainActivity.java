@@ -7,6 +7,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.example.colak.gogodeals.Objects.Deal;
 import com.example.colak.gogodeals.Objects.Messages;
 import com.example.colak.gogodeals.R;
 import com.facebook.CallbackManager;
@@ -17,6 +18,7 @@ import java.util.ArrayList;
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
     private static final String TAG = "";
+    public static ArrayList<Deal> groDeals;
     private TextView info;
 
     private LoginButton loginButton;

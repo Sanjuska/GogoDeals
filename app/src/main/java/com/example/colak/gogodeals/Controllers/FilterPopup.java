@@ -86,7 +86,7 @@ public class FilterPopup extends Activity {
                 mProgressDlg.setMessage("Setting filters");
                 mProgressDlg.setCancelable(false);
                 mProgressDlg.show();
-                MainActivity.messages.SetFilters(filterHandler.get());
+                MainActivity.messages.setFilters(filterHandler.get());
             }
         });
     }

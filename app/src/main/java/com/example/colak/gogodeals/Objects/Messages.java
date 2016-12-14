@@ -5,6 +5,7 @@ import android.location.Location;
 import android.os.Handler;
 import android.util.Log;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -64,7 +65,7 @@ public class Messages {
         new ConnectionMqtt(activity).sendMqtt(payload,publishTopic,subscribeTopic,qos);
     }
 
-    public void SetFilters(String filters){
+    public void setFilters(String filters){
 
         Log.i("filter message ",filters);
 
@@ -126,5 +127,32 @@ public class Messages {
         new ConnectionMqtt(activity).sendMqtt(payload, topic, userSubscribe, qos);
 
         Log.i("loginfielads: ", email + password);
+    }
+
+    public void getFromGrocode(){
+
+        String subscribeTopic = "Gro/me@gmail.com/fetch-lists"; //+ IdentifierSingleton.USER.getEmail();
+
+        String payload =
+                "{" +
+                        " \"client_id\": \"me@gmail.com\"," +
+                        " \"request\": \"fetch-lists\"" +
+                        "}";
+
+        String publishTopic = "Gro/me@gmail.com/fetch-lists"; // + IdentifierSingleton.USER.getEmail();
+
+        new ConnectionMqtt(activity).sendMqtt(payload,publishTopic,subscribeTopic,2);
+    }
+
+    public void getDeals(JSONArray jsonArray){
+        String subscribeTopic = "deal/gogodeals/database/grocode";
+
+        String payload =   "{ \"id\": \"" + IdentifierSingleton.USER_ID + "\"," +
+                " \"data\": " + jsonArray.toString() + "}";
+
+        String publishTopic = "deal/gogodeals/deal/grocode";
+
+        new ConnectionMqtt(activity).sendMqtt(payload,publishTopic,subscribeTopic,2);
+
     }
 }

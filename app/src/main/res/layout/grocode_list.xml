@@ -2,12 +2,13 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical"
-    android:layout_width="250dp"
-    android:layout_height="400dp"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
     android:layout_gravity="center"
     android:weightSum="1"
     android:descendantFocusability="blocksDescendants"
-    android:background="#648B79">
+    android:background="#FFFFFF"
+    android:padding="50dp">
 
     <TextView
         android:text="Grocode Deal List"

@@ -40,10 +40,6 @@ package="com.example.colak.gogodeals">
 
     </activity>
 
-    <activity android:name=".Objects.ConnectionMqtt">
-
-    </activity>
-
     <activity android:name=".Controllers.newUserSignup">
 
     </activity>
@@ -72,6 +68,8 @@ package="com.example.colak.gogodeals">
     <activity android:name=".Controllers.DealsPopup"
         android:theme="@android:style/Theme.Dialog"/>
     <activity android:name=".Controllers.SavedDealsPopup"
+        android:theme="@android:style/Theme.Dialog"/>
+    <activity android:name=".Controllers.GroPopup"
         android:theme="@android:style/Theme.Dialog"/>
 
 

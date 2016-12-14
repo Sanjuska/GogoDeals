@@ -3,15 +3,10 @@ package com.example.colak.gogodeals.Controllers;
 import android.content.Intent;
 import android.util.Log;
 import android.view.View;
-import android.widget.ImageView;
-import android.widget.TextView;
 
 import com.example.colak.gogodeals.Objects.IdentifierSingleton;
 import com.example.colak.gogodeals.R;
 import com.example.colak.gogodeals.Objects.Deal;
-import com.example.colak.gogodeals.Popups.DealsPopup;
-import com.example.colak.gogodeals.Popups.FilterPopup;
-import com.example.colak.gogodeals.Popups.OptionsPopup;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -160,7 +155,7 @@ public class Parsers {
         if(payload.contains("data")) {
             Log.i("Gro in if", payload);
             JSONArray jsonArray = new JSONArray(new JSONObject(payload).getJSONArray("data").toString());
-            GrocodeHandler.getDeals(jsonArray);
+            MainActivity.messages.getDeals(jsonArray);
         }
 
     }
@@ -182,7 +177,10 @@ public class Parsers {
                         jsonArray.getJSONObject(i).getString("description"),
                         jsonArray.getJSONObject(i).getString("id")));
             }
-
+            MainActivity.groDeals = deals;
+            OptionsPopup.optionsPopup.startActivity(new Intent(OptionsPopup.optionsPopup, GroPopup.class));
+            OptionsPopup.mProgressDlg.dismiss();
+            OptionsPopup.optionsPopup.finish();
             //GroPopup.grocodeArrayList.addAll(deals);
         }
     }
