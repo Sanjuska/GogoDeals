@@ -8,12 +8,14 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.example.colak.gogodeals.Objects.Deal;
+import com.example.colak.gogodeals.Objects.IdentifierSingleton;
 import com.example.colak.gogodeals.Objects.Messages;
 import com.example.colak.gogodeals.R;
 import com.facebook.CallbackManager;
 import com.facebook.login.widget.LoginButton;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -28,6 +30,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private Button mainLogin;
     private Button mainsignup;
     private Button gogoProfile;
+    public static IdentifierSingleton identifierSingleton;
+    public static List<Deal> dealArrayList;
+    public static Deal grabbedDeal;
 
     private TextView welcometext;
 
@@ -38,6 +43,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main_screen);
         messages = new Messages(this);
+        identifierSingleton = IdentifierSingleton.getInstance();
         welcometext = (TextView) findViewById(R.id.welcometext);
         mainLogin = (Button) findViewById(R.id.mainLogin);
         mainsignup = (Button) findViewById(R.id.mainsignup);
@@ -47,6 +53,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             session and user id
         */
         filterList = new ArrayList<>();
+        //create list adapter for deal list
+        dealArrayList = new ArrayList<Deal>();
         mainLogin.setOnClickListener(this);
         mainsignup.setOnClickListener(this);
         gogoProfile.setOnClickListener(this);

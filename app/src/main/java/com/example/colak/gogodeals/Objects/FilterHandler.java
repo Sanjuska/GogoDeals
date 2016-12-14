@@ -123,44 +123,19 @@ public class FilterHandler extends MapsActivity implements CompoundButton.OnChec
     public void onCheckedChanged(CompoundButton button, boolean b) {
         switch (button.getId()){
             case R.id.checkBoxFood:
-                if (count != 1){
                     check("food", b);
-                }else{
-                    food.setChecked(true);
-                    filters.remove("food");
-                }
                 break;
             case R.id.checkBoxClothes:
-                if (count != 1){
                     check("clothes", b);
-                }else{
-                    food.setChecked(true);
-                    filters.remove("clothes");
-                }
                 break;
             case R.id.checkBoxActivites:
-                if (count != 1){
                     check("activities", b);
-                }else{
-                    food.setChecked(true);
-                    filters.remove("activities");
-                }
                 break;
             case R.id.checkBoxStuff:
-                if (count != 1){
                     check("stuff", b);
-                }else{
-                    food.setChecked(true);
-                    filters.remove("stuff");
-                }
                 break;
             case R.id.checkBoxRandom:
-                if (count != 1){
                     check("random", b);
-                }else{
-                    food.setChecked(true);
-                    filters.remove("random  ");
-                }
                 break;
         }
     }

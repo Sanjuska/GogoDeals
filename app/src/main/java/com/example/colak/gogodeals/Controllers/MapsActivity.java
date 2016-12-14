@@ -20,7 +20,6 @@ import android.view.animation.Interpolator;
 import android.view.animation.LinearInterpolator;
 import android.widget.ImageButton;
 
-import com.example.colak.gogodeals.Objects.Deal;
 import com.example.colak.gogodeals.R;
 import com.google.android.gms.appindexing.AppIndex;
 import com.google.android.gms.common.ConnectionResult;
@@ -42,9 +41,6 @@ import com.google.android.gms.maps.model.MapStyleOptions;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class MapsActivity extends FragmentActivity implements
         OnMapReadyCallback,
         GoogleApiClient.ConnectionCallbacks,
@@ -53,14 +49,14 @@ public class MapsActivity extends FragmentActivity implements
     public static GoogleMap mMap;
     GoogleApiClient mGoogleApiClient;
     public static Location mLastLocation;
-    Marker mPositionMarker;
+    static Marker mPositionMarker;
     public static Activity mapsActivity;
     Marker lastOpened = null;
     Location lastFetched;
     public static boolean firstLoad;
     LocationRequest locationRequest;
-    public static Deal grabbedDeal;
-    public static List<Deal> dealArrayList;
+    static LatLng myLatLang;
+
     boolean fetched;
     ImageButton optionsButton;
     public static Marker currentMarker;
@@ -72,6 +68,7 @@ public class MapsActivity extends FragmentActivity implements
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
         mapsActivity = this;
+
         firstLoad = true;
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
@@ -109,9 +106,7 @@ public class MapsActivity extends FragmentActivity implements
                 .addLocationRequest(locationRequest);
         builder.setAlwaysShow(true);
         fetched = false;
-        //create list adapter for deal list
-        dealArrayList = new ArrayList<Deal>();
-        dealArrayList.add(new Deal());
+
         // Acquire a reference to the system Location Manager
         locationRequest = LocationRequest.create();
         locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
@@ -123,6 +118,7 @@ public class MapsActivity extends FragmentActivity implements
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
 
+        MainActivity.messages.getGrabbedDeals();
         try {
             // Customise the styling of the base map using a JSON object defined
             // in a raw resource file.
@@ -251,7 +247,7 @@ public class MapsActivity extends FragmentActivity implements
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     private void makeUseOfNewLocation(Location location) {
         // Define a listener that responds to location updates
-        LatLng myLatLang = new LatLng(location.getLatitude(), location.getLongitude());
+        myLatLang = new LatLng(location.getLatitude(), location.getLongitude());
         // Called when a new location is found by the network location provider.
         CameraPosition myPosition = new CameraPosition.Builder().
                 target(myLatLang).zoom(mMap.getCameraPosition().zoom).bearing(mMap.getCameraPosition().bearing).build();
@@ -266,7 +262,8 @@ public class MapsActivity extends FragmentActivity implements
                         lastFetched.getLatitude() + 0.2 < mLastLocation.getLatitude() &&
                         lastFetched.getLatitude() - 0.2 > mLastLocation.getLatitude() &&
                         lastFetched.getLongitude() + 0.2 < mLastLocation.getLongitude() &&
-                        lastFetched.getLongitude() - 0.2 > mLastLocation.getLongitude()) {
+                        lastFetched.getLongitude() - 0.2 > mLastLocation.getLongitude())
+                {
                     for (String filter : MainActivity.filterList) {
                         MainActivity.messages.fetchDeals(filter,mLastLocation);
                     }
@@ -274,44 +271,49 @@ public class MapsActivity extends FragmentActivity implements
                 }
 
                 mMap.setLatLngBoundsForCameraTarget(new LatLngBounds(myLatLang, myLatLang));
-                if (mPositionMarker == null) {
-                    mPositionMarker = mMap.addMarker(new MarkerOptions()
-                            .flat(true)
-                            .icon(BitmapDescriptorFactory
-                                    .fromResource(R.drawable.shopper))
-                            .anchor(0.5f, 0.5f)
-                            .title("user")
-                            .position(myLatLang));
-                }
-                mPositionMarker.hideInfoWindow();
-                animateMarker(mPositionMarker, location); // Helper method for smooth
-                // animation
-            }
 
+                userMarker(location);
 
-        public void animateMarker ( final Marker marker, final Location location){
-            final Handler handler = new Handler();
-            final long start = SystemClock.uptimeMillis();
-            final LatLng startLatLng = marker.getPosition();
-            final long duration = 500;
-            final Interpolator interpolator = new LinearInterpolator();
-            handler.post(new Runnable() {
-                @Override
-                public void run() {
-                    long elapsed = SystemClock.uptimeMillis() - start;
-                    float t = interpolator.getInterpolation((float) elapsed
-                            / duration);
-                    double lng = t * location.getLongitude() + (1 - t)
-                            * startLatLng.longitude;
-                    double lat = t * location.getLatitude() + (1 - t)
-                            * startLatLng.latitude;
-                    marker.setPosition(new LatLng(lat, lng));
-                    marker.setRotation(mMap.getCameraPosition().bearing);
-                    if (t < 1.0) {
-                        // Post again 16ms later.
-                        handler.postDelayed(this, 16);
-                    }
-                }
-            });
         }
+    public static void userMarker(Location location){
+        if (mPositionMarker == null) {
+            mPositionMarker = mMap.addMarker(new MarkerOptions()
+                    .flat(true)
+                    .icon(BitmapDescriptorFactory
+                            .fromResource(R.drawable.shopper))
+                    .anchor(0.5f, 0.5f)
+                    .title("user")
+                    .position(myLatLang));
+        }
+        mPositionMarker.hideInfoWindow();
+        animateMarker(mPositionMarker, location); // Helper method for smooth
+        // animation
+    }
+
+
+    public static void animateMarker(final Marker marker, final Location location){
+        final Handler handler = new Handler();
+        final long start = SystemClock.uptimeMillis();
+        final LatLng startLatLng = marker.getPosition();
+        final long duration = 500;
+        final Interpolator interpolator = new LinearInterpolator();
+        handler.post(new Runnable() {
+            @Override
+            public void run() {
+                long elapsed = SystemClock.uptimeMillis() - start;
+                float t = interpolator.getInterpolation((float) elapsed
+                        / duration);
+                double lng = t * location.getLongitude() + (1 - t)
+                        * startLatLng.longitude;
+                double lat = t * location.getLatitude() + (1 - t)
+                        * startLatLng.latitude;
+                marker.setPosition(new LatLng(lat, lng));
+                marker.setRotation(mMap.getCameraPosition().bearing);
+                if (t < 1.0) {
+                    // Post again 16ms later.
+                    handler.postDelayed(this, 16);
+                }
+            }
+        });
+    }
         }

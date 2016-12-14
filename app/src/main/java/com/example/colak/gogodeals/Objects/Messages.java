@@ -43,7 +43,16 @@ public class Messages {
         String deal_id = idTv.toString();
         String payload =   "{ \"id\":\"" + deal_id + "\"," +
                 " \"data\": {" +
-                " \"user_id\":\"" + IdentifierSingleton.USER + "\"}}";
+                " \"user_id\":\"" + IdentifierSingleton.USER_ID + "\"}}";
+        new ConnectionMqtt(activity).sendMqtt(payload,publishTopic,subscribeTopic,qos);
+    }
+
+    public void getGrabbedDeals(){
+        String subscribeTopic = "deal/gogodeals/database/grabbed";
+        String publishTopic = "deal/gogodeals/deal/grabbed";
+        String payload =   "{ \"id\":\"" + IdentifierSingleton.USER_ID + "\"," +
+                " \"data\": \"hi\"}";
+        Log.i("grabdeal ",payload);
         new ConnectionMqtt(activity).sendMqtt(payload,publishTopic,subscribeTopic,qos);
     }
 
@@ -52,13 +61,13 @@ public class Messages {
         String publishTopic = "deal/gogodeals/deal/remove";
         String payload =   "{ \"id\":\"" + deal_id + "\"," +
                 " \"data\": {" +
-                " \"user_id\":\"" + IdentifierSingleton.USER + "\"}}";
+                " \"user_id\":\"" + IdentifierSingleton.USER_ID + "\"}}";
         new ConnectionMqtt(activity).sendMqtt(payload,publishTopic);
     }
 
     public void getFilters() {
         String subscribeTopic = "deal/gogodeals/database/filters";
-        String payload =   "{ \"id\": \""+ IdentifierSingleton.USER + "\"," +
+        String payload =   "{ \"id\": \""+ IdentifierSingleton.USER_ID + "\"," +
                 " \"data\": {\"crap\": \"hi\" }}";
         String publishTopic = "deal/gogodeals/user/filter";
         Log.i("filter get",payload);
@@ -69,7 +78,7 @@ public class Messages {
 
         Log.i("filter message ",filters);
 
-        String payload =   "{ \"id\": \"" + IdentifierSingleton.USER    + "\"," +
+        String payload =   "{ \"id\": \"" + IdentifierSingleton.USER_ID+ "\"," +
                 " \"data\": {" +
                 " \"filters\": \""+ filters +"\"}}";
         String publishTopic = "deal/gogodeals/user/update";
@@ -141,7 +150,7 @@ public class Messages {
 
         String publishTopic = "Gro/me@gmail.com/fetch-lists"; // + IdentifierSingleton.USER.getEmail();
 
-        new ConnectionMqtt(activity).sendMqtt(payload,publishTopic,subscribeTopic,2);
+        new ConnectionMqtt(activity).sendMqtt(payload,publishTopic,subscribeTopic,qos);
     }
 
     public void getDeals(JSONArray jsonArray){
@@ -152,7 +161,7 @@ public class Messages {
 
         String publishTopic = "deal/gogodeals/deal/grocode";
 
-        new ConnectionMqtt(activity).sendMqtt(payload,publishTopic,subscribeTopic,2);
+        new ConnectionMqtt(activity).sendMqtt(payload,publishTopic,subscribeTopic,qos);
 
     }
 }

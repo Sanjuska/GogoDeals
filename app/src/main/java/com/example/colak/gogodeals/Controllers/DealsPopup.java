@@ -58,11 +58,12 @@ public class DealsPopup extends Activity {
                 MainActivity.messages.saveDeal(id.getText());
                 //extract description of deal, to be stored in grabbed deal list on successful grab
                 //Deal grabbing
-                MapsActivity.grabbedDeal = new Deal((String) company.getText(), (String) duration.getText(), (String) price.getText(), dealPicture, (String) description.getText(), id.getText().toString());
+                MainActivity.grabbedDeal = new Deal((String) company.getText(), (String) duration.getText(), (String) price.getText(), dealPicture, (String) description.getText(), id.getText().toString());
                 mProgressDlg = new ProgressDialog(DealsPopup.this);
                 mProgressDlg.setMessage("Grabbing deal");
                 mProgressDlg.setCancelable(false);
                 mProgressDlg.show();
+                Log.i("grabdeal ","click grab");
                 new Handler().postDelayed(new Runnable() {
                     @Override
                     public void run() {
@@ -80,7 +81,7 @@ public class DealsPopup extends Activity {
                 String deal_id = (String) id.getText();
 
                 //extract description of deal, to be stored in grabbed deal list on successful grab
-                MapsActivity.dealArrayList.remove(MapsActivity.grabbedDeal);
+                MainActivity.dealArrayList.remove(MainActivity.grabbedDeal);
                 finish();
                 Toast toast = Toast.makeText(getApplicationContext(), "Deal ungrabbed", Toast.LENGTH_SHORT);
                 toast.show();
@@ -127,10 +128,10 @@ public class DealsPopup extends Activity {
         Deal shownDeal = new Deal((String) company.getText(), (String) duration.getText(), (String) price.getText(), dealPicture, (String) description.getText(), (String) id.getText());
 
 
-        Log.i("grab ", MapsActivity.dealArrayList.toString());
+        Log.i("grab ", MainActivity.dealArrayList.toString());
         Log.i("grab ", shownDeal.toString());
 
-        if (MapsActivity.dealArrayList.contains(shownDeal)) {
+        if (MainActivity.dealArrayList.contains(shownDeal)) {
 
             grabbedView.setVisibility(View.VISIBLE);
             grabButton.setVisibility(View.INVISIBLE);

@@ -2,7 +2,10 @@ package com.example.colak.gogodeals.Controllers;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.util.Base64;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
@@ -48,7 +51,6 @@ public class SavedDealsPopup extends Activity {
         description = (TextView) findViewById(R.id.description);
         company = (TextView) findViewById(R.id.company);
         duration = (TextView) findViewById(R.id.duration);
-        price = (TextView) findViewById(R.id.price);
         picture = (ImageView) findViewById(R.id.dealPicture);
         company = (TextView) findViewById(R.id.company);
         description = (TextView) findViewById(R.id.description);
@@ -58,7 +60,6 @@ public class SavedDealsPopup extends Activity {
         duration = ((TextView) findViewById(R.id.duration));
         dealPicture = (ImageView) findViewById(R.id.dealPicture);
         verificationHeader = ((TextView) findViewById(R.id.verificationHeader));
-        MapsActivity.grabbedDeal = new Deal();
         postCreate();
     }
 
@@ -73,7 +74,7 @@ public class SavedDealsPopup extends Activity {
             }
         });
 
-        List<Deal> arrayList = MapsActivity.dealArrayList;
+        List<Deal> arrayList = MainActivity.dealArrayList;
         Log.i("grab ",arrayList.toString());
         dealAdapter = new ArrayAdapter<Deal>(SavedDealsPopup.this, android.R.layout.simple_list_item_1, arrayList);
         dealListView.setAdapter(dealAdapter);
@@ -90,7 +91,7 @@ public class SavedDealsPopup extends Activity {
                 getContent(deal);
 
                 //remember which deal is being shown, so that it can be removed if ungrabbed
-                MapsActivity.grabbedDeal = deal;
+                MainActivity.grabbedDeal = deal;
 
 
             }
@@ -104,7 +105,13 @@ public class SavedDealsPopup extends Activity {
                 verificationHeader.setText("Verification code");
                 units.setText(deal.getVerificationID());
                 duration.setText(deal.getDuration());
-                dealPicture = deal.getPicture();
+                if (deal.getPicture().equals(null)){
+                    byte[] decodedString = Base64.decode(deal.getStringPicture(), Base64.DEFAULT);
+                    Bitmap decodedByte = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
+                    dealPicture.setImageBitmap(decodedByte);
+                }else{
+                    dealPicture = deal.getPicture();
+                }
                 grabbedView.setVisibility(View.INVISIBLE);
                 grabButton.setVisibility(View.INVISIBLE);
                 ungrabButton.setVisibility(View.VISIBLE);

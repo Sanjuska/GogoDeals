@@ -17,6 +17,7 @@ public class Deal {
     public String company;
     public String price;
     public ImageView picture;
+    public String stringPicture;
     public String description;
     public String duration;
     public String dealID;
@@ -24,9 +25,6 @@ public class Deal {
 
 
     //Getters and setters
-    public Deal(){
-        this.description = "Grabbed deals";
-    }
 
     public String getCompany() {
         return company;
@@ -44,9 +42,18 @@ public class Deal {
         this.price = price;
     }
 
+    public String getStringPicture() {
+        return stringPicture;
+    }
+
+    public void setStringPicture(String stringPicture) {
+        this.stringPicture = stringPicture;
+    }
+
     public ImageView getPicture() {
         return picture;
     }
+
 
     public void setPicture(ImageView picture) {
         this.picture = picture;
@@ -91,6 +98,15 @@ public class Deal {
         this.duration = duration;
         this.price = price;
         this.picture = picture;
+        this.description = description;
+        this.dealID = dealID;
+    }
+
+    public Deal(String company, String duration, String price, String picture, String description, String dealID) {
+        this.company = company;
+        this.duration = duration;
+        this.price = price;
+        this.stringPicture = picture;
         this.description = description;
         this.dealID = dealID;
     }

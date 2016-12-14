@@ -14,6 +14,7 @@ import org.eclipse.paho.client.mqttv3.MqttCallback;
 import org.eclipse.paho.client.mqttv3.MqttClient;
 import org.eclipse.paho.client.mqttv3.MqttException;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
+import org.json.JSONException;
 
 import java.io.UnsupportedEncodingException;
 
@@ -155,7 +156,12 @@ public ConnectionMqtt(Activity activity){
 
     // When a message arrive from a subsribed topic this method calls the parsers class method parse.
     public void messageArrived(String topic, MqttMessage message) throws MqttException {
-        parsers.parse(topic,message);
+        try {
+            parsers.parse(topic,message);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        client.unsubscribe(topic);
         //close();
 
     }

@@ -29,8 +29,7 @@ public class Parsers {
     it calls the correct method corresponding to that topic.
     */
 
-    public static IdentifierSingleton identifierSingleton = IdentifierSingleton.getInstance();
-    public void parse(String topic,MqttMessage message){
+    public void parse(String topic,MqttMessage message) throws JSONException {
         // Checks if this message is related to this instance of the application or to this user
         //if(IdentifierSingleton.SESSION == get_id(message) || IdentifierSingleton.USER == get_id(message)) {
             switch (topic) {
@@ -102,8 +101,8 @@ public class Parsers {
                     break;
 
                 //insert new user in databse
-                case "deal/gogodeals/user/new":
-
+                case "deal/gogodeals/database/grabbed":
+                    setGrabbedDeals(message);
                     break;
 
                 case "deal/gogodeals/database/update":
@@ -113,6 +112,29 @@ public class Parsers {
                     break;
             }
         }
+
+    private void setGrabbedDeals(MqttMessage message) throws JSONException {
+        Log.i("grabdeal ","startup parser");
+        String jsonString = new String(message.getPayload());
+        JSONArray jsonArray;
+        JSONObject json1;
+        json1  = new JSONObject(jsonString);
+        jsonArray = new JSONArray(json1.getJSONArray("data").toString());
+
+        for (int i = 0; i< jsonArray.length();i++) {
+
+            Deal deal = new Deal(jsonArray.getJSONObject(i).getString("client_name"),
+                    jsonArray.getJSONObject(i).getString("duration"),
+                    jsonArray.getJSONObject(i).getString("price"),
+                    jsonArray.getJSONObject(i).getString("picture"),
+                    jsonArray.getJSONObject(i).getString("description"),
+                    jsonArray.getJSONObject(i).getString("id"));
+            Log.i("grabdeals startup ",deal.toString());
+            MainActivity.dealArrayList.add(deal);
+
+        }
+
+    }
 
     private void setFilters(MqttMessage message) throws JSONException {
 
@@ -130,9 +152,11 @@ public class Parsers {
             Log.i("filter added",returnString);
         }
 
-        MainActivity.filterList.clear();
+
        MainActivity.filterList = replaceArray;
 
+       /* MapsActivity.mMap.clear();
+        MapsActivity.mPositionMarker = null;*/
         for (String filter : MainActivity.filterList) {
             MainActivity.messages.fetchDeals(filter,MapsActivity.mLastLocation);
         }
@@ -173,7 +197,7 @@ public class Parsers {
                         jsonArray.getJSONObject(i).getString("client_name"),
                         jsonArray.getJSONObject(i).getString("duration"),
                         jsonArray.getJSONObject(i).getString("price"),
-                        null,
+                        jsonArray.getJSONObject(i).getString("price"),
                         jsonArray.getJSONObject(i).getString("description"),
                         jsonArray.getJSONObject(i).getString("id")));
             }
@@ -195,6 +219,7 @@ public class Parsers {
     It then puts the marker on the map in Mapsactivity.
      */
     private void fetchDealParser(MqttMessage message) throws JSONException {
+
 
         String jsonString = new String(message.getPayload());
         JSONArray jsonArray;
@@ -288,6 +313,7 @@ public class Parsers {
 
 
     private void grabbedDealParser(MqttMessage message) throws JSONException {
+        Log.i("grabdeal ","in parser");
         String dealID;
         int count = 0;
         String verificationID = null;
@@ -305,9 +331,8 @@ public class Parsers {
         // add deal to list
         //TextView description = (TextView) MapsActivity.popupMessage.getContentView().findViewById(R.id.description);
         //MapsActivity.dealArrayList.add(MapsActivity.descriptionOfGrabbedDeal);
-        MapsActivity.grabbedDeal.setVerificationID(verificationID);
-        MapsActivity.dealArrayList.add(MapsActivity.grabbedDeal);
-        Log.i("grabbed ",MapsActivity.grabbedDeal.toString());
+        MainActivity.grabbedDeal.setVerificationID(verificationID);
+        MainActivity.dealArrayList.add(MainActivity.grabbedDeal);
         // add code to deal in list
         DealsPopup.mProgressDlg.dismiss();
     }
@@ -360,6 +385,8 @@ public class Parsers {
 
     public void putFilters(){
 
+        /*MapsActivity.mMap.clear();
+        MapsActivity.mPositionMarker = null;*/
         ArrayList<String> arrayLoop;
         arrayLoop = FilterPopup.filterHandler.filters;
         MainActivity.filterList = arrayLoop;
