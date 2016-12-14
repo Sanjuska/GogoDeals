@@ -114,16 +114,15 @@ public class MapsActivity extends FragmentActivity implements
 
     PopupWindow profilePopup;
     PopupWindow optionsPopup;
-    PopupWindow grocodePopup;
+
     PopupWindow popupDealView;
 
     LinearLayout mainLayout;
 
     // Creating an instance of MarkerOptions to set position
     private GoogleApiClient client;
-    private ListView grocodeListView;
-    public static ArrayAdapter<Deal> grocodeAdapter;
-    public static ArrayList<Deal> grocodeArrayList;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -136,16 +135,13 @@ public class MapsActivity extends FragmentActivity implements
         popupDealView = new PopupWindow(this);
         myDealsPopup = new PopupWindow(this);
         filterPopup = new PopupWindow(this);
-        grocodePopup = new PopupWindow(this);
+
         mainLayout = new LinearLayout(this);
         filterList = new ArrayList<>();
 
         //create list adapter for deal list
         dealArrayList = new ArrayList<Deal>();
         dealArrayList.add(new Deal());
-
-        grocodeArrayList = new ArrayList<>();
-        grocodeArrayList.add(new Deal());
 
         food = (CheckBox) findViewById(R.id.checkBoxFood);
         clothes = (CheckBox) findViewById(R.id.checkBoxClothes);
@@ -321,7 +317,6 @@ public class MapsActivity extends FragmentActivity implements
                     profilePopup.dismiss();
                     myDealsPopup.dismiss();
                     filterPopup.dismiss();
-                    grocodePopup.dismiss();
 
                     switch (v.getId()) {
                         case R.id.profileButton:
@@ -336,10 +331,6 @@ public class MapsActivity extends FragmentActivity implements
                             filterButtonPressed(v);
                             break;
 
-                        case R.id.grocodeButton:
-                            grocodeButtonPressed(v);
-                            break;
-
                         case R.id.profileBackButton:
                             profileBackButtonPressed(v);
                             break;
@@ -352,11 +343,6 @@ public class MapsActivity extends FragmentActivity implements
                             filterBackButtonPressed(v);
                             break;
 
-                        case R.id.grocodeBackButton:
-                            grocodeBackButtonPressed(v);
-                            break;
-
-
                     }
 
                 } else {
@@ -364,7 +350,6 @@ public class MapsActivity extends FragmentActivity implements
                     optionsPopup.dismiss();
                     profilePopup.dismiss();
                     myDealsPopup.dismiss();
-                    grocodePopup.dismiss();
                     filterPopup.dismiss();
 
                 }
@@ -372,63 +357,6 @@ public class MapsActivity extends FragmentActivity implements
         });
     }
 
-    // Opens the popupwith My Deal on click.
-    public void grocodeButtonPressed(View v){
-        dealMqtt = new ConnectionMqtt(this);
-
-        GrocodeHandler.getFromGrocode(dealMqtt);
-
-        Display display = getWindowManager().getDefaultDisplay();
-        Point size = new Point();
-        display.getSize(size);
-        int screenWidth = size.x;
-        int screenHeight = size.y;
-
-        View grocodeDealsPop = getLayoutInflater().inflate(R.layout.grocode_list, null);
-        grocodePopup.setContentView(grocodeDealsPop);
-        //myDealsPop.setFocusable(false);
-        //myDealsPop.setClickable(false);
-        //dealAdapter = new ArrayAdapter<Deal>(MapsActivity.this,R.layout.list_row, dealArrayList);
-//        if(IdentifierSingleton.USER.getGrocode() != null){
-//            grocodeArrayList.addAll(IdentifierSingleton.USER.getGrocode());
-//        }
-        grocodeAdapter= new ArrayAdapter<Deal>(MapsActivity.this, android.R.layout.simple_list_item_1,grocodeArrayList);
-        // dealListView =((ListView) findViewById(R.id.dealList));
-        grocodeListView = ((ListView) grocodePopup.getContentView().findViewById(R.id.grocodeListView));
-        grocodeListView.setAdapter(grocodeAdapter);
-        grocodeListView.setClickable(true);
-        grocodeListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                //Extract deal from the clicke list item
-                Deal deal = (Deal)parent.getItemAtPosition(position);
-
-                // Create popup window with deal based on the extracted deal
-                View popup = getContent(deal);
-                popupDealView.setContentView(popup);
-                popupDealView.showAtLocation(mainLayout, Gravity.CENTER, 0, 0);
-                Display display = getWindowManager().getDefaultDisplay();
-                Point size = new Point();
-                display.getSize(size);
-                int screenWidth = size.x;
-                int screenHeight = size.y;
-                popupDealView.update(screenWidth - 50, screenHeight / 2);
-
-                popupDealView.setOutsideTouchable(true);
-                popupDealView.setFocusable(true);
-                popupDealView.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-
-                //remember which deal is being shown, so that it can be removed if ungrabbed
-                grabbedDeal = deal;
-
-
-            }
-        });
-
-        grocodePopup.showAtLocation(mainLayout, Gravity.CENTER, 0, 0);
-        grocodePopup.update(screenWidth - 50, screenHeight / 2);
-    }
 
 
     public void fetchDeals(String filter) {
@@ -464,10 +392,6 @@ public class MapsActivity extends FragmentActivity implements
     //Function called by the switch case when back button on Deal Filters is pressed which dismisses the Deal Filters popup.
     public void filterBackButtonPressed(View v){
         filterPopup.dismiss();
-    }
-
-    public void grocodeBackButtonPressed(View v){
-        grocodePopup.dismiss();
     }
 
     // Opens the popup with My Profile on click.

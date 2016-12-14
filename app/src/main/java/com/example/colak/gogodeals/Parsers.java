@@ -107,7 +107,7 @@ public class Parsers {
                         jsonArray.getJSONObject(i).getString("id")));
             }
 
-            MapsActivity.grocodeArrayList.addAll(deals);
+            //GroPopup.grocodeArrayList.addAll(deals);
         }
     }
     //}
