@@ -12,6 +12,8 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
+import com.example.colak.gogodeals.Objects.Deal;
+
 import java.util.ArrayList;
 
 

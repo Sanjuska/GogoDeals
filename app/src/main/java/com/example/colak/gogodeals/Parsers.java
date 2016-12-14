@@ -6,6 +6,7 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.example.colak.gogodeals.Objects.Deal;
 import com.example.colak.gogodeals.Popups.DealsPopup;
 import com.example.colak.gogodeals.Popups.FilterPopup;
 import com.example.colak.gogodeals.Popups.OptionsPopup;

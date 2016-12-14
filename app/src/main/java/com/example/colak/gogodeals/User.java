@@ -1,5 +1,7 @@
 package com.example.colak.gogodeals;
 
+import com.example.colak.gogodeals.Objects.Deal;
+
 import java.util.ArrayList;
 
 /**
