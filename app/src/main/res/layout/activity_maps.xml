@@ -5,7 +5,7 @@
     android:name="com.google.android.gms.maps.SupportMapFragment"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.example.colak.gogodeals.MapsActivity">
+    tools:context="com.example.colak.gogodeals.Controllers.MapsActivity">
         <ImageButton
             android:layout_height="wrap_content"
             android:layout_gravity="left|top"

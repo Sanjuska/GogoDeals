@@ -1,4 +1,4 @@
-package com.example.colak.gogodeals;
+package com.example.colak.gogodeals.Objects;
 
 import java.util.UUID;
 
@@ -6,7 +6,7 @@ import java.util.UUID;
  * Created by mattias on 2016-11-29.
  */
 
-class IdentifierSingleton {
+public class IdentifierSingleton {
     private static IdentifierSingleton instance = null;
 
 

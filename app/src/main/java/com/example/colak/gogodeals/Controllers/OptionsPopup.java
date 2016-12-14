@@ -1,14 +1,12 @@
-package com.example.colak.gogodeals.Popups;
+package com.example.colak.gogodeals.Controllers;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-
-import com.example.colak.gogodeals.MapsActivity;
-import com.example.colak.gogodeals.Messages;
 import com.example.colak.gogodeals.R;
 
 /**
@@ -20,7 +18,6 @@ public class OptionsPopup extends Activity {
     Button profileButton, dealsButton, filterButton;
     public static Activity optionsPopup;
     public static ProgressDialog mProgressDlg;
-    Messages messages;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,11 +47,12 @@ public class OptionsPopup extends Activity {
         filterButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                MapsActivity.messages.getFilters(OptionsPopup.this);
+                filterButton.setClickable(false);
                 mProgressDlg = new ProgressDialog(OptionsPopup.this);
-                mProgressDlg.setMessage("Checking filters");
+                mProgressDlg.setMessage("Getting filter");
                 mProgressDlg.setCancelable(false);
                 mProgressDlg.show();
+                MainActivity.messages.getFilters();
             }
         });
     }

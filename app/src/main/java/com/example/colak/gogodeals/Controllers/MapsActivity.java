@@ -1,6 +1,7 @@
-package com.example.colak.gogodeals;
+package com.example.colak.gogodeals.Controllers;
 
 import android.Manifest;
+import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
@@ -20,8 +21,7 @@ import android.view.animation.LinearInterpolator;
 import android.widget.ImageButton;
 
 import com.example.colak.gogodeals.Objects.Deal;
-import com.example.colak.gogodeals.Popups.DealsPopup;
-import com.example.colak.gogodeals.Popups.OptionsPopup;
+import com.example.colak.gogodeals.R;
 import com.google.android.gms.appindexing.AppIndex;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -52,12 +52,12 @@ public class MapsActivity extends FragmentActivity implements
 
     public static GoogleMap mMap;
     GoogleApiClient mGoogleApiClient;
-    Location mLastLocation;
+    public static Location mLastLocation;
     Marker mPositionMarker;
+    public static Activity mapsActivity;
     Marker lastOpened = null;
     Location lastFetched;
     public static boolean firstLoad;
-    public static ArrayList<String> filterList;
     LocationRequest locationRequest;
     public static Deal grabbedDeal;
     public static List<Deal> dealArrayList;
@@ -66,14 +66,13 @@ public class MapsActivity extends FragmentActivity implements
     public static Marker currentMarker;
     // Creating an instance of MarkerOptions to set position
     private GoogleApiClient client;
-    public static Messages messages;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
-
-        firstLoad = false;
+        mapsActivity = this;
+        firstLoad = true;
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
@@ -110,9 +109,6 @@ public class MapsActivity extends FragmentActivity implements
                 .addLocationRequest(locationRequest);
         builder.setAlwaysShow(true);
         fetched = false;
-        messages = new Messages();
-        messages.getFilters(this);
-        filterList = new ArrayList<>();
         //create list adapter for deal list
         dealArrayList = new ArrayList<Deal>();
         dealArrayList.add(new Deal());
@@ -126,6 +122,7 @@ public class MapsActivity extends FragmentActivity implements
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
+
         try {
             // Customise the styling of the base map using a JSON object defined
             // in a raw resource file.
@@ -261,12 +258,8 @@ public class MapsActivity extends FragmentActivity implements
         //locationListener.onLocationChanged(location);
         mMap.animateCamera(CameraUpdateFactory.newCameraPosition(myPosition));
 
-        if (!fetched) {
                 if (!fetched) {
-                    for (String filter : filterList) {
-                        messages.fetchDeals(filter,mLastLocation,this);
-                        Log.i("json filter ", filter);
-                    }
+                    MainActivity.messages.getFilters();
                     fetched = true;
                 } else if (lastFetched != null &&
                         mLastLocation != null &&
@@ -274,8 +267,8 @@ public class MapsActivity extends FragmentActivity implements
                         lastFetched.getLatitude() - 0.2 > mLastLocation.getLatitude() &&
                         lastFetched.getLongitude() + 0.2 < mLastLocation.getLongitude() &&
                         lastFetched.getLongitude() - 0.2 > mLastLocation.getLongitude()) {
-                    for (String filter : filterList) {
-                        new Messages().fetchDeals(filter,mLastLocation,this);
+                    for (String filter : MainActivity.filterList) {
+                        MainActivity.messages.fetchDeals(filter,mLastLocation);
                     }
                     lastFetched = mLastLocation;
                 }
@@ -294,7 +287,7 @@ public class MapsActivity extends FragmentActivity implements
                 animateMarker(mPositionMarker, location); // Helper method for smooth
                 // animation
             }
-        }
+
 
         public void animateMarker ( final Marker marker, final Location location){
             final Handler handler = new Handler();

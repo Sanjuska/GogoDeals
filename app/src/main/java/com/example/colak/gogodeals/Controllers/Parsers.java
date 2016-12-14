@@ -1,4 +1,4 @@
-package com.example.colak.gogodeals;
+package com.example.colak.gogodeals.Controllers;
 
 import android.content.Intent;
 import android.util.Log;
@@ -6,6 +6,8 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.example.colak.gogodeals.Objects.IdentifierSingleton;
+import com.example.colak.gogodeals.R;
 import com.example.colak.gogodeals.Objects.Deal;
 import com.example.colak.gogodeals.Popups.DealsPopup;
 import com.example.colak.gogodeals.Popups.FilterPopup;
@@ -32,14 +34,8 @@ public class Parsers {
     it calls the correct method corresponding to that topic.
     */
 
-    static GogouserLogin gogouserLogin;
-    static FacebookLogin facebookLogin;
-
+    public static IdentifierSingleton identifierSingleton = IdentifierSingleton.getInstance();
     public void parse(String topic,MqttMessage message){
-        IdentifierSingleton identifierSingleton = IdentifierSingleton.getInstance();
-        // Checks if this message is related to this instance of the application or to this user
-       // if(IdentifierSingleton.SESSION_ID == get_id(message) || IdentifierSingleton.USER_ID == get_id(message)) {
-
         // Checks if this message is related to this instance of the application or to this user
         //if(IdentifierSingleton.SESSION == get_id(message) || IdentifierSingleton.USER == get_id(message)) {
             switch (topic) {
@@ -125,27 +121,36 @@ public class Parsers {
 
     private void setFilters(MqttMessage message) throws JSONException {
 
+
         JSONObject tmpObj = new JSONObject(new String(message.getPayload()));
         JSONObject tmpObj2 = new JSONObject(tmpObj.get("data").toString());
         String tmpString = new String(tmpObj2.get("filters").toString());
+        Log.i("filters get start ",tmpString);
+        String [] tmpArray =  tmpString.split(",");
 
-        String [] tmpArray = tmpString.split(",");
-        MapsActivity.filterList.clear();
-        for (int i = 1;i<tmpArray.length;i++) {
-            String filter = tmpArray[i];
-            filter.replace(" ","");
-            Log.i("filter added",tmpArray[i]);
-                MapsActivity.filterList.add(filter);
+        ArrayList<String> replaceArray = new ArrayList<>();
+        for (String tmp : tmpArray) {
+            String returnString = tmp.trim();
+            replaceArray.add(returnString);
+            Log.i("filter added",returnString);
         }
 
-        if (!MapsActivity.firstLoad){
-            MapsActivity.firstLoad = true;
-        }else {
-            Log.i("filters start ", MapsActivity.filterList.toString());
+        MainActivity.filterList.clear();
+       MainActivity.filterList = replaceArray;
+
+        for (String filter : MainActivity.filterList) {
+            MainActivity.messages.fetchDeals(filter,MapsActivity.mLastLocation);
+        }
+
+        if (MapsActivity.firstLoad){
+            //do nothing
+            MapsActivity.firstLoad = false;
+        }else{
             OptionsPopup.optionsPopup.startActivity(new Intent(OptionsPopup.optionsPopup, FilterPopup.class));
             OptionsPopup.mProgressDlg.dismiss();
             OptionsPopup.optionsPopup.finish();
         }
+
         }
 
 
@@ -239,7 +244,6 @@ public class Parsers {
                         .icon(BitmapDescriptorFactory
                                 .fromResource(R.drawable.food))
                            .snippet(companyName + "€" + description + "€" + price + "€" + count + "€" + duration + "€" + picture + "€" + id));
-
                 }else if(filters.equals("alcohol")){
                     //Deal marker on the map including popup
                     MapsActivity.mMap.addMarker(new MarkerOptions()
@@ -328,7 +332,7 @@ public class Parsers {
             MainActivity.userID = id;
             Log.i("User", MainActivity.userID);
             GogouserLogin.mProgressDlg.dismiss();
-            gogouserLogin.loginResultReceived();
+            //gogouserLogin.loginResultReceived();
         }
         else {
             Log.i("7 :", "1");
@@ -341,20 +345,30 @@ public class Parsers {
     public void checkFacebook(MqttMessage message) throws JSONException {
         String id;
         String messageString = new String(message.getPayload());
-        Log.i("Bubca checkFacebook: ", String.valueOf(message.getPayload()));
         JSONObject jsonData;
         jsonData = new JSONObject(messageString);
         jsonData = new JSONObject(jsonData.getString("data"));
         id = jsonData.getString("id");
+        Log.i("connection before id ",id);
         IdentifierSingleton.set(id);
-        MainActivity.userID = id;
-        Log.i("Bubca User", MainActivity.userID);
+        Log.i("connection after id ",id);
         FacebookLogin.mProgressDlg.dismiss();
         //now load next maps activity screen
-        facebookLogin.facebookLoginSuccess();
+        Intent gogoApp = new Intent(FacebookLogin.faceBookLogin, MapsActivity.class);
+        FacebookLogin.faceBookLogin.startActivity(gogoApp);
+
+        FacebookLogin.faceBookLogin.finish();
     }
 
     public void putFilters(){
+
+        ArrayList<String> arrayLoop;
+        arrayLoop = FilterPopup.filterHandler.filters;
+        MainActivity.filterList = arrayLoop;
+        for (String filter : arrayLoop) {
+            Log.i("filters set",filter);
+            MainActivity.messages.fetchDeals(filter,MapsActivity.mLastLocation);
+        }
         FilterPopup.filterPopup.startActivity(new Intent(FilterPopup.filterPopup,OptionsPopup.class));
         FilterPopup.mProgressDlg.dismiss();
         FilterPopup.filterPopup.finish();

@@ -1,4 +1,4 @@
-package com.example.colak.gogodeals;
+package com.example.colak.gogodeals.Controllers;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -7,9 +7,12 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
-import com.facebook.CallbackManager;
+import com.example.colak.gogodeals.Objects.Messages;
 import com.example.colak.gogodeals.R;
+import com.facebook.CallbackManager;
 import com.facebook.login.widget.LoginButton;
+
+import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -17,37 +20,31 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private TextView info;
 
     private LoginButton loginButton;
-
+    public static Messages messages;
     private CallbackManager callbackManager;
-
+    public static ArrayList<String> filterList;
     private Button mainLogin;
     private Button mainsignup;
     private Button gogoProfile;
 
     private TextView welcometext;
 
-    private IdentifierSingleton identifierSingleton;
-
     public static String userID;
-
-    ConnectionMqtt connection1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main_screen);
-
+        messages = new Messages(this);
         welcometext = (TextView) findViewById(R.id.welcometext);
         mainLogin = (Button) findViewById(R.id.mainLogin);
         mainsignup = (Button) findViewById(R.id.mainsignup);
         gogoProfile = (Button) findViewById(R.id.gogoProfile);
-
         /*
             This is the first instantiation of the IdentifierSingleton. This is needed for the
             session and user id
         */
-        identifierSingleton = IdentifierSingleton.getInstance();
-
+        filterList = new ArrayList<>();
         mainLogin.setOnClickListener(this);
         mainsignup.setOnClickListener(this);
         gogoProfile.setOnClickListener(this);
