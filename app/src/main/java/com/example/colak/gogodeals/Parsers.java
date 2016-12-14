@@ -1,9 +1,12 @@
 package com.example.colak.gogodeals;
 
+import android.content.Intent;
 import android.util.Log;
 import android.view.View;
-import android.widget.TextView;
 
+import com.example.colak.gogodeals.Popups.DealsPopup;
+import com.example.colak.gogodeals.Popups.FilterPopup;
+import com.example.colak.gogodeals.Popups.OptionsPopup;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -42,7 +45,7 @@ public class Parsers {
                             fetchDealParser(message);
                         }
                     } catch (JSONException e) {
-                        Log.i("json error fuuck ",message.toString() +e.toString());
+                        Log.e("JsonExeption ",e.toString());
                         e.printStackTrace();
                     }
                     break;
@@ -70,6 +73,14 @@ public class Parsers {
                         e.printStackTrace();
                     }
                     break;
+
+                case "deal/gogodeals/database/filters":
+                    try {
+                        setFilters(message);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                    break;
                 //check users on database, login from Facebook
                 case "deal/gogodeals/database/facebook":
                     try {
@@ -83,9 +94,38 @@ public class Parsers {
                 case "deal/gogodeals/user/new":
 
                     break;
+
+                case "deal/gogodeals/database/update":
+                    putFilters();
+                    break;
                 default:
                     break;
             }
+        }
+
+    private void setFilters(MqttMessage message) throws JSONException {
+
+        JSONObject tmpObj = new JSONObject(new String(message.getPayload()));
+        JSONObject tmpObj2 = new JSONObject(tmpObj.get("data").toString());
+        String tmpString = new String(tmpObj2.get("filters").toString());
+
+        String [] tmpArray = tmpString.split(",");
+        MapsActivity.filterList.clear();
+        for (int i = 1;i<tmpArray.length;i++) {
+            String filter = tmpArray[i];
+            filter.replace(" ","");
+            Log.i("filter added",tmpArray[i]);
+                MapsActivity.filterList.add(filter);
+        }
+
+        if (!MapsActivity.firstLoad){
+            MapsActivity.firstLoad = true;
+        }else {
+            Log.i("filters start ", MapsActivity.filterList.toString());
+            OptionsPopup.optionsPopup.startActivity(new Intent(OptionsPopup.optionsPopup, FilterPopup.class));
+            OptionsPopup.mProgressDlg.dismiss();
+            OptionsPopup.optionsPopup.finish();
+        }
         }
     //}
 
@@ -100,8 +140,6 @@ public class Parsers {
     private void fetchDealParser(MqttMessage message) throws JSONException {
 
         String jsonString = new String(message.getPayload());
-
-
         JSONArray jsonArray;
         JSONObject jsonObject;
         JSONObject json1;
@@ -109,12 +147,9 @@ public class Parsers {
         json1  = new JSONObject(jsonString);
         jsonArray = new JSONArray(json1.getJSONArray("data").toString());
 
-
-
         for (int i = 0; i< jsonArray.length();i++){
 
             jsonObject = jsonArray.getJSONObject(i);
-            //Log.i("json obect ", jsonObject.toString());
             String id = jsonObject.getString("id");
             String name = jsonObject.getString("name");
             int price = jsonObject.getInt("price");
@@ -129,11 +164,7 @@ public class Parsers {
             int count = jsonObject.getInt("count");
             String client_id = jsonObject.getString("client_id");
             String companyName = jsonObject.getString("client_name");
-
-
             LatLng latlng = new LatLng(latitude,longitude);
-
-
                 if(filters.equals("clothes")) {
                     //Deal marker on the map including popup
                     MapsActivity.mMap.addMarker(new MarkerOptions()
@@ -142,7 +173,6 @@ public class Parsers {
                             .icon(BitmapDescriptorFactory
                                     .fromResource(R.drawable.clothes))
                             .snippet(companyName + "€" + description + "€" + price + "€" + count + "€" + duration + "€" + picture + "€" + id));
-
                 }else if(filters.equals("food")){
                     //Deal marker on the map including popup
                    MapsActivity.mMap.addMarker(new MarkerOptions()
@@ -151,7 +181,6 @@ public class Parsers {
                         .icon(BitmapDescriptorFactory
                                 .fromResource(R.drawable.food))
                            .snippet(companyName + "€" + description + "€" + price + "€" + count + "€" + duration + "€" + picture + "€" + id));
-
                 }else if(filters.equals("alcohol")){
                     //Deal marker on the map including popup
                     MapsActivity.mMap.addMarker(new MarkerOptions()
@@ -177,12 +206,8 @@ public class Parsers {
                                 .fromResource(R.drawable.stuff))
                            .snippet(companyName + "€" + description + "€" + price + "€" + count + "€" + duration + "€" + picture + "€" + id));
                 }
-
-
         }
-
         }
-
     /**
      * Get the id from a MqttMessage
      * @param message
@@ -200,13 +225,10 @@ public class Parsers {
         return null;
     }
 
-
-    //Grab deal parser for extracting data about verification number and dealID
     private void grabbedDealParser(MqttMessage message) throws JSONException {
         String dealID;
         int count = 0;
         String verificationID = null;
-
         // Split upp payload messageString into components
         String jsonString = new String(message.getPayload());
         JSONObject jsonData;
@@ -215,23 +237,17 @@ public class Parsers {
         jsonData = new JSONObject(jsonData.getString("data"));
         count = jsonData.getInt("count");
         verificationID = jsonData.getString("id");
-
-        MapsActivity.grabbedView.setVisibility(View.VISIBLE);
-
+        DealsPopup.grabbedView.setVisibility(View.VISIBLE);
         // update unit in popup
-        TextView units = ((TextView) MapsActivity.popupMessage.getContentView().findViewById(R.id.units));
-        units.setText(String.valueOf(count));
-
+        DealsPopup.units.setText(String.valueOf(count));
         // add deal to list
         //TextView description = (TextView) MapsActivity.popupMessage.getContentView().findViewById(R.id.description);
-
         //MapsActivity.dealArrayList.add(MapsActivity.descriptionOfGrabbedDeal);
         MapsActivity.grabbedDeal.setVerificationID(verificationID);
         MapsActivity.dealArrayList.add(MapsActivity.grabbedDeal);
-
+        Log.i("grabbed ",MapsActivity.grabbedDeal.toString());
         // add code to deal in list
-        MapsActivity.mProgressDlg.dismiss();
-
+        DealsPopup.mProgressDlg.dismiss();
     }
 
     public void checkEmail(MqttMessage message) throws JSONException {
@@ -241,25 +257,18 @@ public class Parsers {
         String messageString = new String(message.getPayload());
         Log.i("fetchEmail: ", String.valueOf(message.getPayload()));
         JSONObject jsonData;
-
         jsonData = new JSONObject(messageString);
-
         jsonData = new JSONObject(jsonData.getString("data"));
-
         emailData = jsonData.getString("email");
         passwordData = jsonData.getString("password");
         id = jsonData.getString("id");
-
+        IdentifierSingleton.set(id);
         if (emailData.equals(GogouserLogin.email) && passwordData.equals(GogouserLogin.password)){
-
             GogouserLogin.loginResult=true;
-
             MainActivity.userID = id;
             Log.i("User", MainActivity.userID);
             GogouserLogin.mProgressDlg.dismiss();
-
             gogouserLogin.loginResultReceived();
-
         }
         else {
             Log.i("7 :", "1");
@@ -269,22 +278,31 @@ public class Parsers {
         }
     }
 
-    // Extracting information about user ID from facebook message
-    // We need that to connect user_id and grabbed deal
     public void checkFacebook(MqttMessage message) throws JSONException {
         String id;
         String messageString = new String(message.getPayload());
+        Log.i("Bubca checkFacebook: ", String.valueOf(message.getPayload()));
         JSONObject jsonData;
         jsonData = new JSONObject(messageString);
         jsonData = new JSONObject(jsonData.getString("data"));
         id = jsonData.getString("id");
-
-        //Connect id with specific user
+        IdentifierSingleton.set(id);
         MainActivity.userID = id;
+        Log.i("Bubca User", MainActivity.userID);
         FacebookLogin.mProgressDlg.dismiss();
-
         //now load next maps activity screen
         facebookLogin.facebookLoginSuccess();
+    }
+
+    public void putFilters(){
+        FilterPopup.filterPopup.startActivity(new Intent(FilterPopup.filterPopup,OptionsPopup.class));
+        FilterPopup.mProgressDlg.dismiss();
+        FilterPopup.filterPopup.finish();
+        Log.i("filter ","finish");
+
+
+
+
     }
 }
 

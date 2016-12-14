@@ -1,5 +1,6 @@
 package com.example.colak.gogodeals;
 
+import android.app.Activity;
 import android.widget.CompoundButton;
 
 import java.util.ArrayList;
@@ -16,20 +17,20 @@ public class FilterHandler extends MapsActivity implements CompoundButton.OnChec
     public CompoundButton activities;
     public CompoundButton stuff;
     public CompoundButton random;
+    Messages messages;
 
     /**
      * Initializes the an empty ArrayList<String> of filters, the checkboxes and connect the
      * checkboxes to a listener
      */
-    public FilterHandler(){
+    public FilterHandler(Activity activity){
         filters = new ArrayList<>();
-        filters.add("food");
-
-        food = (CompoundButton) findViewById(R.id.checkBoxFood);
-        clothes = (CompoundButton) findViewById(R.id.checkBoxClothes);
-        activities = (CompoundButton) findViewById(R.id.checkBoxActivites);
-        stuff = (CompoundButton) findViewById(R.id.checkBoxStuff);
-        random = (CompoundButton) findViewById(R.id.checkBoxRandom);
+        messages = new Messages();
+        food = (CompoundButton) activity.findViewById(R.id.checkBoxFood);
+        clothes = (CompoundButton) activity.findViewById(R.id.checkBoxClothes);
+        activities = (CompoundButton) activity.findViewById(R.id.checkBoxActivites);
+        stuff = (CompoundButton) activity.findViewById(R.id.checkBoxStuff);
+        random = (CompoundButton) activity.findViewById(R.id.checkBoxRandom);
 
         food.setOnCheckedChangeListener(this);
         clothes.setOnCheckedChangeListener(this);
@@ -38,12 +39,24 @@ public class FilterHandler extends MapsActivity implements CompoundButton.OnChec
         random.setOnCheckedChangeListener(this);
     }
 
+
+
     /**
      * Getter for the ArrayList<String> of filters
      * @return
      */
-    public ArrayList<String> get(){
-        return filters;
+    public String get(){
+        StringBuilder returnStringBuilder = new StringBuilder();
+        for (String filter : filters){
+            if (filter.equals(filters.get(filters.size()-1))){
+                returnStringBuilder.append(filter);
+            }else {
+                returnStringBuilder.append(filter + ", ");
+            }
+        }
+        String returnString = returnStringBuilder.toString();
+
+        return returnString;
     }
 
     /**
@@ -80,7 +93,7 @@ public class FilterHandler extends MapsActivity implements CompoundButton.OnChec
      * @param filter
      * @param check
      */
-    private void check(String filter, Boolean check){
+    public void check(String filter, Boolean check){
         if(check){
             add(filter);
         } else {
