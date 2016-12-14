@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:layout_width="250dp"
+    android:layout_height="400dp"
+    android:layout_gravity="center"
+    android:weightSum="1"
+    android:descendantFocusability="blocksDescendants"
+    android:background="#648B79">
+
+    <TextView
+        android:text="Grocode Deal List"
+        android:layout_width="match_parent"
+        android:id="@+id/grocodeTextView"
+        android:textSize="18sp"
+        android:textStyle="normal|bold"
+        android:textAlignment="center"
+        android:elevation="16dp"
+        android:gravity="center"
+        android:layout_height="25dp" />
+
+    <ListView
+        android:layout_width="match_parent"
+        android:layout_height="198dp"
+        android:elevation="24dp"
+        android:background="#648B79"
+        android:id="@+id/grocodeListView"
+        android:layout_weight="0.67" />
+
+    <Button
+        android:text="Back"
+        android:layout_width="wrap_content"
+        android:id="@+id/grocodeBackButton"
+        android:layout_marginLeft="150dp"
+        android:elevation="24dp"
+        android:layout_height="wrap_content"
+        android:onClick="grocodeBackButtonPressed"
+        android:alpha="100"
+        android:layout_gravity="right" />
+</LinearLayout>

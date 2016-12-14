@@ -3,6 +3,8 @@ package com.example.colak.gogodeals;
 import android.content.Intent;
 import android.util.Log;
 import android.view.View;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.example.colak.gogodeals.Popups.DealsPopup;
 import com.example.colak.gogodeals.Popups.FilterPopup;
@@ -16,6 +18,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
 import java.util.UUID;
 
 /**
@@ -33,6 +36,8 @@ public class Parsers {
 
     public void parse(String topic,MqttMessage message){
         IdentifierSingleton identifierSingleton = IdentifierSingleton.getInstance();
+        // Checks if this message is related to this instance of the application or to this user
+       // if(IdentifierSingleton.SESSION_ID == get_id(message) || IdentifierSingleton.USER_ID == get_id(message)) {
 
         // Checks if this message is related to this instance of the application or to this user
         //if(IdentifierSingleton.SESSION == get_id(message) || IdentifierSingleton.USER == get_id(message)) {
@@ -73,6 +78,20 @@ public class Parsers {
                         e.printStackTrace();
                     }
                     break;
+
+                case "Gro/me@gmail.com/fetch-lists":
+                    try {
+                        grocodeFetchParser(message);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+
+                case "deal/gogodeals/database/grocode":
+                    try {
+                        grocodeListParser(message);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
 
                 case "deal/gogodeals/database/filters":
                     try {
@@ -127,6 +146,40 @@ public class Parsers {
             OptionsPopup.optionsPopup.finish();
         }
         }
+
+
+    private void grocodeFetchParser(MqttMessage message) throws JSONException {
+        String payload = new String(message.getPayload());
+        Log.i("Gro", payload);
+        if(payload.contains("data")) {
+            Log.i("Gro in if", payload);
+            JSONArray jsonArray = new JSONArray(new JSONObject(payload).getJSONArray("data").toString());
+            GrocodeHandler.getDeals(jsonArray);
+        }
+
+    }
+
+    private void grocodeListParser(MqttMessage message) throws JSONException {
+        String payload = new String(message.getPayload());
+        Log.i("This the payload: ", payload);
+        if(payload.contains("data")) {
+            JSONArray jsonArray = new JSONArray(new JSONObject(payload).getJSONArray("data").toString());
+
+            ArrayList<Deal> deals = new ArrayList<>();
+
+            for (int i = 0; i < jsonArray.length(); i++) {
+                deals.add(new Deal(
+                        jsonArray.getJSONObject(i).getString("client_name"),
+                        jsonArray.getJSONObject(i).getString("duration"),
+                        jsonArray.getJSONObject(i).getString("price"),
+                        null,
+                        jsonArray.getJSONObject(i).getString("description"),
+                        jsonArray.getJSONObject(i).getString("id")));
+            }
+
+            //GroPopup.grocodeArrayList.addAll(deals);
+        }
+    }
     //}
 
 
@@ -150,6 +203,7 @@ public class Parsers {
         for (int i = 0; i< jsonArray.length();i++){
 
             jsonObject = jsonArray.getJSONObject(i);
+            Log.i("json obect ", jsonObject.toString());
             String id = jsonObject.getString("id");
             String name = jsonObject.getString("name");
             int price = jsonObject.getInt("price");
@@ -164,6 +218,8 @@ public class Parsers {
             int count = jsonObject.getInt("count");
             String client_id = jsonObject.getString("client_id");
             String companyName = jsonObject.getString("client_name");
+
+
             LatLng latlng = new LatLng(latitude,longitude);
                 if(filters.equals("clothes")) {
                     //Deal marker on the map including popup
@@ -173,6 +229,7 @@ public class Parsers {
                             .icon(BitmapDescriptorFactory
                                     .fromResource(R.drawable.clothes))
                             .snippet(companyName + "€" + description + "€" + price + "€" + count + "€" + duration + "€" + picture + "€" + id));
+
                 }else if(filters.equals("food")){
                     //Deal marker on the map including popup
                    MapsActivity.mMap.addMarker(new MarkerOptions()
@@ -181,6 +238,7 @@ public class Parsers {
                         .icon(BitmapDescriptorFactory
                                 .fromResource(R.drawable.food))
                            .snippet(companyName + "€" + description + "€" + price + "€" + count + "€" + duration + "€" + picture + "€" + id));
+
                 }else if(filters.equals("alcohol")){
                     //Deal marker on the map including popup
                     MapsActivity.mMap.addMarker(new MarkerOptions()
@@ -224,6 +282,7 @@ public class Parsers {
         }
         return null;
     }
+
 
     private void grabbedDealParser(MqttMessage message) throws JSONException {
         String dealID;
