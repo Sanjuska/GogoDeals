@@ -2,6 +2,7 @@ package com.example.colak.gogodeals.Objects;
 
 import android.app.Activity;
 import android.location.Location;
+import android.os.Handler;
 import android.util.Log;
 
 import org.json.JSONException;
@@ -12,12 +13,13 @@ import org.json.JSONObject;
  */
 
 public class Messages {
-
-    public ConnectionMqtt connectionMqtt;
+    Activity activity;
+    int qos;
 
 
     public Messages(Activity activity){
-        this.connectionMqtt = new ConnectionMqtt(activity);
+        this.activity = activity;
+        qos = 2;
 
     }
 
@@ -31,7 +33,7 @@ public class Messages {
                 " \"filters\": \""+filter+"\"}}";
         String publishTopic = "deal/gogodeals/deal/fetch";
         Log.i("json publish ",payload);
-        connectionMqtt.sendMqtt(payload,publishTopic,subscribeTopic,2);
+        new ConnectionMqtt(activity).sendMqtt(payload,publishTopic,subscribeTopic,qos);
     }
 
     public void saveDeal(CharSequence idTv){
@@ -41,7 +43,7 @@ public class Messages {
         String payload =   "{ \"id\":\"" + deal_id + "\"," +
                 " \"data\": {" +
                 " \"user_id\":\"" + IdentifierSingleton.USER + "\"}}";
-        connectionMqtt.sendMqtt(payload,publishTopic,subscribeTopic,2);
+        new ConnectionMqtt(activity).sendMqtt(payload,publishTopic,subscribeTopic,qos);
     }
 
     public void removeDeal(CharSequence idTv){
@@ -50,7 +52,7 @@ public class Messages {
         String payload =   "{ \"id\":\"" + deal_id + "\"," +
                 " \"data\": {" +
                 " \"user_id\":\"" + IdentifierSingleton.USER + "\"}}";
-        connectionMqtt.sendMqtt(payload,publishTopic);
+        new ConnectionMqtt(activity).sendMqtt(payload,publishTopic);
     }
 
     public void getFilters() {
@@ -59,7 +61,7 @@ public class Messages {
                 " \"data\": {\"crap\": \"hi\" }}";
         String publishTopic = "deal/gogodeals/user/filter";
         Log.i("filter get",payload);
-        connectionMqtt.sendMqtt(payload,publishTopic,subscribeTopic,2);
+        new ConnectionMqtt(activity).sendMqtt(payload,publishTopic,subscribeTopic,qos);
     }
 
     public void SetFilters(String filters){
@@ -71,12 +73,12 @@ public class Messages {
                 " \"filters\": \""+ filters +"\"}}";
         String publishTopic = "deal/gogodeals/user/update";
         String returnTopic = "deal/gogodeals/database/update";
-        connectionMqtt.sendMqtt(payload,publishTopic,returnTopic,2);
+        new ConnectionMqtt(activity).sendMqtt(payload,publishTopic,returnTopic,qos);
 
     }
 
     public void saveFacebook(String name, String email, String lastName, JSONObject object){
-        String topic = "deal/gogodeals/user/facebook";
+        final String topic = "deal/gogodeals/user/facebook";
         Log.i("fbData2: ", topic);
         String payload = null;
         try {
@@ -91,8 +93,17 @@ public class Messages {
         //connectionMqtt.sendMqtt(payload, topic);
         Log.i("while condition: ", name + email);
 
-        String userSubscribe = "deal/gogodeals/database/facebook";
-        connectionMqtt.sendMqtt(payload, topic, userSubscribe, 2);
+        final String userSubscribe = "deal/gogodeals/database/facebook";
+        new ConnectionMqtt(activity).sendMqtt(payload, topic);
+        Handler handler = new Handler();
+        final String finalPayload = payload;
+        handler.postDelayed(new Runnable() {
+            public void run() {
+                new ConnectionMqtt(activity).sendMqtt(finalPayload, topic, userSubscribe, qos);
+            }
+        }, 100);
+
+
     }
 
      public void saveAlternativeUser(String regUser, String regPass, String regMail){
@@ -100,7 +111,7 @@ public class Messages {
         String topic = "deal/gogodeals/user/new";
         String payload = "{\"id\":\"12345678-1011-M012-N210-112233445566\",\"data\":{\"name\":\""
                 + regUser + "\",\"password\": \"" + regPass + "\",\"email\": \"" + regMail + "\"},}";
-        connectionMqtt.sendMqtt(payload, topic);
+         new ConnectionMqtt(activity).sendMqtt(payload, topic);
         Log.i("topic payload: ", topic + " " + payload);
 
     }
@@ -112,7 +123,7 @@ public class Messages {
                 + email + "\",\"password\": \"" + password + "\"},}";
 
         String userSubscribe = "deal/gogodeals/database/users";
-        connectionMqtt.sendMqtt(payload, topic, userSubscribe, 2);
+        new ConnectionMqtt(activity).sendMqtt(payload, topic, userSubscribe, qos);
 
         Log.i("loginfielads: ", email + password);
     }

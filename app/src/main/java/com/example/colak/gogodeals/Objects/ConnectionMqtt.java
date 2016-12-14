@@ -75,8 +75,8 @@ public ConnectionMqtt(Activity activity){
     //create and establish an MQTT-ConnectionMqtt
     public void open() {
         String clientId = MqttClient.generateClientId();
-        //client = new MqttAndroidClient(parent.getApplicationContext(), "tcp://54.154.153.243:1883",
-        client = new MqttAndroidClient(parent.getApplicationContext(), "tcp://176.10.136.208:1883",
+        client = new MqttAndroidClient(parent.getApplicationContext(), "tcp://54.154.153.243:1883",
+        //client = new MqttAndroidClient(parent.getApplicationContext(), "tcp://176.10.136.208:1883",
                 clientId);
         client.setCallback(this);
         try {
@@ -87,6 +87,7 @@ public ConnectionMqtt(Activity activity){
                     // We are connected
                     if (receiveTopic.equals("")){
                         publish(payload,sendTopic);
+                        close();
                     }else{
                         subscribe(receiveTopic,qot);
                     }
@@ -155,6 +156,8 @@ public ConnectionMqtt(Activity activity){
     // When a message arrive from a subsribed topic this method calls the parsers class method parse.
     public void messageArrived(String topic, MqttMessage message) throws MqttException {
         parsers.parse(topic,message);
+        //close();
+
     }
 
     //Called when publish has been completed and accepted by broker.

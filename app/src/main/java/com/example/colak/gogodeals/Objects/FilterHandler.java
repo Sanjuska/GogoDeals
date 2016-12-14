@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.util.Log;
 import android.widget.CompoundButton;
 
-import com.example.colak.gogodeals.Controllers.MainActivity;
 import com.example.colak.gogodeals.Controllers.MapsActivity;
 import com.example.colak.gogodeals.R;
 
@@ -22,6 +21,7 @@ public class FilterHandler extends MapsActivity implements CompoundButton.OnChec
     public CompoundButton activities;
     public CompoundButton stuff;
     public CompoundButton random;
+    public int count;
 
     /**
      * Initializes the an empty ArrayList<String> of filters, the checkboxes and connect the
@@ -29,7 +29,6 @@ public class FilterHandler extends MapsActivity implements CompoundButton.OnChec
      */
     public FilterHandler(Activity activity){
 
-        filters = MainActivity.filterList;
         food = (CompoundButton) activity.findViewById(R.id.checkBoxFood);
         clothes = (CompoundButton) activity.findViewById(R.id.checkBoxClothes);
         activities = (CompoundButton) activity.findViewById(R.id.checkBoxActivites);
@@ -41,7 +40,7 @@ public class FilterHandler extends MapsActivity implements CompoundButton.OnChec
         activities.setOnCheckedChangeListener(this);
         stuff.setOnCheckedChangeListener(this);
         random.setOnCheckedChangeListener(this);
-
+        count = 0;
 
 
 
@@ -83,6 +82,7 @@ public class FilterHandler extends MapsActivity implements CompoundButton.OnChec
      */
     private void add(String filter){
         filters.add(filter);
+        Log.i("filter check add",filter);
     }
 
     /**
@@ -90,10 +90,12 @@ public class FilterHandler extends MapsActivity implements CompoundButton.OnChec
      * @param filter
      */
     private void remove(String filter){
+
         if(filters.contains(filter)){
-            Log.i("filter chec remove",filter);
-            Log.i("filter list",get());
+            Log.i("filter check remove",filter);
             filters.remove(filter);
+        }else{
+            Log.i("filter did not remove",filter);
         }
     }
 
@@ -106,10 +108,8 @@ public class FilterHandler extends MapsActivity implements CompoundButton.OnChec
     public void check(String filter, Boolean check){
 
         if(check){
-
             add(filter);
         } else {
-
             remove(filter);
         }
     }
@@ -123,19 +123,44 @@ public class FilterHandler extends MapsActivity implements CompoundButton.OnChec
     public void onCheckedChanged(CompoundButton button, boolean b) {
         switch (button.getId()){
             case R.id.checkBoxFood:
-                check("food", b);
+                if (count != 1){
+                    check("food", b);
+                }else{
+                    food.setChecked(true);
+                    filters.remove("food");
+                }
                 break;
             case R.id.checkBoxClothes:
-                check("clothes", b);
+                if (count != 1){
+                    check("clothes", b);
+                }else{
+                    food.setChecked(true);
+                    filters.remove("clothes");
+                }
                 break;
             case R.id.checkBoxActivites:
-                check("activities", b);
+                if (count != 1){
+                    check("activities", b);
+                }else{
+                    food.setChecked(true);
+                    filters.remove("activities");
+                }
                 break;
             case R.id.checkBoxStuff:
-                check("stuff", b);
+                if (count != 1){
+                    check("stuff", b);
+                }else{
+                    food.setChecked(true);
+                    filters.remove("stuff");
+                }
                 break;
             case R.id.checkBoxRandom:
-                check("random", b);
+                if (count != 1){
+                    check("random", b);
+                }else{
+                    food.setChecked(true);
+                    filters.remove("random  ");
+                }
                 break;
         }
     }

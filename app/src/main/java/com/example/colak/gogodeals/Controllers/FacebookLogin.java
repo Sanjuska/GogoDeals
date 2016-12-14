@@ -85,7 +85,6 @@ public class FacebookLogin extends AppCompatActivity {
                                                     String lastName = object.getString("last_name");
                                                     String email = object.getString("email");
                                                     Log.i("FBdata: ", name + " " + lastName);
-
                                                    MainActivity.messages.saveFacebook(name,email,lastName,object);
 
                                                 } catch (JSONException e) {

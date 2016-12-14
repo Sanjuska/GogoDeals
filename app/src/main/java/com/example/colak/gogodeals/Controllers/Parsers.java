@@ -105,7 +105,7 @@ public class Parsers {
         JSONObject tmpObj = new JSONObject(new String(message.getPayload()));
         JSONObject tmpObj2 = new JSONObject(tmpObj.get("data").toString());
         String tmpString = new String(tmpObj2.get("filters").toString());
-        Log.i("filters in string",tmpString);
+        Log.i("filters get start ",tmpString);
         String [] tmpArray =  tmpString.split(",");
 
         ArrayList<String> replaceArray = new ArrayList<>();
@@ -113,9 +113,9 @@ public class Parsers {
             String returnString = tmp.trim();
             replaceArray.add(returnString);
             Log.i("filter added",returnString);
-
         }
 
+        MainActivity.filterList.clear();
        MainActivity.filterList = replaceArray;
 
         for (String filter : MainActivity.filterList) {
@@ -285,7 +285,6 @@ public class Parsers {
     public void checkFacebook(MqttMessage message) throws JSONException {
         String id;
         String messageString = new String(message.getPayload());
-
         JSONObject jsonData;
         jsonData = new JSONObject(messageString);
         jsonData = new JSONObject(jsonData.getString("data"));
@@ -302,7 +301,12 @@ public class Parsers {
     }
 
     public void putFilters(){
-        for (String filter : FilterPopup.filterHandler.returnFilterList()) {
+
+        ArrayList<String> arrayLoop;
+        arrayLoop = FilterPopup.filterHandler.filters;
+        MainActivity.filterList = arrayLoop;
+        for (String filter : arrayLoop) {
+            Log.i("filters set",filter);
             MainActivity.messages.fetchDeals(filter,MapsActivity.mLastLocation);
         }
         FilterPopup.filterPopup.startActivity(new Intent(FilterPopup.filterPopup,OptionsPopup.class));
