@@ -122,7 +122,7 @@ public class Messages {
      public void saveAlternativeUser(String regUser, String regPass, String regMail){
         //topic and payload which will add user to database
         String topic = "deal/gogodeals/user/new";
-        String payload = "{\"id\":\"12345678-1011-M012-N210-112233445566\",\"data\":{\"name\":\""
+        String payload = "{\"id\":\""+IdentifierSingleton.SESSION_ID+"\",\"data\":{\"name\":\""
                 + regUser + "\",\"password\": \"" + regPass + "\",\"email\": \"" + regMail + "\"},}";
          new ConnectionMqtt(activity).sendMqtt(payload, topic);
         Log.i("topic payload: ", topic + " " + payload);
@@ -132,7 +132,7 @@ public class Messages {
     public  void alternativeUserLogin(String email, String password){
 
         String topic = "deal/gogodeals/user/info";
-        String payload = "{\"id\":\"12345678-1011-M012-N210-112233445566\",\"data\":{\"email\":\""
+        String payload = "{\"id\":\""+IdentifierSingleton.SESSION_ID+"\",\"data\":{\"email\":\""
                 + email + "\",\"password\": \"" + password + "\"},}";
 
         String userSubscribe = "deal/gogodeals/database/users";
@@ -151,7 +151,7 @@ public class Messages {
                         " \"request\": \"fetch-lists\"" +
                         "}";
 
-        String publishTopic = "Gro/me@gmail.com/fetch-lists"; // + IdentifierSingleton.USER.getEmail();
+        String publishTopic = "Gro/me@gmail.com/fetch-lists";
 
         new ConnectionMqtt(activity).sendMqtt(payload,publishTopic,subscribeTopic,qos);
     }
