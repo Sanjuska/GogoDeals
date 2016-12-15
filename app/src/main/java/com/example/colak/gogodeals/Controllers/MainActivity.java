@@ -17,6 +17,10 @@ import com.facebook.login.widget.LoginButton;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * @author Olle Renard, Johan Johansson, Mattias Landkvist, Nikolaos-Machairiotis Sasopoulos
+ */
+
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
     public static ArrayList<Deal> groDeals;
@@ -47,13 +51,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         mainLogin = (Button) findViewById(R.id.mainLogin);
         mainsignup = (Button) findViewById(R.id.mainsignup);
         gogoProfile = (Button) findViewById(R.id.gogoProfile);
-        /*
-            This is the first instantiation of the IdentifierSingleton. This is needed for the
-            session and user id
-        */
+
+         //  This is the first instantiation of the IdentifierSingleton. This is needed for the
+         //   session and user id
+
         filterList = new ArrayList<>();
 
-        //create deal list
+
+        //  Create deal list
+
         dealArrayList = new ArrayList<Deal>();
 
         mainLogin.setOnClickListener(this);
@@ -65,10 +71,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     @Override
 
-    //Temporary main screen where user can sign in, sign up
+    /**
+     * Temporary main screen where user can sign in, sign up
+     */
     public void onClick(View v) {
         switch (v.getId()) {
-            //login for facebook users
+
+             // Login for Facebook users
+
 
             case R.id.mainLogin:
                 Intent gogoApp = new Intent(MainActivity.this, FacebookLogin.class);
@@ -77,7 +87,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
                 break;
 
-            //registration for non facebook users
+
+             // Registration for non-Facebook users
+
             case R.id.mainsignup:
                 Intent gogoApp2 = new Intent(MainActivity.this, newUserSignup.class);
                 startActivity(gogoApp2);

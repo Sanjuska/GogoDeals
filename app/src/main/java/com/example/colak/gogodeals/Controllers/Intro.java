@@ -7,8 +7,13 @@ import android.os.Handler;
 
 import com.example.colak.gogodeals.R;
 
-//Sanja
-//This class loads the splash screen and switches over to Main Activity after 2 seconds.
+/**
+ * @author Sanja Colak
+ */
+
+/**
+ * This class loads the splash screen and switches over to Main Activity after 2 seconds.
+ */
     public class Intro extends Activity {
         private final int SPLASH_DISPLAY_DURATION = 2000;
         @Override
@@ -16,7 +21,9 @@ import com.example.colak.gogodeals.R;
             super.onCreate(bundle);
             setContentView(R.layout.intro);
 
+
             // Start new activity after 2 seconds
+
             new Handler().postDelayed(new Runnable(){
                 @Override
                 public void run() {

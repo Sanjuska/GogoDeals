@@ -43,33 +43,43 @@ public class FacebookLogin extends AppCompatActivity {
     @Override
         protected void onCreate ( final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        //facebook initialization
+        /**
+         * Facebook initialization
+         */
         FacebookSdk.sdkInitialize(this.getApplicationContext());
         callbackManager = CallbackManager.Factory.create();
         setContentView(R.layout.mainactivity);
         info = (TextView) findViewById(R.id.info);
         faceBookLogin = this;
-        //facebook login button
+        /**
+         * Facebook login button
+         */
         loginButton = (LoginButton) findViewById(R.id.login_button);
 
-        //shows the user which data gets accessed when log in through fb app
+        /**
+         * Shows the user which data gets accessed when log in through fb app
+         */
         LoginManager.getInstance().logInWithReadPermissions(this,
                 Arrays.asList("public_profile", "email"));
 
-        //when fb responds to loginresult, next step is executed by invoking one of the methods below
-        //keeping user logged in to app
+        /**
+         * When fb responds to loginresult, next step is executed by invoking one of the methods below keeping user logged in to app
+         */
         LoginManager.getInstance().registerCallback(callbackManager,
                 new FacebookCallback<LoginResult>() {
 
                     @Override
                     public void onSuccess(LoginResult loginResult) {
 
-                        //when fb credentials are correct, user logins to gogodeals
-                        //Intent gogoApp = new Intent(FacebookLogin.this, MapsActivity.class);
-                        //startActivity(gogoApp);
+
+                         // When fb credentials are correct, user logins to gogodeals
+                         Intent gogoApp = new Intent(FacebookLogin.this, MapsActivity.class);
+                         startActivity(gogoApp);
+
                         JSONObject object;
 
-                         //Fetching facebook user data through JSON object: username and email to store it into our db
+                         // Fetching facebook user data through JSON object: username and email to store it into our db
+
                         GraphRequest request = GraphRequest.newMeRequest(
                                 loginResult.getAccessToken(),
                                 new GraphRequest.GraphJSONObjectCallback() {
@@ -92,8 +102,10 @@ public class FacebookLogin extends AppCompatActivity {
                                             }
                                 });
 
-                        //bundle which parses the values we need from logged in user
-                        //by acquiring them as parameters
+
+                         // Bundle which parses the values we need from logged in user
+                         // by acquiring them as parameters
+
                         Bundle parameters = new Bundle();
                         parameters.putString("fields", "first_name, last_name, email");
                         request.setParameters(parameters);
@@ -108,15 +120,12 @@ public class FacebookLogin extends AppCompatActivity {
                          LoginManager.getInstance().logOut();
                          Intent gogoAppMainscreen = new Intent(FacebookLogin.this, MainActivity.class);
                          startActivity(gogoAppMainscreen);
-                         //finish();
 
                           Toast.makeText(FacebookLogin.this, "Login canceled", Toast.LENGTH_SHORT).show();
                       }
                      @Override
                      public void onError(FacebookException e) {
                          info.setText("Login attempt failed.");
-                         //LoginManager.getInstance().logOut();
-                         //startActivity(gogoAppMainscreen);
                          Log.e("Failed: ", e.toString());
                      }
                 }
@@ -132,7 +141,9 @@ public class FacebookLogin extends AppCompatActivity {
         callbackManager.onActivityResult(requestCode, resultCode, data);
         }
 
-    //show validation screen while waiting for response from GogoDeals Erlang module
+    /**
+     * Show validation screen while waiting for response from GogoDeals Erlang module
+     */
     void loginProgressScreen() {
         mProgressDlg = new ProgressDialog(this);
         mProgressDlg.setMessage("Validating Facebook login");

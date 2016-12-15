@@ -11,6 +11,7 @@ import com.example.colak.gogodeals.R;
 
 /**
  * Created by Johan Laptop on 2016-12-05.
+ * @author Olle Renard, Johan Johansson
  */
 
 public class OptionsPopup extends Activity {
@@ -19,6 +20,10 @@ public class OptionsPopup extends Activity {
     public static Activity optionsPopup;
     public static ProgressDialog mProgressDlg;
 
+    /**
+     * Sets options_list_popup as layout. Initiates all buttons in options menu.
+     * @param savedInstanceState
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -31,6 +36,10 @@ public class OptionsPopup extends Activity {
         postCreate();
     }
 
+    /**
+     * Set onClickListener on profileButton, dealsButton, filterButton and groButton.
+     * If one of these buttons are clicked a new activity is created and the specified popup is opened.
+     */
     private void postCreate(){
         profileButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -38,7 +47,6 @@ public class OptionsPopup extends Activity {
                 finish();
             }
         });
-        //Open List of the user's grabbed deals.
         dealsButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

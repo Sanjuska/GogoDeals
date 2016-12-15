@@ -1,12 +1,7 @@
 package com.example.colak.gogodeals.Controllers;
 
-import android.graphics.Color;
-import android.graphics.Point;
-import android.graphics.drawable.ColorDrawable;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.view.Display;
-import android.view.Gravity;
+import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -14,7 +9,6 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import com.example.colak.gogodeals.Controllers.MainActivity;
 import com.example.colak.gogodeals.Objects.Deal;
 import com.example.colak.gogodeals.R;
 
@@ -55,7 +49,6 @@ public class GroPopup extends AppCompatActivity {
 
     public void postCreate(){
         grocodeAdapter= new ArrayAdapter<Deal>(this, android.R.layout.simple_list_item_1,grocodeArrayList);
-        // dealListView =((ListView) findViewById(R.id.dealList));
         grocodeListView.setAdapter(grocodeAdapter);
         grocodeListView.setClickable(true);
         grocodeListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {

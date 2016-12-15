@@ -11,6 +11,7 @@ import java.util.ArrayList;
 
 /**
  * Created by mattias on 2016-11-28.
+ * @author Olle Renard, Johan Johansson, Mattias Landkvist
  */
 
 public class FilterHandler extends MapsActivity implements CompoundButton.OnCheckedChangeListener {

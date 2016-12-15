@@ -14,6 +14,7 @@ import java.util.ArrayList;
 
 /**
  * Created by Johan Laptop on 2016-12-05.
+ * @author Olle Renard, Johan Johansson, Mattias Landkvist
  */
 
 public class FilterPopup extends Activity {
@@ -38,6 +39,12 @@ public class FilterPopup extends Activity {
 
 
     }
+
+    /**
+     * postCreate checks if the filters ArrayList contains each of the filter strings. For each string which exists in the filter ArrayList
+     * the checkbox will be set to true and remove the string from the ArrayList and add one to count, otherwise it will be checked to false.
+     * Sets an on click listener on the back button in filterList. Returns the user to the options menu and updates the filters in the database.
+     */
 
     private void postCreate(){
 
@@ -76,7 +83,6 @@ public class FilterPopup extends Activity {
         }else{
             filterHandler.activities.setChecked(false);
         }
-
 
         backButton.setOnClickListener(new View.OnClickListener() {
             @Override
