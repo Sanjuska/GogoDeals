@@ -31,17 +31,20 @@ public class Parsers {
 
     public void parse(String topic,MqttMessage message) throws JSONException {
         // Checks if this message is related to this instance of the application or to this user
-        //if(IdentifierSingleton.SESSION == get_id(message) || IdentifierSingleton.USER == get_id(message)) {
+        Log.i("identify","just for test");
+        Log.i("identify ",IdentifierSingleton.SESSION_ID.toString()+" "+IdentifierSingleton.USER_ID+" "+get_id(message));
+        if (IdentifierSingleton.SESSION_ID.equals(get_id(message))|| IdentifierSingleton.USER_ID.equals(get_id(message))){
+            Log.i("identify ","worked");
             switch (topic) {
                 case "deal/gogodeals/database/deals":
                     try {
                         JSONObject jsonCheck = new JSONObject(new String(message.getPayload()));
                         //Log.i("json checking",jsonCheck.toString());
-                        if (!jsonCheck.getString("data").equals("{}")){
+                        if (!jsonCheck.getString("data").equals("{}")) {
                             fetchDealParser(message);
                         }
                     } catch (JSONException e) {
-                        Log.e("JsonExeption ",e.toString());
+                        Log.e("JsonExeption ", e.toString());
                         e.printStackTrace();
                     }
                     break;
@@ -112,6 +115,7 @@ public class Parsers {
                     break;
             }
         }
+    }
 
     private void setGrabbedDeals(MqttMessage message) throws JSONException {
         Log.i("grabdeal ","startup parser");
@@ -154,12 +158,8 @@ public class Parsers {
 
 
        MainActivity.filterList = replaceArray;
+            MainActivity.messages.fetchDeals(replaceArray,MapsActivity.mLastLocation);
 
-        ArrayList<String> filterList = MainActivity.filterList;
-
-        for (String filter : filterList) {
-            MainActivity.messages.fetchDeals(filter,MapsActivity.mLastLocation);
-        }
 
         if (MapsActivity.firstLoad){
             //do nothing
@@ -390,10 +390,9 @@ public class Parsers {
         ArrayList<String> arrayLoop;
         arrayLoop = FilterPopup.filterHandler.filters;
         MainActivity.filterList = arrayLoop;
-        for (String filter : arrayLoop) {
-            Log.i("filters set",filter);
-            MainActivity.messages.fetchDeals(filter,MapsActivity.mLastLocation);
-        }
+            Log.i("filters set",arrayLoop.toString());
+            MainActivity.messages.fetchDeals(arrayLoop,MapsActivity.mLastLocation);
+
         FilterPopup.filterPopup.startActivity(new Intent(FilterPopup.filterPopup,OptionsPopup.class));
         FilterPopup.mProgressDlg.dismiss();
         FilterPopup.filterPopup.finish();

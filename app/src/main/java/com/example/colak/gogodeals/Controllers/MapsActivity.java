@@ -256,7 +256,7 @@ public class MapsActivity extends FragmentActivity implements
 
                 if (!fetched) {
                     fetched = true;
-                    MainActivity.messages.getFilters();
+                    //MainActivity.messages.getFilters();
                     Log.i("filter ","initial mapsA");
                 } else if (lastFetched != null &&
                         mLastLocation != null &&
@@ -266,9 +266,7 @@ public class MapsActivity extends FragmentActivity implements
                         lastFetched.getLongitude() - 0.2 > mLastLocation.getLongitude())
                 {
                     Log.i("filter ", "loop mapsA");
-                    for (String filter : MainActivity.filterList) {
-                        MainActivity.messages.fetchDeals(filter,mLastLocation);
-                    }
+                        MainActivity.messages.fetchDeals(MainActivity.filterList,mLastLocation);
                     lastFetched = mLastLocation;
                 }
 

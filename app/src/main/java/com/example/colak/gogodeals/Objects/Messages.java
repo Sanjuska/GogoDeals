@@ -8,6 +8,8 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
+
 /**
  * Created by Johan Laptop on 2016-12-05.
  */
@@ -24,15 +26,23 @@ public class Messages {
     }
 
 
-    public void fetchDeals(String filter, Location mLastLocation){
+    public void fetchDeals(ArrayList<String> filters, Location mLastLocation){
+
+        StringBuilder sendString = new StringBuilder();
+        for (int i = 1;i<filters.size();i++){
+
+            sendString.append(",{\"filter\": \""+ filters.get(i) +"\"}");
+
+        }
+
         String subscribeTopic = "deal/gogodeals/database/deals";
-        String payload =   "{ \"id\": \"" + IdentifierSingleton.USER +"\"," +
+        String payload =   "{ \"id\": \"" + IdentifierSingleton.USER_ID +"\"," +
                 " \"data\": {" +
                 " \"longitude\": " + mLastLocation.getLongitude() + "," +
                 " \"latitude\": " + mLastLocation.getLatitude() + "," +
-                " \"filters\": \""+filter+"\"}}";
+                " \"filters\": [{\"filter\":\"" + filters.get(0) + "\"}"+sendString.toString()+"]}}";
         String publishTopic = "deal/gogodeals/deal/fetch";
-        Log.i("json publish ",payload);
+        Log.i("filters fetch pub ",payload);
         new ConnectionMqtt(activity).sendMqtt(payload,publishTopic,subscribeTopic,qos);
     }
 
@@ -86,12 +96,12 @@ public class Messages {
 
     }
 
-    public void saveFacebook(String name, String email, String lastName, JSONObject object){
+    public void saveFacebook(String name, String email, String lastName, JSONObject object) {
         final String topic = "deal/gogodeals/user/facebook";
         Log.i("fbData2: ", topic);
         String payload = null;
         try {
-            payload = "{\"id\":\"1\",\"data\":{" +
+            payload = "{\"id\":\""+IdentifierSingleton.SESSION_ID+"\",\"data\":{" +
                     "\"email\": \"" + object.getString("email") + "\"," +
                     "\"name\":\"" + name + " " + lastName + "\"},}";
         } catch (JSONException e) {
@@ -102,7 +112,7 @@ public class Messages {
         //connectionMqtt.sendMqtt(payload, topic);
         Log.i("while condition: ", name + email);
 
-        String userSubscribe = "deal/gogodeals/database/facebook";
+    String userSubscribe = "deal/gogodeals/database/facebook";
                 new ConnectionMqtt(activity).sendMqtt(payload, topic, userSubscribe, qos);
 
 
