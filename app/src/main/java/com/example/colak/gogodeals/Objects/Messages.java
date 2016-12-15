@@ -2,7 +2,6 @@ package com.example.colak.gogodeals.Objects;
 
 import android.app.Activity;
 import android.location.Location;
-import android.os.Handler;
 import android.util.Log;
 
 import org.json.JSONArray;
@@ -103,15 +102,8 @@ public class Messages {
         //connectionMqtt.sendMqtt(payload, topic);
         Log.i("while condition: ", name + email);
 
-        final String userSubscribe = "deal/gogodeals/database/facebook";
-        new ConnectionMqtt(activity).sendMqtt(payload, topic);
-        Handler handler = new Handler();
-        final String finalPayload = payload;
-        handler.postDelayed(new Runnable() {
-            public void run() {
-                new ConnectionMqtt(activity).sendMqtt(finalPayload, topic, userSubscribe, qos);
-            }
-        }, 100);
+        String userSubscribe = "deal/gogodeals/database/facebook";
+                new ConnectionMqtt(activity).sendMqtt(payload, topic, userSubscribe, qos);
 
 
     }

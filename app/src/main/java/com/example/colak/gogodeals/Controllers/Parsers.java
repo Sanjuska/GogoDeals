@@ -155,9 +155,9 @@ public class Parsers {
 
        MainActivity.filterList = replaceArray;
 
-       /* MapsActivity.mMap.clear();
-        MapsActivity.mPositionMarker = null;*/
-        for (String filter : MainActivity.filterList) {
+        ArrayList<String> filterList = MainActivity.filterList;
+
+        for (String filter : filterList) {
             MainActivity.messages.fetchDeals(filter,MapsActivity.mLastLocation);
         }
 
@@ -220,7 +220,7 @@ public class Parsers {
      */
     private void fetchDealParser(MqttMessage message) throws JSONException {
 
-
+        Log.i("filters ","fetch started");
         String jsonString = new String(message.getPayload());
         JSONArray jsonArray;
         JSONObject jsonObject;

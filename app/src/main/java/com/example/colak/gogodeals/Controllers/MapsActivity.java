@@ -255,8 +255,9 @@ public class MapsActivity extends FragmentActivity implements
         mMap.animateCamera(CameraUpdateFactory.newCameraPosition(myPosition));
 
                 if (!fetched) {
-                    MainActivity.messages.getFilters();
                     fetched = true;
+                    MainActivity.messages.getFilters();
+                    Log.i("filter ","initial mapsA");
                 } else if (lastFetched != null &&
                         mLastLocation != null &&
                         lastFetched.getLatitude() + 0.2 < mLastLocation.getLatitude() &&
@@ -264,6 +265,7 @@ public class MapsActivity extends FragmentActivity implements
                         lastFetched.getLongitude() + 0.2 < mLastLocation.getLongitude() &&
                         lastFetched.getLongitude() - 0.2 > mLastLocation.getLongitude())
                 {
+                    Log.i("filter ", "loop mapsA");
                     for (String filter : MainActivity.filterList) {
                         MainActivity.messages.fetchDeals(filter,mLastLocation);
                     }
