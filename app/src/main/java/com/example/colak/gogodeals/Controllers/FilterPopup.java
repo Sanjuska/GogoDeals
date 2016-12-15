@@ -17,6 +17,9 @@ import java.util.ArrayList;
  * @author Olle Renard, Johan Johansson, Mattias Landkvist
  */
 
+/**
+ * This class is an activity for the Filters.
+ */
 public class FilterPopup extends Activity {
 
     Button backButton;
@@ -25,6 +28,10 @@ public class FilterPopup extends Activity {
     public static FilterHandler filterHandler;
     ArrayList<String> checkFilters;
 
+    /**
+     * The oncreate Instances everything that needs to be instanciated.
+     * @param savedInstanceState
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -84,6 +91,9 @@ public class FilterPopup extends Activity {
             filterHandler.activities.setChecked(false);
         }
 
+
+        // The back button creates a progressdialog and calls the set filters.
+        // The dialog is closed from Parsers.
         backButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

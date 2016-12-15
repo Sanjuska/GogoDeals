@@ -23,6 +23,10 @@ import java.util.UUID;
  * Created by Johan Laptop on 2016-11-21.
  */
 
+/**
+ * This class consists of parsers recieveing messages via mqtt and controls different parts of the system
+ * @author Johan Johansson,
+ */
 public class Parsers {
 
     /*This method takes a topic and a payload message and depending what topic it is
@@ -247,6 +251,7 @@ public class Parsers {
             int count = jsonObject.getInt("count");
             String client_id = jsonObject.getString("client_id");
             String companyName = jsonObject.getString("client_name");
+            Log.i("grabdeal company",companyName);
 
 
             LatLng latlng = new LatLng(latitude,longitude);

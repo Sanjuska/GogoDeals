@@ -25,6 +25,7 @@ import com.google.android.gms.maps.model.Marker;
 /** This class is gives functionalities to DealPopup view which
  * opens when a deal on the map is clicked, as well as the view of the grabbed deal in a list view
  * of grabbed view.
+ * @author Johan Johansson,
  */
 
 public class DealsPopup extends Activity {
@@ -123,7 +124,7 @@ public class DealsPopup extends Activity {
 
          // Splitting the message into different components
         String[] components = marker.getSnippet().split("€");
-        Log.i("json getsnippet ", marker.getSnippet().toString());
+        Log.i("grabdeal snippet", marker.getSnippet().toString());
 
         company.setText(components[0]);
 

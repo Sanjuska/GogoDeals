@@ -6,6 +6,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.util.Base64;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -19,10 +20,11 @@ import com.example.colak.gogodeals.R;
 
 import java.util.List;
 
-/*  This class is about deal list where the user can list all deals
-* he saved.*/
+/**
+ * This class is about deal list where the user can list all deals
+ * he saved.
+ */
 public class SavedDealsPopup extends Activity {
-
     ArrayAdapter<Deal> dealAdapter;
     ListView dealListView;
     ImageView grabbedView;
@@ -50,7 +52,6 @@ public class SavedDealsPopup extends Activity {
         company = (TextView) findViewById(R.id.company);
         duration = (TextView) findViewById(R.id.duration);
         picture = (ImageView) findViewById(R.id.dealPicture);
-        company = (TextView) findViewById(R.id.company);
         description = (TextView) findViewById(R.id.description);
         price = ((TextView) findViewById(R.id.price));
         grabbedView = (ImageView) findViewById(R.id.grabbedView);
@@ -98,7 +99,8 @@ public class SavedDealsPopup extends Activity {
     }
             //When the user click the deal popup opens with specific information
             public void getContent(Deal deal) {
-                company.setText(deal.getCompany());
+                Log.i("grabdeal ",deal.toString());
+                company.setText("test");
                 description.setText(deal.getDescription());
                 price.setText(deal.getPrice());
                 verificationHeader.setText("Verification code");
