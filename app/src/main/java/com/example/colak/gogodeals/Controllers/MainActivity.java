@@ -19,7 +19,6 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
-    private static final String TAG = "";
     public static ArrayList<Deal> groDeals;
     private TextView info;
 
@@ -53,8 +52,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             session and user id
         */
         filterList = new ArrayList<>();
-        //create list adapter for deal list
+
+        //create deal list
         dealArrayList = new ArrayList<Deal>();
+
         mainLogin.setOnClickListener(this);
         mainsignup.setOnClickListener(this);
         gogoProfile.setOnClickListener(this);

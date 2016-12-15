@@ -6,7 +6,6 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.util.Base64;
-import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -14,15 +13,14 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
+
 import com.example.colak.gogodeals.Objects.Deal;
 import com.example.colak.gogodeals.R;
 
 import java.util.List;
 
-/**
- * Created by Johan Laptop on 2016-12-05.
- */
-
+/*  This class is about deal list where the user can list all deals
+* he saved.*/
 public class SavedDealsPopup extends Activity {
 
     ArrayAdapter<Deal> dealAdapter;
@@ -65,6 +63,7 @@ public class SavedDealsPopup extends Activity {
 
     private void postCreate() {
 
+        // When user wants go out from the deal view, it returns him to the Option popup view.
         dealsBackButton = (Button) findViewById(R.id.dealsBackButton);
         dealsBackButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -73,12 +72,12 @@ public class SavedDealsPopup extends Activity {
                 finish();
             }
         });
-
         List<Deal> arrayList = MainActivity.dealArrayList;
-        Log.i("grab ",arrayList.toString());
+        //Deal adapter which shows grabbed deal in a simple list view
         dealAdapter = new ArrayAdapter<Deal>(SavedDealsPopup.this, android.R.layout.simple_list_item_1, arrayList);
         dealListView.setAdapter(dealAdapter);
         dealListView.setClickable(true);
+        //When deal in the list is clicked
         dealListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
             @Override
@@ -86,8 +85,7 @@ public class SavedDealsPopup extends Activity {
 
                 //Extract deal from the clicke list item
                 Deal deal = (Deal) parent.getItemAtPosition(position);
-                Log.i("grab ",deal.toString());
-                // Create popup window with deal based on the extracted deal
+                // Create popup window view with deal based on the extracted data
                 getContent(deal);
 
                 //remember which deal is being shown, so that it can be removed if ungrabbed
@@ -98,6 +96,7 @@ public class SavedDealsPopup extends Activity {
 
         });
     }
+            //When the user click the deal popup opens with specific information
             public void getContent(Deal deal) {
                 company.setText(deal.getCompany());
                 description.setText(deal.getDescription());
@@ -112,6 +111,7 @@ public class SavedDealsPopup extends Activity {
                 }else{
                     dealPicture = deal.getPicture();
                 }
+                //Ungrab button is enabled to be clicked.
                 grabbedView.setVisibility(View.INVISIBLE);
                 grabButton.setVisibility(View.INVISIBLE);
                 ungrabButton.setVisibility(View.VISIBLE);

@@ -48,7 +48,7 @@ public class Parsers {
                         e.printStackTrace();
                     }
                     break;
-
+                // get info from the da
                 case "deal/gogodeals/database/info":
                     try {
                         grabbedDealParser(message);
@@ -311,9 +311,15 @@ public class Parsers {
         return null;
     }
 
-
+    /*
+   This is the parser for grabbing deals which are showed on the map
+   It takes a payload from a mqttmessage and turns it into a jsonobject
+   it then extracts the different information from that object and
+   those information will be used for displaying them to the user ( Verification number),
+   and it will extract deals_id from the message and save it together with the user_id.
+   This will connect specific user with specific deal.
+    */
     private void grabbedDealParser(MqttMessage message) throws JSONException {
-        Log.i("grabdeal ","in parser");
         String dealID;
         int count = 0;
         String verificationID = null;
@@ -326,7 +332,7 @@ public class Parsers {
         count = jsonData.getInt("count");
         verificationID = jsonData.getString("id");
         DealsPopup.grabbedView.setVisibility(View.VISIBLE);
-        // update unit in popup
+        // update units in popup
         DealsPopup.units.setText(String.valueOf(count));
         // add deal to list
         //TextView description = (TextView) MapsActivity.popupMessage.getContentView().findViewById(R.id.description);

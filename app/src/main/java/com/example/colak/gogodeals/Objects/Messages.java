@@ -45,7 +45,7 @@ public class Messages {
         Log.i("filters fetch pub ",payload);
         new ConnectionMqtt(activity).sendMqtt(payload,publishTopic,subscribeTopic,qos);
     }
-
+    // JSON message when deal is grabbed
     public void saveDeal(CharSequence idTv){
         String subscribeTopic = "deal/gogodeals/database/info";
         String publishTopic = "deal/gogodeals/deal/save";
@@ -56,6 +56,7 @@ public class Messages {
         new ConnectionMqtt(activity).sendMqtt(payload,publishTopic,subscribeTopic,qos);
     }
 
+    // JSON message for getting information about saved deal from the db
     public void getGrabbedDeals(){
         String subscribeTopic = "deal/gogodeals/database/grabbed";
         String publishTopic = "deal/gogodeals/deal/grabbed";
@@ -64,7 +65,7 @@ public class Messages {
         Log.i("grabdeal ",payload);
         new ConnectionMqtt(activity).sendMqtt(payload,publishTopic,subscribeTopic,qos);
     }
-
+    //JSON message when deal is removed from the list
     public void removeDeal(CharSequence idTv){
         String deal_id = idTv.toString();
         String publishTopic = "deal/gogodeals/deal/remove";
