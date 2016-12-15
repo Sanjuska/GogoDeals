@@ -41,6 +41,9 @@ import com.google.android.gms.maps.model.MapStyleOptions;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+
+/* This class is the main class where the map is showed, the same as deals, location and the Options button.*/
+
 public class MapsActivity extends FragmentActivity implements
         OnMapReadyCallback,
         GoogleApiClient.ConnectionCallbacks,
@@ -132,7 +135,7 @@ public class MapsActivity extends FragmentActivity implements
             Log.e("MapsActivityRaw", "Can't find style.", e);
         }
 
-        // Add a marker in Gothenburg and move the camera
+        // Current users location permissions
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
                 != PackageManager.PERMISSION_GRANTED &&
                 ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION)
@@ -275,6 +278,7 @@ public class MapsActivity extends FragmentActivity implements
                 userMarker(location);
 
         }
+    //Create marker icon for the USER
     public static void userMarker(Location location){
         if (mPositionMarker == null) {
             mPositionMarker = mMap.addMarker(new MarkerOptions()

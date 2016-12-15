@@ -80,7 +80,6 @@ public class FacebookLogin extends AppCompatActivity {
                                         Log.i("LoginActivity Response ", response.toString());
 
                                                 try {
-                                                    //fbObject=object;
                                                     String name = object.getString("first_name");
                                                     String lastName = object.getString("last_name");
                                                     String email = object.getString("email");

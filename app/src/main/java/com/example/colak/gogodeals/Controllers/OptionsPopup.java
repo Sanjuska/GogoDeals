@@ -4,9 +4,9 @@ import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+
 import com.example.colak.gogodeals.R;
 
 /**
@@ -38,6 +38,7 @@ public class OptionsPopup extends Activity {
                 finish();
             }
         });
+        //Open List of the user's grabbed deals.
         dealsButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
