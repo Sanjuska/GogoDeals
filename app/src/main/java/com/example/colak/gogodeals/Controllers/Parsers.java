@@ -203,6 +203,7 @@ public class Parsers {
         Log.i("This the payload: ", payload);
         JSONObject jsonCheck = new JSONObject(new String(message.getPayload()));
         if(payload.contains("data") && !jsonCheck.getString("data").equals("{}")) {
+            Log.i("This is passed ","");
             JSONArray jsonArray = new JSONArray(new JSONObject(payload).getJSONArray("data").toString());
 
             ArrayList<Deal> deals = new ArrayList<>();

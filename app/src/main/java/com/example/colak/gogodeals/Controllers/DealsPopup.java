@@ -107,6 +107,7 @@ public class DealsPopup extends Activity {
             public void onClick(View v) {
                  // Extract deal id
                 String deal_id = (String) id.getText();
+                SavedDealsPopup.dealAdapter.remove(MainActivity.savedDealShow);
                  // Extract description of deal, to be stored in grabbed deal list on successful grab
                 MainActivity.dealArrayList.remove(MainActivity.grabbedDeal);
                 finish();
@@ -185,9 +186,9 @@ public class DealsPopup extends Activity {
             String[] pictureParts = deal.getStringPicture().split(",");
             byte[] decodedString = Base64.decode(pictureParts[1], Base64.DEFAULT);
             Bitmap decodedByte = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
-            dealPicture.setImageBitmap(decodedByte);
+            picture.setImageBitmap(decodedByte);
         }else{
-            dealPicture = deal.getPicture();
+            picture = deal.getPicture();
         }
         //Ungrab button is enabled to be clicked.
         grabbedView.setVisibility(View.INVISIBLE);

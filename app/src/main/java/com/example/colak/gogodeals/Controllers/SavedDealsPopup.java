@@ -2,18 +2,13 @@ package com.example.colak.gogodeals.Controllers;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.Bundle;
-import android.util.Base64;
-import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
-import android.widget.TextView;
 
 import com.example.colak.gogodeals.Objects.Deal;
 import com.example.colak.gogodeals.R;
@@ -29,7 +24,7 @@ import java.util.List;
  * @author Sanja Colak
  */
 public class SavedDealsPopup extends Activity {
-    ArrayAdapter<Deal> dealAdapter;
+    public static ArrayAdapter<Deal> dealAdapter;
     ListView dealListView;
     ImageView grabbedView;
     Button dealsBackButton;

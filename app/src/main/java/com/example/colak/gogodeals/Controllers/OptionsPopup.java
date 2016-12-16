@@ -21,7 +21,7 @@ import com.example.colak.gogodeals.R;
 
 public class OptionsPopup extends Activity {
 
-    Button profileButton, dealsButton, filterButton, groButton;
+    Button profileButton, dealsButton, filterButton, groButton,closeButton;
     public static Activity optionsPopup;
     public static ProgressDialog mProgressDlg;
 
@@ -34,6 +34,7 @@ public class OptionsPopup extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.options_list_popup);
         optionsPopup = this;
+        closeButton = (Button) findViewById(R.id.closeButton);
         dealsButton = (Button) findViewById(R.id.dealsButton);
         filterButton = (Button) findViewById(R.id.filterButton);
         groButton = (Button) findViewById(R.id.grocodeButton);
@@ -78,6 +79,12 @@ public class OptionsPopup extends Activity {
                 mProgressDlg.setCancelable(false);
                 mProgressDlg.show();
                 MainActivity.messages.getFilters();
+            }
+        });
+        closeButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
             }
         });
         groButton.setOnClickListener(new View.OnClickListener() {
