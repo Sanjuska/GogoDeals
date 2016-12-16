@@ -46,6 +46,7 @@ public class FacebookLogin extends AppCompatActivity {
         /**
          * Facebook initialization
          */
+        Log.i("timestamp ","facebookactitvy");
         FacebookSdk.sdkInitialize(this.getApplicationContext());
         callbackManager = CallbackManager.Factory.create();
         setContentView(R.layout.mainactivity);
@@ -70,11 +71,6 @@ public class FacebookLogin extends AppCompatActivity {
 
                     @Override
                     public void onSuccess(LoginResult loginResult) {
-
-
-                         // When fb credentials are correct, user logins to gogodeals
-                         Intent gogoApp = new Intent(FacebookLogin.this, MapsActivity.class);
-                         startActivity(gogoApp);
 
                         JSONObject object;
 
