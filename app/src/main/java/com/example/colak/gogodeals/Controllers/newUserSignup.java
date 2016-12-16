@@ -92,7 +92,7 @@ public class newUserSignup extends AppCompatActivity{
         //credential fields are filled out properly and user signs up
         else if ((!regUser.isEmpty() && !regPass.isEmpty() &&
                 !regMail.isEmpty() && !regMailConf.isEmpty() && !regPassConf.isEmpty())) {
-            if (regUser.length() >= 1 && regPass.length() >= 1) {
+            if (regUser.length() >= 5 && regPass.length() >= 8) {
                 if ((!regUser.equals(regPass) && !regMail.equals(regPass) &&
                         !regUser.equals(regMail) && regMail.equals(regMailConf) && regPass.equals(regPassConf))) {
 
@@ -109,6 +109,9 @@ public class newUserSignup extends AppCompatActivity{
                     startActivity(backToLogIn);
 
                 }
+            }
+            else if (regUser.length()<5 && regPass.length()<8){
+                Toast.makeText(getApplicationContext(), "Check tips", Toast.LENGTH_SHORT).show();
             }
         }
     }
