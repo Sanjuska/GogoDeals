@@ -79,9 +79,6 @@ public class FacebookLogin extends AppCompatActivity {
                     @Override
                     public void onSuccess(LoginResult loginResult) {
 
-                     // When fb credentials are correct, user logins to gogodeals
-                         Intent gogoApp = new Intent(FacebookLogin.this, MapsActivity.class);
-                         startActivity(gogoApp);
 
                         JSONObject object;
 
