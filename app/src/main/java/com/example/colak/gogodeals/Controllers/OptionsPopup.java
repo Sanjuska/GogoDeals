@@ -77,5 +77,4 @@ public class OptionsPopup extends Activity {
             }
         });
     }
-
 }

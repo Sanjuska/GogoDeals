@@ -10,7 +10,6 @@ import android.widget.ImageView;
  *   message which is retrived. Deal class creates variables which are necessery
  *   for getting sent infromation from the message.*/
 
-
 public class Deal {
 
     // Variables used in the class
@@ -92,7 +91,9 @@ public class Deal {
         this.verificationID = verificationID;
     }
 
-    //Constructor used when creating an object of Deal which is used in list view of all grabbed deals.
+    /*
+    Constructor used when creating an object of Deal which is used in list view of all grabbed deals.
+     */
     public Deal(String company, String duration, String price, ImageView picture, String description, String dealID) {
         this.company = company;
         this.duration = duration;
@@ -101,7 +102,9 @@ public class Deal {
         this.description = description;
         this.dealID = dealID;
     }
-
+    /*
+    Constructor used when creating an object of Deal which is used in list view of all grabbed deals.
+     */
     public Deal(String company, String duration, String price, String picture, String description, String dealID) {
         this.company = company;
         this.duration = duration;

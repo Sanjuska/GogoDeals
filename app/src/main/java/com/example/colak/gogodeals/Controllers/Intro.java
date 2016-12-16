@@ -31,7 +31,6 @@ import com.example.colak.gogodeals.R;
                     Manifest.permission.ACCESS_COARSE_LOCATION)
                     != PackageManager.PERMISSION_GRANTED) {
 
-
                 // Should we show an explanation?
                 if (ActivityCompat.shouldShowRequestPermissionRationale(this,
                         Manifest.permission.ACCESS_COARSE_LOCATION)) {
@@ -41,7 +40,6 @@ import com.example.colak.gogodeals.R;
                     // sees the explanation, try again to request the permission.
 
                 } else {
-
                     // No explanation needed, we can request the permission.
 
                     ActivityCompat.requestPermissions(this,
@@ -77,9 +75,7 @@ import com.example.colak.gogodeals.R;
                     Intent mainIntent = new Intent(Intro.this,MainActivity.class);
                     Intro.this.startActivity(mainIntent);
                     Intro.this.finish();
-
                 } else {
-
                     // permission denied, boo! Disable the
                     // functionality that depends on this permission.
                     finish();

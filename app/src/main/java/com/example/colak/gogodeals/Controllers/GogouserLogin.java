@@ -1,5 +1,6 @@
 package com.example.colak.gogodeals.Controllers;
 
+import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
@@ -24,11 +25,13 @@ public class GogouserLogin extends AppCompatActivity {
     public static boolean loginResult;
     public static String email;
     public static String password;
+    public static Activity alternativeLogIn;
 
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.gogo_profile_login);
+        alternativeLogIn = this;
 
         loginEmail = (EditText) findViewById(R.id.loginEmail);
         loginPassword = (EditText) findViewById(R.id.loginPassword);
@@ -40,6 +43,11 @@ public class GogouserLogin extends AppCompatActivity {
                 gogoLogin();
             }
         });
+
+        // When fb credentials are correct, user logins to gogodeals
+        Intent gogoAppLogIn = new Intent(GogouserLogin.this, MapsActivity.class);
+        startActivity(gogoAppLogIn);
+
     }
 
     private void gogoLogin() {

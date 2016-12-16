@@ -25,12 +25,10 @@ import com.google.android.gms.maps.model.Marker;
 /** This class is gives functionalities to DealPopup view which
  * opens when a deal on the map is clicked, as well as the view of the grabbed deal in a list view
  * of grabbed view.
- * @author Johan Johansson,
+ * @author Sanja Colak, Johan Johansson
  */
 
 public class DealsPopup extends Activity {
-
-
      // Variables used in the popup view
 
     Button grabButton;
@@ -81,10 +79,7 @@ public class DealsPopup extends Activity {
 
     private void postCreate(){
 
-
          // When GRAB button is presses (in the dealPopUp view
-
-
         grabButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -94,6 +89,7 @@ public class DealsPopup extends Activity {
                 MainActivity.messages.saveDeal(id.getText());
                  // Extract information about the deal, to be stored in grabbed deal list on successful grab
                 MainActivity.grabbedDeal = new Deal((String) company.getText(), (String) duration.getText(), (String) price.getText(), dealPicture, (String) description.getText(), id.getText().toString());
+
                  // Dialog which says status of the grabbing opens
                 mProgressDlg = new ProgressDialog(DealsPopup.this);
                 mProgressDlg.setMessage("Grabbing deal");
@@ -170,14 +166,11 @@ public class DealsPopup extends Activity {
         /*Checking if the deal exists in user's list (what means the user grabbed the deal),
         * if it exists then the user won't be able to grab the same deal again, if
         * it doesn't exist the grab button is visible, what means, the user can grab the deal.*/
-
         if (MainActivity.dealArrayList.contains(shownDeal)) {
 
             grabbedView.setVisibility(View.VISIBLE);
             grabButton.setVisibility(View.INVISIBLE);
-
         } else {
-
             grabbedView.setVisibility(View.INVISIBLE);
             grabButton.setVisibility(View.VISIBLE);
         }

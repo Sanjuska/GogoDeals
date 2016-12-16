@@ -41,14 +41,9 @@ import com.google.android.gms.maps.model.MapStyleOptions;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
-/**
- * @author Olle Renard, Johan Johansson, Mattias Landkvist
+/** This class is the main class where the map is showed, the same as deals, location and the Options button.
+ * @author Olle Renard, Johan Johansson, Mattias Landkvist, Sanja Colak
  */
-
-/* This class is the main class where the map is showed, the same as deals, location and the Options button.*/
-
-
-
 public class MapsActivity extends FragmentActivity implements
         OnMapReadyCallback,
         GoogleApiClient.ConnectionCallbacks,
@@ -69,35 +64,27 @@ public class MapsActivity extends FragmentActivity implements
     ImageButton optionsButton;
     public static Marker currentMarker;
 
-     // Creating an instance of MarkerOptions to set position
-
+    /** Creating an instance of MarkerOptions to set position */
     private GoogleApiClient client;
 
+    /**
+     * @param savedInstanceState */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
         mapsActivity = this;
-        Log.i("timestamp ","Mapsactivity");
-
         firstLoad = true;
 
-         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
-
+        // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
 
         client = new GoogleApiClient.Builder(this).addApi(AppIndex.API).build();
-
-
-
         MapsInitializer.initialize(getApplicationContext());
 
-
-         // Locates the users location
-
+        // Locates the users location
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
                 != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission
                 (this, Manifest.permission.ACCESS_COARSE_LOCATION)
@@ -105,8 +92,7 @@ public class MapsActivity extends FragmentActivity implements
             return;
         }
 
-         // Creates an instance of GoogleAPIClient.
-
+        // Creates an instance of GoogleAPIClient.
         if (mGoogleApiClient == null) {
             mGoogleApiClient = new GoogleApiClient.Builder(this)
                     .addConnectionCallbacks(this)
@@ -114,31 +100,30 @@ public class MapsActivity extends FragmentActivity implements
                     .addApi(LocationServices.API)
                     .build();
         }
-
+        // Location request
         LocationSettingsRequest.Builder builder = new LocationSettingsRequest.Builder()
                 .addLocationRequest(locationRequest);
         builder.setAlwaysShow(true);
         fetched = false;
 
-
-         // Acquires a reference to the system Location Manager
-
+        // Acquires a reference to the system Location Manager
         locationRequest = LocationRequest.create();
         locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
         locationRequest.setInterval(100);
         SetoptionsButton();
     }
-
+    /**
+     * @param googleMap */
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
+        MainActivity.messages.getGrabbedDeals();
 
 
         try {
 
-             // Customise the styling of the base map using a JSON object defined
-             // in a raw resource file.
-
+            // Customise the styling of the base map using a JSON object defined
+            // in a raw resource file.
             boolean success = mMap.setMapStyle(
                     MapStyleOptions.loadRawResourceStyle(
                             this, R.raw.whitegrey));
@@ -149,19 +134,14 @@ public class MapsActivity extends FragmentActivity implements
             Log.e("MapsActivityRaw", "Can't find style.", e);
         }
 
-
-         // Current users location permissions
-
+        // Current users location permissions
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
                 != PackageManager.PERMISSION_GRANTED &&
                 ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION)
                         != PackageManager.PERMISSION_GRANTED) {
             return;
         }
-
-
-         // GoogleMap settings
-
+        //GoogleMap settings
         mMap.setMyLocationEnabled(false);
         mMap.getUiSettings().setScrollGesturesEnabled(false);
         mMap.getUiSettings().setCompassEnabled(false);
@@ -171,10 +151,7 @@ public class MapsActivity extends FragmentActivity implements
         mMap.setMinZoomPreference(16.0f);
         mMap.setMaxZoomPreference(19.0f);
 
-        /**
-         * GoogleMap marker settings
-          */
-
+        //GoogleMap marker settings
         mMap.setOnMarkerClickListener(
                 new GoogleMap.OnMarkerClickListener() {
                     boolean doNotMoveCameraToCenterMarker = true;
@@ -201,7 +178,7 @@ public class MapsActivity extends FragmentActivity implements
                 });
     }
 
-
+    /* Open options button on the map view. */
     public void SetoptionsButton(){
         optionsButton = (ImageButton) findViewById(R.id.optionslistbutton);
         optionsButton.setOnClickListener(new View.OnClickListener() {
@@ -211,21 +188,16 @@ public class MapsActivity extends FragmentActivity implements
             }
         });
     }
-
-
     @Override
     public void onStart() {
         mGoogleApiClient.connect();
         super.onStart();
     }
-
-
     @Override
     public void onStop() {
         mGoogleApiClient.disconnect();
         super.onStop();
     }
-
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
     public void onConnected(Bundle connectionHint) {
@@ -258,7 +230,9 @@ public class MapsActivity extends FragmentActivity implements
             makeUseOfNewLocation(location);
         }
     };
-
+    /**
+    Update location while user is moving.
+    */
     protected void startLocationUpdates() {
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             return;
@@ -299,7 +273,7 @@ public class MapsActivity extends FragmentActivity implements
 
                 userMarker(location);
 
-        }
+    }
     //Create marker icon for the USER
     public static void userMarker(Location location){
         if (mPositionMarker == null) {
@@ -315,8 +289,11 @@ public class MapsActivity extends FragmentActivity implements
         animateMarker(mPositionMarker, location); // Helper method for smooth
         // animation
     }
-
-
+    /**
+     *  When user moves around the map, icon of user location is moving around the map too
+     * @param location
+     * @param marker
+     */
     public static void animateMarker(final Marker marker, final Location location){
         final Handler handler = new Handler();
         final long start = SystemClock.uptimeMillis();
@@ -342,4 +319,4 @@ public class MapsActivity extends FragmentActivity implements
             }
         });
     }
-        }
+}

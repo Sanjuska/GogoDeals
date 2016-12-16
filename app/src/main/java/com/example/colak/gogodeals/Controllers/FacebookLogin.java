@@ -1,9 +1,5 @@
 package com.example.colak.gogodeals.Controllers;
 
-/**
- * Created by Nikos on 12/11/2016.
- */
-
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
@@ -12,6 +8,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import com.example.colak.gogodeals.R;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
@@ -27,7 +24,13 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.Arrays;
+/**
+ * Created by Nikos on 12/11/2016.
+ */
 
+/** This class is about Facebook registration and login via the same platform.
+ * @author Nikos Sasopoulos, Sanja Colak
+ */
 public class FacebookLogin extends AppCompatActivity {
 
 
@@ -40,6 +43,10 @@ public class FacebookLogin extends AppCompatActivity {
 
     private CallbackManager callbackManager;
 
+    /**
+     *
+     * @param savedInstanceState
+     */
     @Override
         protected void onCreate ( final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -57,25 +64,27 @@ public class FacebookLogin extends AppCompatActivity {
          */
         loginButton = (LoginButton) findViewById(R.id.login_button);
 
-        /**
-         * Shows the user which data gets accessed when log in through fb app
-         */
+        //Shows the user which data gets accessed when log in through fb app
+
         LoginManager.getInstance().logInWithReadPermissions(this,
                 Arrays.asList("public_profile", "email"));
 
-        /**
-         * When fb responds to loginresult, next step is executed by invoking one of the methods below keeping user logged in to app
-         */
+        //When fb responds to loginresult, next step is executed by
+        //invoking one of the methods below keeping user logged in to app
+
         LoginManager.getInstance().registerCallback(callbackManager,
                 new FacebookCallback<LoginResult>() {
 
                     @Override
                     public void onSuccess(LoginResult loginResult) {
 
+                     // When fb credentials are correct, user logins to gogodeals
+                         Intent gogoApp = new Intent(FacebookLogin.this, MapsActivity.class);
+                         startActivity(gogoApp);
+
                         JSONObject object;
 
                          // Fetching facebook user data through JSON object: username and email to store it into our db
-
                         GraphRequest request = GraphRequest.newMeRequest(
                                 loginResult.getAccessToken(),
                                 new GraphRequest.GraphJSONObjectCallback() {
@@ -98,7 +107,6 @@ public class FacebookLogin extends AppCompatActivity {
                                             }
                                 });
 
-
                          // Bundle which parses the values we need from logged in user
                          // by acquiring them as parameters
 
@@ -106,11 +114,7 @@ public class FacebookLogin extends AppCompatActivity {
                         parameters.putString("fields", "first_name, last_name, email");
                         request.setParameters(parameters);
                         request.executeAsync();
-
-
                     }
-
-
                     @Override
                      public void onCancel() {
                          LoginManager.getInstance().logOut();
@@ -126,11 +130,13 @@ public class FacebookLogin extends AppCompatActivity {
                      }
                 }
         );
-        Log.i("Bubca", "got here");
         loginProgressScreen();
 
     }
-
+    /** This method forwards the login results to callback manager.
+     * @param data
+     * @param requestCode
+     * @param resultCode */
     @Override
     protected void onActivityResult ( int requestCode, int resultCode, Intent data){
         super.onActivityResult(requestCode, resultCode, data);

@@ -44,7 +44,6 @@ public class FilterPopup extends Activity {
         Log.i("filters oncreate",filterHandler.filters.toString());
         postCreate();
 
-
     }
 
     /**

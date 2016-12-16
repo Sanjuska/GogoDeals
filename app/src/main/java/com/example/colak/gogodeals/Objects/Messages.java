@@ -15,18 +15,28 @@ import java.util.Date;
  * Created by Johan Laptop on 2016-12-05.
  */
 
+/**
+ * This clas contains all JSON messages which are used in the project.
+ * @author Sanja Colak, Johan Johansson, Nikos Sasopoulos, Mattias Landkvist,
+ * */
+
 public class Messages {
     Activity activity;
     int qos;
 
-
+    /**
+     * Constructor
+     * @param activity
+     */
     public Messages(Activity activity){
         this.activity = activity;
         qos = 2;
-
     }
-
-
+    /**
+     * Fetching deals message
+     * @param filters
+     * @param mLastLocation
+     */
     public void fetchDeals(ArrayList<String> filters, Location mLastLocation){
 
         StringBuilder sendString = new StringBuilder();
@@ -46,7 +56,9 @@ public class Messages {
         Log.i("filters fetch pub ",payload);
         new ConnectionMqtt(activity).sendMqtt(payload,publishTopic,subscribeTopic,qos);
     }
-    // JSON message when deal is grabbed
+    /** JSON message when deal is grabbed.
+     @param idTv
+     */
     public void saveDeal(CharSequence idTv){
         String subscribeTopic = "deal/gogodeals/database/info";
         String publishTopic = "deal/gogodeals/deal/save";
@@ -57,7 +69,9 @@ public class Messages {
         new ConnectionMqtt(activity).sendMqtt(payload,publishTopic,subscribeTopic,qos);
     }
 
-    // JSON message for getting information about saved deal from the db
+    /**
+     JSON message for getting information about saved deal from the db
+     */
     public void getGrabbedDeals(){
         String subscribeTopic = "deal/gogodeals/database/grabbed";
         String publishTopic = "deal/gogodeals/deal/grabbed";
@@ -66,7 +80,9 @@ public class Messages {
         Log.i("grabdeal ",payload);
         new ConnectionMqtt(activity).sendMqtt(payload,publishTopic,subscribeTopic,qos);
     }
-    //JSON message when deal is removed from the list
+    /** JSON message when deal is removed from the list
+     * @param idTv
+     */
     public void removeDeal(CharSequence idTv){
         String deal_id = idTv.toString();
         String publishTopic = "deal/gogodeals/deal/remove";
@@ -76,6 +92,9 @@ public class Messages {
         new ConnectionMqtt(activity).sendMqtt(payload,publishTopic);
     }
 
+    /**
+     * JSON message for getting saved filters
+     */
     public void getFilters() {
                 String subscribeTopic = "deal/gogodeals/database/filters";
                 String payload =   "{ \"id\": \""+ IdentifierSingleton.USER_ID + "\"," +
@@ -87,6 +106,10 @@ public class Messages {
 
     }
 
+    /**
+     * JSON message for setting filters. When user set filters, the choice will be saved in database.
+     * @param filters
+     */
     public void setFilters(String filters){
 
         Log.i("filter message ",filters);
@@ -100,6 +123,13 @@ public class Messages {
 
     }
 
+    /**
+     * JSON for saving Facebook user id in the database
+     * @param name
+     * @param email
+     * @param lastName
+     * @param object
+     */
     public void saveFacebook(String name, String email, String lastName, JSONObject object) {
         final String topic = "deal/gogodeals/user/facebook";
         Log.i("fbData2: ", topic);
@@ -118,10 +148,14 @@ public class Messages {
 
     String userSubscribe = "deal/gogodeals/database/facebook";
                 new ConnectionMqtt(activity).sendMqtt(payload, topic, userSubscribe, qos);
-
-
     }
 
+    /**
+     * JSON for saving account created directly in GogoDeals system
+     * @param regUser
+     * @param regPass
+     * @param regMail
+     */
      public void saveAlternativeUser(String regUser, String regPass, String regMail){
         //topic and payload which will add user to database
         String topic = "deal/gogodeals/user/new";
@@ -132,6 +166,11 @@ public class Messages {
 
     }
 
+    /**
+     * JSON for login with created GogoDeals account
+     * @param email
+     * @param password
+     */
     public  void alternativeUserLogin(String email, String password){
 
         String topic = "deal/gogodeals/user/info";
@@ -144,6 +183,9 @@ public class Messages {
         Log.i("loginfielads: ", email + password);
     }
 
+    /**
+     * JSON for getting GroCode data
+     */
     public void getFromGrocode(){
 
         String subscribeTopic = "Gro/me@gmail.com/fetch-lists"; //+ IdentifierSingleton.USER.getEmail();
@@ -159,6 +201,10 @@ public class Messages {
         new ConnectionMqtt(activity).sendMqtt(payload,publishTopic,subscribeTopic,qos);
     }
 
+    /**
+     * JSON for getting a list of deals from grocode
+     * @param jsonArray
+     */
     public void getDeals(JSONArray jsonArray){
         String subscribeTopic = "deal/gogodeals/database/grocode";
 
