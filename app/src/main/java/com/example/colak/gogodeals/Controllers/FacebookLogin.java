@@ -2,7 +2,10 @@ package com.example.colak.gogodeals.Controllers;
 
 /**
  * Created by Nikos on 12/11/2016.
+ * Facebook login api: https://developers.facebook.com/docs/facebook-login/
  */
+
+//https://developers.facebook.com/docs/android/graph
 
 import android.app.Activity;
 import android.app.ProgressDialog;
@@ -37,27 +40,31 @@ public class FacebookLogin extends AppCompatActivity {
     private LoginButton loginButton;
 
     public static ProgressDialog mProgressDlg;
-
     private CallbackManager callbackManager;
 
     @Override
         protected void onCreate ( final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         //facebook initialization
         FacebookSdk.sdkInitialize(this.getApplicationContext());
+
+        //creating a callback manager which manages callbacks
+        //into facebooksdk on the below activity
         callbackManager = CallbackManager.Factory.create();
+
         setContentView(R.layout.mainactivity);
         info = (TextView) findViewById(R.id.info);
         faceBookLogin = this;
+
         //facebook login button
         loginButton = (LoginButton) findViewById(R.id.login_button);
 
-        //shows the user which data gets accessed when log in through fb app
+        //shows the user which data gets accessed when log in first time through fb app
         LoginManager.getInstance().logInWithReadPermissions(this,
                 Arrays.asList("public_profile", "email"));
 
         //when fb responds to loginresult, next step is executed by invoking one of the methods below
-        //keeping user logged in to app
         LoginManager.getInstance().registerCallback(callbackManager,
                 new FacebookCallback<LoginResult>() {
 
@@ -69,7 +76,8 @@ public class FacebookLogin extends AppCompatActivity {
                         //startActivity(gogoApp);
                         JSONObject object;
 
-                         //Fetching facebook user data through JSON object: username and email to store it into our db
+                        //Fetching facebook user data through JSON object using graphrequest class
+                        //here we fetch username and email to store it into our db
                         GraphRequest request = GraphRequest.newMeRequest(
                                 loginResult.getAccessToken(),
                                 new GraphRequest.GraphJSONObjectCallback() {
@@ -106,10 +114,12 @@ public class FacebookLogin extends AppCompatActivity {
 
                     @Override
                      public void onCancel() {
+                         //login cancellation
                          LoginManager.getInstance().logOut();
+
+                         //return to main activity
                          Intent gogoAppMainscreen = new Intent(FacebookLogin.this, MainActivity.class);
                          startActivity(gogoAppMainscreen);
-                         //finish();
 
                           Toast.makeText(FacebookLogin.this, "Login canceled", Toast.LENGTH_SHORT).show();
                       }

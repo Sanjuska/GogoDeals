@@ -254,6 +254,11 @@ public class Parsers {
         DealsPopup.mProgressDlg.dismiss();
     }
 
+    /**
+     *
+     * @param message
+     * @throws JSONException
+     */
     public void checkEmail(MqttMessage message) throws JSONException {
         String emailData;
         String passwordData;
@@ -267,6 +272,10 @@ public class Parsers {
         passwordData = jsonData.getString("password");
         id = jsonData.getString("id");
         IdentifierSingleton.set(id);
+
+        //if the email and password typed by user in login screen
+        //are the same as the saved ones in database
+        //user logs in while he is assigned with his unique id
         if (emailData.equals(GogouserLogin.email) && passwordData.equals(GogouserLogin.password)){
             GogouserLogin.loginResult=true;
             MainActivity.userID = id;

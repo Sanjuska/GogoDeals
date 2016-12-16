@@ -42,11 +42,16 @@ public class GogouserLogin extends AppCompatActivity {
         });
     }
 
+    /**
+     * Method for alternate login with validating progress dialog while
+     * user's credentials are validated
+     */
     private void gogoLogin() {
 
         email = loginEmail.getText().toString();
         password = loginPassword.getText().toString();
 
+        //message which requested for user login
         MainActivity.messages.alternativeUserLogin(email,password);
 
         mProgressDlg = new ProgressDialog(this);
@@ -57,6 +62,8 @@ public class GogouserLogin extends AppCompatActivity {
 
     public void loginResultReceived(){
         Log.i("8 :", String.valueOf(loginResult));
+
+        //if user typed credentials are given right, user logs in
         if (loginResult){
             Toast.makeText(getApplicationContext(), "Login succesfull", Toast.LENGTH_LONG).show();
             Intent login = new Intent (GogouserLogin.this, MapsActivity.class);

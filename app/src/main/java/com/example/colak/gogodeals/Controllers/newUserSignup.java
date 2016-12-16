@@ -35,9 +35,6 @@ public class newUserSignup extends AppCompatActivity{
             //opens newuser_signup layout screen
             setContentView(R.layout.newuser_signup);
 
-
-
-
             //newuser_signup xml fields-buttons-text
             regUsername = (EditText) findViewById(R.id.regUsername); //username field
             regEmail = (EditText) findViewById(R.id.regEmail); //email field
@@ -99,18 +96,16 @@ public class newUserSignup extends AppCompatActivity{
             Toast.makeText(getApplicationContext(), "Confirm email or password", Toast.LENGTH_SHORT).show();
         }
 
-        //If credential fields are not empty, username, password, email are different between them
-        //and if username has more than 4 characters, password has more than 7 characters
-        //credential fields are filled out properly and user signs up
+        //If credential fields are filled out properly user signs up
         else if ((!regUser.isEmpty() && !regPass.isEmpty() &&
                 !regMail.isEmpty() && !regMailConf.isEmpty() && !regPassConf.isEmpty())) {
-            if (regUser.length() >= 1 && regPass.length() >= 1) {
+            if (regUser.length() >= 5 && regPass.length() >= 8) {
                 if ((!regUser.equals(regPass) && !regMail.equals(regPass) &&
                         !regUser.equals(regMail) && regMail.equals(regMailConf) && regPass.equals(regPassConf))) {
 
 
                     Toast.makeText(getApplicationContext(), "Welcome:" + regUser, Toast.LENGTH_SHORT).show();
-
+                    //
                     messages.saveAlternativeUser(regUser,regPass,regMail);
                     //clear fields
                     regUsername.getText().clear();
