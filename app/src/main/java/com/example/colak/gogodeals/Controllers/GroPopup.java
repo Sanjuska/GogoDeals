@@ -1,11 +1,13 @@
 package com.example.colak.gogodeals.Controllers;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -30,6 +32,8 @@ public class GroPopup extends Activity {
     ImageView dealPicture;
     TextView verificationHeader;
 
+    Button grocodeBackButton;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,10 +49,21 @@ public class GroPopup extends Activity {
         units = ((TextView) findViewById(R.id.units));
         dealPicture = (ImageView) findViewById(R.id.dealPicture);
         verificationHeader = ((TextView) findViewById(R.id.verificationHeader));
+        grocodeBackButton = (Button) findViewById(R.id.grocodeBackButton);
         grocodeArrayList = MainActivity.groDeals;
     }
 
     public void postCreate(){
+        // When user wants go out from the deal view, it returns him to the Option popup view.
+        grocodeBackButton = (Button) findViewById(R.id.dealsBackButton);
+        grocodeBackButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(GroPopup.this,OptionsPopup.class));
+                finish();
+            }
+        });
+
         grocodeAdapter= new ArrayAdapter<Deal>(this, android.R.layout.simple_list_item_1,grocodeArrayList);
         grocodeListView.setAdapter(grocodeAdapter);
         grocodeListView.setClickable(true);
