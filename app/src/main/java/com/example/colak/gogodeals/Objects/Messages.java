@@ -57,15 +57,16 @@ public class Messages {
         new ConnectionMqtt(activity).sendMqtt(payload,publishTopic,subscribeTopic,qos);
     }
     /** JSON message when deal is grabbed.
-     @param idTv
+     * @param id
      */
-    public void saveDeal(){
+    public void saveDeal(CharSequence id){
         String subscribeTopic = "deal/gogodeals/database/info";
         String publishTopic = "deal/gogodeals/deal/save";
 
-        String payload =   "{ \"id\":\"" + IdentifierSingleton.USER_ID + "\"," +
+        String payload =   "{\"id\":\"" + id.toString() + "\"," +
                 " \"data\": {" +
                 " \"user_id\":\"" + IdentifierSingleton.USER_ID + "\"}}";
+        Log.i("grabdeal id from save",payload);
         new ConnectionMqtt(activity).sendMqtt(payload,publishTopic,subscribeTopic,qos);
     }
 

@@ -5,7 +5,6 @@ import android.app.ProgressDialog;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
-import android.os.Handler;
 import android.util.Base64;
 import android.util.Log;
 import android.view.View;
@@ -38,7 +37,6 @@ public class DealsPopup extends Activity {
     Button ungrabButton;
     public static ProgressDialog mProgressDlg;
     TextView verificationHeader;
-    TextView idTV;
     TextView description;
     TextView company;
     TextView duration;
@@ -57,7 +55,7 @@ public class DealsPopup extends Activity {
         ungrabButton = (Button) findViewById(R.id.ungrabButton);
         grabButton = (Button) findViewById(R.id.grabButton);
         verificationHeader = ((TextView) findViewById(R.id.verificationHeader));
-        idTV = (TextView) findViewById(R.id.idTextView);
+        id = (TextView) findViewById(R.id.idTextView);
         company = (TextView) findViewById(R.id.company);
         picture = (ImageView) findViewById(R.id.dealPicture);
         description = (TextView) findViewById(R.id.description);
@@ -96,15 +94,9 @@ public class DealsPopup extends Activity {
                 mProgressDlg.setMessage("Grabbing deal");
                 mProgressDlg.setCancelable(false);
                 mProgressDlg.show();
-                MainActivity.messages.saveDeal();
+                MainActivity.messages.saveDeal(id.getText());
                 Log.i("grabdeal ","click grab");
                  // When user grab a deal, the popup will close after 3 seconds.
-                new Handler().postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        finish();
-                    }
-                },3000);
 
             }
 
@@ -162,8 +154,8 @@ public class DealsPopup extends Activity {
         byte[] decodedString = Base64.decode(base, Base64.DEFAULT);
         Bitmap decodedByte = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
         dealPicture.setImageBitmap(decodedByte);
-
         id.setText(components[6]);
+        Log.i("grabdeal id from marker",id.getText().toString());
          // Saving extracted data from the message into Deal which opens when the user click on a marker.
         Deal shownDeal = new Deal((String) company.getText(), (String) duration.getText(), (String) price.getText(), dealPicture, (String) description.getText(), (String) id.getText());
 
