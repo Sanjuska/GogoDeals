@@ -51,7 +51,7 @@ public class Messages {
         String subscribeTopic = "deal/gogodeals/database/info";
         String publishTopic = "deal/gogodeals/deal/save";
         String deal_id = idTv.toString();
-        String payload =   "{ \"id\":\"" + deal_id + "\"," +
+        String payload =   "{ \"deal_id\":\"" + deal_id + "\"," +
                 " \"data\": {" +
                 " \"user_id\":\"" + IdentifierSingleton.USER_ID + "\"}}";
         new ConnectionMqtt(activity).sendMqtt(payload,publishTopic,subscribeTopic,qos);
