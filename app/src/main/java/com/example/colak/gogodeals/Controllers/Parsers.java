@@ -1,12 +1,13 @@
 package com.example.colak.gogodeals.Controllers;
 
 import android.content.Intent;
+import android.os.Handler;
 import android.util.Log;
 import android.view.View;
 
+import com.example.colak.gogodeals.Objects.Deal;
 import com.example.colak.gogodeals.Objects.IdentifierSingleton;
 import com.example.colak.gogodeals.R;
-import com.example.colak.gogodeals.Objects.Deal;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -338,27 +339,44 @@ public class Parsers {
      @param message
      */
     private void grabbedDealParser(MqttMessage message) throws JSONException {
+        Log.i("grabdeal","parser");
         String dealID;
         int count = 0;
-        String verificationID = null;
-
         // Split upp payload messageString into components
         String jsonString = new String(message.getPayload());
         JSONObject jsonData;
-        jsonData  = new JSONObject(jsonString);
-        dealID = jsonData.getString("id");
-        jsonData = new JSONObject(jsonData.getString("data"));
+        Log.i("grabdeal check","1/2");
+        JSONObject jsonData1  = new JSONObject(jsonString);
+        Log.i("grabdeal json ",jsonData1.toString());
+        jsonData = new JSONObject(jsonData1.getString("data"));
         count = jsonData.getInt("count");
-        verificationID = jsonData.getString("id");
+        String verificationID = jsonData.getString("id");
+        Log.i("grabdeal check","1");
         DealsPopup.grabbedView.setVisibility(View.VISIBLE);
+        Log.i("grabdeal check","2");
         // update units in popup
         DealsPopup.units.setText(String.valueOf(count));
-
+        Log.i("grabdeal check","3");
         // add deal to list
         MainActivity.grabbedDeal.setVerificationID(verificationID);
-        MainActivity.dealArrayList.add(MainActivity.grabbedDeal);
+        Log.i("grabdeal check","4");
+        Deal deal = MainActivity.grabbedDeal;
+        Log.i("grabdeal check","5");
+        Log.i("grabdeal deal ",deal.toString());
+        Log.i("grabdeal list", MainActivity.dealArrayList.toString());
+        Log.i("grabdeal check","6");
+        MainActivity.dealArrayList.add(deal);
         // add code to deal in list
         DealsPopup.mProgressDlg.dismiss();
+
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                DealsPopup.dealsPopup.finish();
+            }
+        },1000);
+
+        Log.i("grabdeal check","7");
     }
     /**
      * This method checks if credentials user input correspodents to credentails saved in database

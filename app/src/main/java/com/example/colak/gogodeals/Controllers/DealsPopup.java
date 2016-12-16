@@ -45,6 +45,7 @@ public class DealsPopup extends Activity {
     TextView price;
     ImageView picture;
     ImageView dealPicture;
+    public static Activity dealsPopup;
 
 
     @Override
@@ -64,7 +65,7 @@ public class DealsPopup extends Activity {
         grabbedView = (ImageView) findViewById(R.id.grabbedView);
         units = (TextView) findViewById(R.id.units);
         duration = ((TextView) findViewById(R.id.duration));
-        dealPicture = (ImageView) findViewById(R.id.dealPicture);
+        dealsPopup = this;
         postCreate();
         if (getIntent().getStringExtra("source").equals("deal")){
             Log.i("showgrab ","deal");
@@ -86,7 +87,7 @@ public class DealsPopup extends Activity {
                  // Make button invisible to disable grabbing the deal twice
                 grabButton.setVisibility(View.INVISIBLE);
                  // Extract deal id
-                MainActivity.messages.saveDeal(id.getText());
+
                  // Extract information about the deal, to be stored in grabbed deal list on successful grab
                 MainActivity.grabbedDeal = new Deal((String) company.getText(), (String) duration.getText(), (String) price.getText(), dealPicture, (String) description.getText(), id.getText().toString());
 
@@ -95,6 +96,7 @@ public class DealsPopup extends Activity {
                 mProgressDlg.setMessage("Grabbing deal");
                 mProgressDlg.setCancelable(false);
                 mProgressDlg.show();
+                MainActivity.messages.saveDeal();
                 Log.i("grabdeal ","click grab");
                  // When user grab a deal, the popup will close after 3 seconds.
                 new Handler().postDelayed(new Runnable() {
@@ -103,7 +105,9 @@ public class DealsPopup extends Activity {
                         finish();
                     }
                 },3000);
+
             }
+
         });
          // When ungrab button is pressed
         ungrabButton.setOnClickListener(new View.OnClickListener() {

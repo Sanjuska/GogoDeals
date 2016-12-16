@@ -32,7 +32,7 @@ import java.util.Arrays;
  * @author Nikolaos-Machairiotis Sasopoulos, Sanja Colak
  * Source: https://developers.facebook.com/docs/facebook-login/android
  */
-public class FacebookLogin extends AppCompatActivity {
+public class    FacebookLogin extends AppCompatActivity {
 
 
     private static final String TAG = "Test@ " ;

@@ -117,7 +117,6 @@ public class MapsActivity extends FragmentActivity implements
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
-        MainActivity.messages.getGrabbedDeals();
 
 
         try {
@@ -254,8 +253,9 @@ public class MapsActivity extends FragmentActivity implements
 
                 if (!fetched) {
                     fetched = true;
-                    MainActivity.messages.getGrabbedDeals();
+
                     MainActivity.messages.getFilters();
+                    MainActivity.messages.getGrabbedDeals();
                     Log.i("filter ","initial mapsA");
                 } else if (lastFetched != null &&
                         mLastLocation != null &&

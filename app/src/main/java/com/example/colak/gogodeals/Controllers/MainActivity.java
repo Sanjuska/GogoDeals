@@ -15,7 +15,6 @@ import com.facebook.CallbackManager;
 import com.facebook.login.widget.LoginButton;
 
 import java.util.ArrayList;
-import java.util.List;
 
 /** This class opens after Intro. This is the main view with login and registration options.
  * @author Olle Renard, Johan Johansson, Mattias Landkvist, Nikolaos-Machairiotis Sasopoulos, Sanja Colak
@@ -34,7 +33,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private Button mainsignup;
     private Button gogoProfile;
     public static IdentifierSingleton identifierSingleton;
-    public static List<Deal> dealArrayList;
+    public static ArrayList<Deal> dealArrayList;
     public static Deal grabbedDeal;
     public static Deal savedDealShow;
     private TextView welcometext;
@@ -59,7 +58,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
          //  This is the first instantiation of the IdentifierSingleton. This is needed for the
          //   session and user id
-        filterList = new ArrayList<>();
+        filterList = new ArrayList<String>();
 
         //  Create deal list
         dealArrayList = new ArrayList<Deal>();
