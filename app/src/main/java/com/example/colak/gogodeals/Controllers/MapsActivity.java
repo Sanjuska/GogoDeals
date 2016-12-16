@@ -75,9 +75,11 @@ public class MapsActivity extends FragmentActivity implements
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
         mapsActivity = this;
+        Log.i("timestamp ","Mapsactivity");
 
         firstLoad = true;
 
@@ -131,7 +133,7 @@ public class MapsActivity extends FragmentActivity implements
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
 
-        MainActivity.messages.getGrabbedDeals();
+
         try {
 
              // Customise the styling of the base map using a JSON object defined
@@ -192,7 +194,7 @@ public class MapsActivity extends FragmentActivity implements
                                     return true;
                                 }
                             }
-                            startActivity(new Intent(MapsActivity.this, DealsPopup.class));
+                            startActivity(new Intent(MapsActivity.this, DealsPopup.class).putExtra("source","marker"));
                         }
                         return doNotMoveCameraToCenterMarker;
                     }
@@ -278,7 +280,8 @@ public class MapsActivity extends FragmentActivity implements
 
                 if (!fetched) {
                     fetched = true;
-                    //MainActivity.messages.getFilters();
+                    MainActivity.messages.getGrabbedDeals();
+                    MainActivity.messages.getFilters();
                     Log.i("filter ","initial mapsA");
                 } else if (lastFetched != null &&
                         mLastLocation != null &&

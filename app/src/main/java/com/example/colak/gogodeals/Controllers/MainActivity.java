@@ -36,7 +36,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public static IdentifierSingleton identifierSingleton;
     public static List<Deal> dealArrayList;
     public static Deal grabbedDeal;
-
+    public static Deal savedDealShow;
     private TextView welcometext;
 
     public static String userID;
@@ -51,6 +51,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         mainLogin = (Button) findViewById(R.id.mainLogin);
         mainsignup = (Button) findViewById(R.id.mainsignup);
         gogoProfile = (Button) findViewById(R.id.gogoProfile);
+
 
          //  This is the first instantiation of the IdentifierSingleton. This is needed for the
          //   session and user id

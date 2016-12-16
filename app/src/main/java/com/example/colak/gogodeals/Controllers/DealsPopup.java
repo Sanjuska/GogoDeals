@@ -35,15 +35,18 @@ public class DealsPopup extends Activity {
 
     Button grabButton;
     public static ImageView grabbedView;
-    TextView description;
-    TextView company;
-    TextView price;
     public static TextView units;
-    TextView duration;
-    ImageView dealPicture;
     TextView id;
     Button ungrabButton;
     public static ProgressDialog mProgressDlg;
+    TextView verificationHeader;
+    TextView idTV;
+    TextView description;
+    TextView company;
+    TextView duration;
+    TextView price;
+    ImageView picture;
+    ImageView dealPicture;
 
 
     @Override
@@ -54,8 +57,26 @@ public class DealsPopup extends Activity {
          //Two buttons for grabbind deal and deleting the deal
         ungrabButton = (Button) findViewById(R.id.ungrabButton);
         grabButton = (Button) findViewById(R.id.grabButton);
+        verificationHeader = ((TextView) findViewById(R.id.verificationHeader));
+        idTV = (TextView) findViewById(R.id.idTextView);
+        company = (TextView) findViewById(R.id.company);
+        picture = (ImageView) findViewById(R.id.dealPicture);
+        description = (TextView) findViewById(R.id.description);
+        price = (TextView) findViewById(R.id.price);
+        grabbedView = (ImageView) findViewById(R.id.grabbedView);
+        units = (TextView) findViewById(R.id.units);
+        duration = ((TextView) findViewById(R.id.duration));
+        dealPicture = (ImageView) findViewById(R.id.dealPicture);
         postCreate();
-        getContent(MapsActivity.currentMarker);
+        if (getIntent().getStringExtra("source").equals("deal")){
+            Log.i("showgrab ","deal");
+            getContent(MainActivity.savedDealShow);
+
+        }else if(getIntent().getStringExtra("source").equals("marker")){
+            Log.i("showgrab ","marker");
+            getContent(MapsActivity.currentMarker);
+
+        }
     }
 
     private void postCreate(){
@@ -160,6 +181,29 @@ public class DealsPopup extends Activity {
             grabbedView.setVisibility(View.INVISIBLE);
             grabButton.setVisibility(View.VISIBLE);
         }
+    }
+
+    //When the user click the deal popup opens with specific information
+    public void getContent(Deal deal) {
+        Log.i("grabdeal ",deal.toString());
+        company.setText(deal.getCompany());
+        description.setText(deal.getDescription());
+        price.setText(deal.getPrice());
+        verificationHeader.setText("Verification code");
+        units.setText(deal.getVerificationID());
+        duration.setText(deal.getDuration());
+        if (!deal.getStringPicture().isEmpty()){
+            String[] pictureParts = deal.getStringPicture().split(",");
+            byte[] decodedString = Base64.decode(pictureParts[1], Base64.DEFAULT);
+            Bitmap decodedByte = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
+            dealPicture.setImageBitmap(decodedByte);
+        }else{
+            dealPicture = deal.getPicture();
+        }
+        //Ungrab button is enabled to be clicked.
+        grabbedView.setVisibility(View.INVISIBLE);
+        grabButton.setVisibility(View.INVISIBLE);
+        ungrabButton.setVisibility(View.VISIBLE);
     }
 
 }

@@ -17,6 +17,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.UUID;
 
 /**
@@ -35,7 +36,7 @@ public class Parsers {
 
     public void parse(String topic,MqttMessage message) throws JSONException {
         // Checks if this message is related to this instance of the application or to this user
-        Log.i("identify","just for test");
+        Log.i("identify",message.getPayload().toString());
         Log.i("identify ",IdentifierSingleton.SESSION_ID.toString()+" "+IdentifierSingleton.USER_ID+" "+get_id(message));
         if (IdentifierSingleton.SESSION_ID.equals(get_id(message))|| IdentifierSingleton.USER_ID.equals(get_id(message))){
             Log.i("identify ","worked");
@@ -129,6 +130,7 @@ public class Parsers {
         json1  = new JSONObject(jsonString);
         jsonArray = new JSONArray(json1.getJSONArray("data").toString());
 
+        ArrayList<Deal> deals = new ArrayList<>();
         for (int i = 0; i< jsonArray.length();i++) {
 
             Deal deal = new Deal(jsonArray.getJSONObject(i).getString("client_name"),
@@ -138,9 +140,10 @@ public class Parsers {
                     jsonArray.getJSONObject(i).getString("description"),
                     jsonArray.getJSONObject(i).getString("id"));
             Log.i("grabdeals startup ",deal.toString());
-            MainActivity.dealArrayList.add(deal);
+            deals.add(deal);
 
         }
+        MainActivity.dealArrayList = deals;
 
     }
 
@@ -377,6 +380,7 @@ public class Parsers {
     }
 
     public void checkFacebook(MqttMessage message) throws JSONException {
+        Log.i("timestampfacebook",new Date().getTime()+"");
         String id;
         String messageString = new String(message.getPayload());
         JSONObject jsonData;
@@ -385,19 +389,17 @@ public class Parsers {
         id = jsonData.getString("id");
         Log.i("connection before id ",id);
         IdentifierSingleton.set(id);
-        Log.i("connection after id ",id);
+        Log.i("connection after id ",IdentifierSingleton.USER_ID.toString());
         FacebookLogin.mProgressDlg.dismiss();
         //now load next maps activity screen
         Intent gogoApp = new Intent(FacebookLogin.faceBookLogin, MapsActivity.class);
         FacebookLogin.faceBookLogin.startActivity(gogoApp);
-
         FacebookLogin.faceBookLogin.finish();
     }
 
     public void putFilters(){
 
-        /*MapsActivity.mMap.clear();
-        MapsActivity.mPositionMarker = null;*/
+        MapsActivity.mPositionMarker = null;
         ArrayList<String> arrayLoop;
         arrayLoop = FilterPopup.filterHandler.filters;
         MainActivity.filterList = arrayLoop;

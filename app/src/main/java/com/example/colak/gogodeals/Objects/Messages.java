@@ -9,6 +9,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Date;
 
 /**
  * Created by Johan Laptop on 2016-12-05.
@@ -76,12 +77,14 @@ public class Messages {
     }
 
     public void getFilters() {
-        String subscribeTopic = "deal/gogodeals/database/filters";
-        String payload =   "{ \"id\": \""+ IdentifierSingleton.USER_ID + "\"," +
-                " \"data\": {\"crap\": \"hi\" }}";
-        String publishTopic = "deal/gogodeals/user/filter";
-        Log.i("filter get",payload);
-        new ConnectionMqtt(activity).sendMqtt(payload,publishTopic,subscribeTopic,qos);
+                String subscribeTopic = "deal/gogodeals/database/filters";
+                String payload =   "{ \"id\": \""+ IdentifierSingleton.USER_ID + "\"," +
+                        " \"data\": {\"crap\": \"hi\" }}";
+                String publishTopic = "deal/gogodeals/user/filter";
+                Log.i("filter get",payload);
+                new ConnectionMqtt(activity).sendMqtt(payload,publishTopic,subscribeTopic,qos);
+            Log.i("timestampfilter",new Date().getTime()+"");
+
     }
 
     public void setFilters(String filters){
