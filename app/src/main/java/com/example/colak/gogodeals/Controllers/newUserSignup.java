@@ -13,7 +13,7 @@ import com.example.colak.gogodeals.Objects.Messages;
 import com.example.colak.gogodeals.R;
 
 /** This class is about creating new GogoDeals profile.
- * @author Nikos Sasopoulos*/
+ * @author Nikolaos-Machairiotis Sasopoulos*/
 public class newUserSignup extends AppCompatActivity{
 
     //xml gui elements

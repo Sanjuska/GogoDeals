@@ -12,9 +12,8 @@ import android.widget.EditText;
 import android.widget.Toast;
 import com.example.colak.gogodeals.R;
 
-/**
- * Created by Nikos on 01/12/2016.
- */
+/** This class is about Gogodeals user login.
+ * @author Nikolaos-Machairiotis Sasopoulos*/
 
 public class GogouserLogin extends AppCompatActivity {
 

@@ -26,7 +26,7 @@ import java.util.UUID;
 
 /**
  * This class consists of parsers recieveing messages via mqtt and controls different parts of the system
- * @author Johan Johansson, Sanja Colak
+ * @author Johan Johansson, Sanja Colak, Nikolaos-Machairiotis Sasopoulos
  */
 public class Parsers {
 
