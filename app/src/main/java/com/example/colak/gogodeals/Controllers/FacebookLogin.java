@@ -29,7 +29,8 @@ import java.util.Arrays;
  */
 
 /** This class is about Facebook registration and login via the same platform.
- * @author Nikos Sasopoulos, Sanja Colak
+ * @author Nikolaos-Machairiotis Sasopoulos, Sanja Colak
+ * Source: https://developers.facebook.com/docs/facebook-login/android
  */
 public class FacebookLogin extends AppCompatActivity {
 
@@ -78,9 +79,6 @@ public class FacebookLogin extends AppCompatActivity {
                     @Override
                     public void onSuccess(LoginResult loginResult) {
 
-                     // When fb credentials are correct, user logins to gogodeals
-                         Intent gogoApp = new Intent(FacebookLogin.this, MapsActivity.class);
-                         startActivity(gogoApp);
 
                         JSONObject object;
 

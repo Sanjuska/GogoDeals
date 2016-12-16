@@ -1,5 +1,6 @@
 package com.example.colak.gogodeals.Controllers;
 
+import android.app.Activity;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
@@ -15,7 +16,7 @@ import com.example.colak.gogodeals.R;
 import java.util.ArrayList;
 
 
-public class GroPopup extends AppCompatActivity {
+public class GroPopup extends Activity {
     private ListView grocodeListView;
     public static ArrayAdapter<Deal> grocodeAdapter;
     public static ArrayList<Deal> grocodeArrayList;
@@ -33,7 +34,7 @@ public class GroPopup extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_gro_popup);
+        setContentView(R.layout.grocode_list);
         grocodeListView = (ListView) findViewById(R.id.grocodeListView);
         idTV = (TextView) findViewById(R.id.idTextView);
         description = (TextView) findViewById(R.id.description);
