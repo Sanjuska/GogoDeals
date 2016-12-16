@@ -212,6 +212,7 @@ public class Messages {
                 " \"data\": " + jsonArray.toString() + "}";
 
         String publishTopic = "deal/gogodeals/deal/grocode";
+        Log.i("This", "hello");
 
         new ConnectionMqtt(activity).sendMqtt(payload,publishTopic,subscribeTopic,qos);
 

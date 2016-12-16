@@ -38,9 +38,12 @@ public class Parsers {
      */
     public void parse(String topic,MqttMessage message) throws JSONException {
         // Checks if this message is related to this instance of the application or to this user
+        Log.i("identify","just for test");
+        String payload = new String(message.getPayload());
+        Log.i("This the payload: ", payload);
         Log.i("identify",message.getPayload().toString());
         Log.i("identify ",IdentifierSingleton.SESSION_ID.toString()+" "+IdentifierSingleton.USER_ID+" "+get_id(message));
-        if (IdentifierSingleton.SESSION_ID.equals(get_id(message))|| IdentifierSingleton.USER_ID.equals(get_id(message))){
+        if (IdentifierSingleton.SESSION_ID.equals(get_id(message))|| IdentifierSingleton.USER_ID.equals(get_id(message)) || new String(message.getPayload()).contains("done")){
             Log.i("identify ","worked");
             switch (topic) {
                 case "deal/gogodeals/database/deals":
@@ -197,7 +200,8 @@ public class Parsers {
     private void grocodeListParser(MqttMessage message) throws JSONException {
         String payload = new String(message.getPayload());
         Log.i("This the payload: ", payload);
-        if(payload.contains("data")) {
+        JSONObject jsonCheck = new JSONObject(new String(message.getPayload()));
+        if(payload.contains("data") && !jsonCheck.getString("data").equals("{}")) {
             JSONArray jsonArray = new JSONArray(new JSONObject(payload).getJSONArray("data").toString());
 
             ArrayList<Deal> deals = new ArrayList<>();
@@ -215,7 +219,11 @@ public class Parsers {
             OptionsPopup.mProgressDlg.dismiss();
             OptionsPopup.optionsPopup.finish();
             //GroPopup.grocodeArrayList.addAll(deals);
+        } else {
+            OptionsPopup.mProgressDlg.dismiss();
+            OptionsPopup.optionsPopup.finish();
         }
+
     }
 
     /**
