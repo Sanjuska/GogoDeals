@@ -10,7 +10,8 @@
     android:focusable="false"
     android:weightSum="1"
     android:alpha="0.5"
-    android:padding="50dp">
+    android:padding="50dp"
+    android:id="@+id/optionsLayout">
 
     <TextView
         android:text="Options"
@@ -26,38 +27,25 @@
         />
 
     <Button
-        android:text="My Profile"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="25dp"
-        android:layout_marginTop="24dp"
-        android:id="@+id/profileButton"
-        android:background="@drawable/buttonshape"
-         />
-
-    <Button
         android:text="My Deals"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="50dp"
         android:id="@+id/dealsButton"
-        android:layout_marginBottom="25dp"
-        android:background="@drawable/buttonshape"
-        />
+        android:layout_marginBottom="25dp" />
 
     <Button
     android:text="Deal Filters"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="20dp"
-        android:id="@+id/filterButton"
-        android:background="@drawable/buttonshape"/>
+        android:layout_height="50dp"
+        android:layout_marginBottom="25dp"
+        android:id="@+id/filterButton" />
+
 
     <Button
-        android:text="Grocode"
+        android:text="Gro Deals"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/grocodeButton"
-        android:layout_weight="0.17"
-        android:onClick="grocodeButtonPressed" />
+        android:layout_height="50dp"
+        android:layout_marginBottom="25dp"
+        android:id="@+id/grocodeButton" />
 
 </LinearLayout>
