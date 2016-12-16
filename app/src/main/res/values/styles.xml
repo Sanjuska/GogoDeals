@@ -44,7 +44,6 @@
         <item name="android:textStyle">italic</item>
         <item name="android:textAllCaps">true</item>
         <item name="android:layout_marginTop">20dp</item>
-        <item name ="android:background">@drawable/bottom_border_line</item>
     </style>
 
     <style name="PopupWindow">

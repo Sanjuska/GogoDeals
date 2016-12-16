@@ -375,7 +375,10 @@ public class Parsers {
             MainActivity.userID = id;
             Log.i("User", MainActivity.userID);
             GogouserLogin.mProgressDlg.dismiss();
-            //gogouserLogin.loginResultReceived();
+            Intent gogoAppUserLogIn = new Intent(GogouserLogin.alternativeLogIn, MapsActivity.class);
+            GogouserLogin.alternativeLogIn.startActivity(gogoAppUserLogIn);
+            GogouserLogin.alternativeLogIn.finish();
+          //gogouserLogin.loginResultReceived();
         }
         else {
             Log.i("7 :", "1");
