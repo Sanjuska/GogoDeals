@@ -45,9 +45,10 @@ public class GogouserLogin extends AppCompatActivity {
         });
 
         // When fb credentials are correct, user logins to gogodeals
-        Intent gogoAppLogIn = new Intent(GogouserLogin.this, MapsActivity.class);
-        startActivity(gogoAppLogIn);
-
+        if (loginResult) {
+            Intent gogoAppLogIn = new Intent(GogouserLogin.this, MapsActivity.class);
+            startActivity(gogoAppLogIn);
+        }
     }
 
     private void gogoLogin() {
