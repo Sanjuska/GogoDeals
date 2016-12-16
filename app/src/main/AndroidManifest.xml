@@ -21,30 +21,26 @@ package="com.example.colak.gogodeals">
     <service android:name="org.eclipse.paho.android.service.MqttService">
         <service android:name="com.jessefarebro.mqtt.MqttService" android:exported="false" />
     </service>
-    <activity android:name=".Intro">
+    <activity android:name=".Controllers.Intro">
         <intent-filter>
             <action android:name="android.intent.action.MAIN" />
 
             <category android:name="android.intent.category.LAUNCHER" />
         </intent-filter>
     </activity>
-    <activity android:name=".MainActivity">
+    <activity android:name=".Controllers.MainActivity">
 
     </activity>
 
-    <activity android:name=".FacebookLogin">
+    <activity android:name=".Controllers.FacebookLogin">
 
     </activity>
 
-    <activity android:name=".GogouserLogin">
+    <activity android:name=".Controllers.GogouserLogin">
 
     </activity>
 
-    <activity android:name=".ConnectionMqtt">
-
-    </activity>
-
-    <activity android:name=".newUserSignup">
+    <activity android:name=".Controllers.newUserSignup">
 
     </activity>
 
@@ -62,16 +58,18 @@ package="com.example.colak.gogodeals">
 
 
     <activity
-        android:name=".MapsActivity"
+        android:name=".Controllers.MapsActivity"
         android:label="@string/title_activity_maps"/>
 
-    <activity android:name=".Popups.FilterPopup"
+    <activity android:name=".Controllers.FilterPopup"
         android:theme="@android:style/Theme.Dialog"/>
-    <activity android:name=".Popups.OptionsPopup"
+    <activity android:name=".Controllers.OptionsPopup"
         android:theme="@android:style/Theme.Dialog"/>
-    <activity android:name=".Popups.DealsPopup"
+    <activity android:name=".Controllers.DealsPopup"
         android:theme="@android:style/Theme.Dialog"/>
-    <activity android:name=".Popups.SavedDealsPopup"
+    <activity android:name=".Controllers.SavedDealsPopup"
+        android:theme="@android:style/Theme.Dialog"/>
+    <activity android:name=".Controllers.GroPopup"
         android:theme="@android:style/Theme.Dialog"/>
 
 

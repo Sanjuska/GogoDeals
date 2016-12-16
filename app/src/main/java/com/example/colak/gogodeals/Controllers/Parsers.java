@@ -1,12 +1,12 @@
-package com.example.colak.gogodeals;
+package com.example.colak.gogodeals.Controllers;
 
 import android.content.Intent;
 import android.util.Log;
 import android.view.View;
 
-import com.example.colak.gogodeals.Popups.DealsPopup;
-import com.example.colak.gogodeals.Popups.FilterPopup;
-import com.example.colak.gogodeals.Popups.OptionsPopup;
+import com.example.colak.gogodeals.Objects.IdentifierSingleton;
+import com.example.colak.gogodeals.R;
+import com.example.colak.gogodeals.Objects.Deal;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -16,40 +16,43 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
 import java.util.UUID;
 
 /**
  * Created by Johan Laptop on 2016-11-21.
  */
 
+/**
+ * This class consists of parsers recieveing messages via mqtt and controls different parts of the system
+ * @author Johan Johansson,
+ */
 public class Parsers {
 
     /*This method takes a topic and a payload message and depending what topic it is
     it calls the correct method corresponding to that topic.
     */
 
-    static GogouserLogin gogouserLogin;
-    static FacebookLogin facebookLogin;
-
-    public void parse(String topic,MqttMessage message){
-        IdentifierSingleton identifierSingleton = IdentifierSingleton.getInstance();
-
+    public void parse(String topic,MqttMessage message) throws JSONException {
         // Checks if this message is related to this instance of the application or to this user
-        //if(IdentifierSingleton.SESSION == get_id(message) || IdentifierSingleton.USER == get_id(message)) {
+        Log.i("identify","just for test");
+        Log.i("identify ",IdentifierSingleton.SESSION_ID.toString()+" "+IdentifierSingleton.USER_ID+" "+get_id(message));
+        if (IdentifierSingleton.SESSION_ID.equals(get_id(message))|| IdentifierSingleton.USER_ID.equals(get_id(message))){
+            Log.i("identify ","worked");
             switch (topic) {
                 case "deal/gogodeals/database/deals":
                     try {
                         JSONObject jsonCheck = new JSONObject(new String(message.getPayload()));
                         //Log.i("json checking",jsonCheck.toString());
-                        if (!jsonCheck.getString("data").equals("{}")){
+                        if (!jsonCheck.getString("data").equals("{}")) {
                             fetchDealParser(message);
                         }
                     } catch (JSONException e) {
-                        Log.e("JsonExeption ",e.toString());
+                        Log.e("JsonExeption ", e.toString());
                         e.printStackTrace();
                     }
                     break;
-
+                // get info from the da
                 case "deal/gogodeals/database/info":
                     try {
                         grabbedDealParser(message);
@@ -74,6 +77,20 @@ public class Parsers {
                     }
                     break;
 
+                case "Gro/me@gmail.com/fetch-lists":
+                    try {
+                        grocodeFetchParser(message);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+
+                case "deal/gogodeals/database/grocode":
+                    try {
+                        grocodeListParser(message);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+
                 case "deal/gogodeals/database/filters":
                     try {
                         setFilters(message);
@@ -91,8 +108,8 @@ public class Parsers {
                     break;
 
                 //insert new user in databse
-                case "deal/gogodeals/user/new":
-
+                case "deal/gogodeals/database/grabbed":
+                    setGrabbedDeals(message);
                     break;
 
                 case "deal/gogodeals/database/update":
@@ -102,31 +119,99 @@ public class Parsers {
                     break;
             }
         }
+    }
+
+    private void setGrabbedDeals(MqttMessage message) throws JSONException {
+        Log.i("grabdeal ","startup parser");
+        String jsonString = new String(message.getPayload());
+        JSONArray jsonArray;
+        JSONObject json1;
+        json1  = new JSONObject(jsonString);
+        jsonArray = new JSONArray(json1.getJSONArray("data").toString());
+
+        for (int i = 0; i< jsonArray.length();i++) {
+
+            Deal deal = new Deal(jsonArray.getJSONObject(i).getString("client_name"),
+                    jsonArray.getJSONObject(i).getString("duration"),
+                    jsonArray.getJSONObject(i).getString("price"),
+                    jsonArray.getJSONObject(i).getString("picture"),
+                    jsonArray.getJSONObject(i).getString("description"),
+                    jsonArray.getJSONObject(i).getString("id"));
+            Log.i("grabdeals startup ",deal.toString());
+            MainActivity.dealArrayList.add(deal);
+
+        }
+
+    }
 
     private void setFilters(MqttMessage message) throws JSONException {
+
 
         JSONObject tmpObj = new JSONObject(new String(message.getPayload()));
         JSONObject tmpObj2 = new JSONObject(tmpObj.get("data").toString());
         String tmpString = new String(tmpObj2.get("filters").toString());
+        Log.i("filters get start ",tmpString);
+        String [] tmpArray =  tmpString.split(",");
 
-        String [] tmpArray = tmpString.split(",");
-        MapsActivity.filterList.clear();
-        for (int i = 1;i<tmpArray.length;i++) {
-            String filter = tmpArray[i];
-            filter.replace(" ","");
-            Log.i("filter added",tmpArray[i]);
-                MapsActivity.filterList.add(filter);
+        ArrayList<String> replaceArray = new ArrayList<>();
+        for (String tmp : tmpArray) {
+            String returnString = tmp.trim();
+            replaceArray.add(returnString);
+            Log.i("filter added",returnString);
         }
 
-        if (!MapsActivity.firstLoad){
-            MapsActivity.firstLoad = true;
-        }else {
-            Log.i("filters start ", MapsActivity.filterList.toString());
+
+       MainActivity.filterList = replaceArray;
+            MainActivity.messages.fetchDeals(replaceArray,MapsActivity.mLastLocation);
+
+
+        if (MapsActivity.firstLoad){
+            //do nothing
+            MapsActivity.firstLoad = false;
+        }else{
             OptionsPopup.optionsPopup.startActivity(new Intent(OptionsPopup.optionsPopup, FilterPopup.class));
             OptionsPopup.mProgressDlg.dismiss();
             OptionsPopup.optionsPopup.finish();
         }
+
         }
+
+
+    private void grocodeFetchParser(MqttMessage message) throws JSONException {
+        String payload = new String(message.getPayload());
+        Log.i("Gro", payload);
+        if(payload.contains("data")) {
+            Log.i("Gro in if", payload);
+            JSONArray jsonArray = new JSONArray(new JSONObject(payload).getJSONArray("data").toString());
+            MainActivity.messages.getDeals(jsonArray);
+        }
+
+    }
+
+    private void grocodeListParser(MqttMessage message) throws JSONException {
+        String payload = new String(message.getPayload());
+        Log.i("This the payload: ", payload);
+        if(payload.contains("data")) {
+            JSONArray jsonArray = new JSONArray(new JSONObject(payload).getJSONArray("data").toString());
+
+            ArrayList<Deal> deals = new ArrayList<>();
+
+            for (int i = 0; i < jsonArray.length(); i++) {
+                deals.add(new Deal(
+                        jsonArray.getJSONObject(i).getString("client_name"),
+                        jsonArray.getJSONObject(i).getString("duration"),
+                        jsonArray.getJSONObject(i).getString("price"),
+                        jsonArray.getJSONObject(i).getString("price"),
+                        jsonArray.getJSONObject(i).getString("description"),
+                        jsonArray.getJSONObject(i).getString("id")));
+            }
+            MainActivity.groDeals = deals;
+            OptionsPopup.optionsPopup.startActivity(new Intent(OptionsPopup.optionsPopup, GroPopup.class));
+            OptionsPopup.mProgressDlg.dismiss();
+            OptionsPopup.optionsPopup.finish();
+            //GroPopup.grocodeArrayList.addAll(deals);
+        }
+    }
     //}
 
 
@@ -139,6 +224,7 @@ public class Parsers {
      */
     private void fetchDealParser(MqttMessage message) throws JSONException {
 
+        Log.i("filters ","fetch started");
         String jsonString = new String(message.getPayload());
         JSONArray jsonArray;
         JSONObject jsonObject;
@@ -150,6 +236,7 @@ public class Parsers {
         for (int i = 0; i< jsonArray.length();i++){
 
             jsonObject = jsonArray.getJSONObject(i);
+            Log.i("json obect ", jsonObject.toString());
             String id = jsonObject.getString("id");
             String name = jsonObject.getString("name");
             int price = jsonObject.getInt("price");
@@ -164,6 +251,9 @@ public class Parsers {
             int count = jsonObject.getInt("count");
             String client_id = jsonObject.getString("client_id");
             String companyName = jsonObject.getString("client_name");
+            Log.i("grabdeal company",companyName);
+
+
             LatLng latlng = new LatLng(latitude,longitude);
                 if(filters.equals("clothes")) {
                     //Deal marker on the map including popup
@@ -173,6 +263,7 @@ public class Parsers {
                             .icon(BitmapDescriptorFactory
                                     .fromResource(R.drawable.clothes))
                             .snippet(companyName + "€" + description + "€" + price + "€" + count + "€" + duration + "€" + picture + "€" + id));
+
                 }else if(filters.equals("food")){
                     //Deal marker on the map including popup
                    MapsActivity.mMap.addMarker(new MarkerOptions()
@@ -225,6 +316,14 @@ public class Parsers {
         return null;
     }
 
+    /*
+   This is the parser for grabbing deals which are showed on the map
+   It takes a payload from a mqttmessage and turns it into a jsonobject
+   it then extracts the different information from that object and
+   those information will be used for displaying them to the user ( Verification number),
+   and it will extract deals_id from the message and save it together with the user_id.
+   This will connect specific user with specific deal.
+    */
     private void grabbedDealParser(MqttMessage message) throws JSONException {
         String dealID;
         int count = 0;
@@ -238,14 +337,13 @@ public class Parsers {
         count = jsonData.getInt("count");
         verificationID = jsonData.getString("id");
         DealsPopup.grabbedView.setVisibility(View.VISIBLE);
-        // update unit in popup
+        // update units in popup
         DealsPopup.units.setText(String.valueOf(count));
         // add deal to list
         //TextView description = (TextView) MapsActivity.popupMessage.getContentView().findViewById(R.id.description);
         //MapsActivity.dealArrayList.add(MapsActivity.descriptionOfGrabbedDeal);
-        MapsActivity.grabbedDeal.setVerificationID(verificationID);
-        MapsActivity.dealArrayList.add(MapsActivity.grabbedDeal);
-        Log.i("grabbed ",MapsActivity.grabbedDeal.toString());
+        MainActivity.grabbedDeal.setVerificationID(verificationID);
+        MainActivity.dealArrayList.add(MainActivity.grabbedDeal);
         // add code to deal in list
         DealsPopup.mProgressDlg.dismiss();
     }
@@ -268,7 +366,7 @@ public class Parsers {
             MainActivity.userID = id;
             Log.i("User", MainActivity.userID);
             GogouserLogin.mProgressDlg.dismiss();
-            gogouserLogin.loginResultReceived();
+            //gogouserLogin.loginResultReceived();
         }
         else {
             Log.i("7 :", "1");
@@ -281,20 +379,31 @@ public class Parsers {
     public void checkFacebook(MqttMessage message) throws JSONException {
         String id;
         String messageString = new String(message.getPayload());
-        Log.i("Bubca checkFacebook: ", String.valueOf(message.getPayload()));
         JSONObject jsonData;
         jsonData = new JSONObject(messageString);
         jsonData = new JSONObject(jsonData.getString("data"));
         id = jsonData.getString("id");
+        Log.i("connection before id ",id);
         IdentifierSingleton.set(id);
-        MainActivity.userID = id;
-        Log.i("Bubca User", MainActivity.userID);
+        Log.i("connection after id ",id);
         FacebookLogin.mProgressDlg.dismiss();
         //now load next maps activity screen
-        facebookLogin.facebookLoginSuccess();
+        Intent gogoApp = new Intent(FacebookLogin.faceBookLogin, MapsActivity.class);
+        FacebookLogin.faceBookLogin.startActivity(gogoApp);
+
+        FacebookLogin.faceBookLogin.finish();
     }
 
     public void putFilters(){
+
+        /*MapsActivity.mMap.clear();
+        MapsActivity.mPositionMarker = null;*/
+        ArrayList<String> arrayLoop;
+        arrayLoop = FilterPopup.filterHandler.filters;
+        MainActivity.filterList = arrayLoop;
+            Log.i("filters set",arrayLoop.toString());
+            MainActivity.messages.fetchDeals(arrayLoop,MapsActivity.mLastLocation);
+
         FilterPopup.filterPopup.startActivity(new Intent(FilterPopup.filterPopup,OptionsPopup.class));
         FilterPopup.mProgressDlg.dismiss();
         FilterPopup.filterPopup.finish();

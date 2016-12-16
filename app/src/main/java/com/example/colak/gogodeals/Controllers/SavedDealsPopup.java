@@ -1,8 +1,11 @@
-package com.example.colak.gogodeals.Popups;
+package com.example.colak.gogodeals.Controllers;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.util.Base64;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
@@ -12,26 +15,22 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import com.example.colak.gogodeals.MapsActivity;
-import com.example.colak.gogodeals.Messages;
 import com.example.colak.gogodeals.Objects.Deal;
 import com.example.colak.gogodeals.R;
 
 import java.util.List;
 
 /**
- * Created by Johan Laptop on 2016-12-05.
+ * This class is about deal list where the user can list all deals
+ * he saved.
  */
-
 public class SavedDealsPopup extends Activity {
-
     ArrayAdapter<Deal> dealAdapter;
     ListView dealListView;
     ImageView grabbedView;
     Button grabButton;
     Button ungrabButton;
     Button dealsBackButton;
-    Messages messages;
     TextView idTV;
     TextView description;
     TextView company;
@@ -52,9 +51,7 @@ public class SavedDealsPopup extends Activity {
         description = (TextView) findViewById(R.id.description);
         company = (TextView) findViewById(R.id.company);
         duration = (TextView) findViewById(R.id.duration);
-        price = (TextView) findViewById(R.id.price);
         picture = (ImageView) findViewById(R.id.dealPicture);
-        company = (TextView) findViewById(R.id.company);
         description = (TextView) findViewById(R.id.description);
         price = ((TextView) findViewById(R.id.price));
         grabbedView = (ImageView) findViewById(R.id.grabbedView);
@@ -62,14 +59,12 @@ public class SavedDealsPopup extends Activity {
         duration = ((TextView) findViewById(R.id.duration));
         dealPicture = (ImageView) findViewById(R.id.dealPicture);
         verificationHeader = ((TextView) findViewById(R.id.verificationHeader));
-
-        messages = new Messages();
-        MapsActivity.grabbedDeal = new Deal();
         postCreate();
     }
 
     private void postCreate() {
 
+        // When user wants go out from the deal view, it returns him to the Option popup view.
         dealsBackButton = (Button) findViewById(R.id.dealsBackButton);
         dealsBackButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -78,12 +73,12 @@ public class SavedDealsPopup extends Activity {
                 finish();
             }
         });
-
-        List<Deal> arrayList = MapsActivity.dealArrayList;
-        Log.i("grab ",arrayList.toString());
+        List<Deal> arrayList = MainActivity.dealArrayList;
+        //Deal adapter which shows grabbed deal in a simple list view
         dealAdapter = new ArrayAdapter<Deal>(SavedDealsPopup.this, android.R.layout.simple_list_item_1, arrayList);
         dealListView.setAdapter(dealAdapter);
         dealListView.setClickable(true);
+        //When deal in the list is clicked
         dealListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
             @Override
@@ -91,26 +86,34 @@ public class SavedDealsPopup extends Activity {
 
                 //Extract deal from the clicke list item
                 Deal deal = (Deal) parent.getItemAtPosition(position);
-                Log.i("grab ",deal.toString());
-                // Create popup window with deal based on the extracted deal
+                // Create popup window view with deal based on the extracted data
                 getContent(deal);
 
                 //remember which deal is being shown, so that it can be removed if ungrabbed
-                MapsActivity.grabbedDeal = deal;
+                MainActivity.grabbedDeal = deal;
 
 
             }
 
         });
     }
+            //When the user click the deal popup opens with specific information
             public void getContent(Deal deal) {
-                company.setText(deal.getCompany());
+                Log.i("grabdeal ",deal.toString());
+                company.setText("test");
                 description.setText(deal.getDescription());
                 price.setText(deal.getPrice());
                 verificationHeader.setText("Verification code");
                 units.setText(deal.getVerificationID());
                 duration.setText(deal.getDuration());
-                dealPicture = deal.getPicture();
+                if (deal.getPicture().equals(null)){
+                    byte[] decodedString = Base64.decode(deal.getStringPicture(), Base64.DEFAULT);
+                    Bitmap decodedByte = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
+                    dealPicture.setImageBitmap(decodedByte);
+                }else{
+                    dealPicture = deal.getPicture();
+                }
+                //Ungrab button is enabled to be clicked.
                 grabbedView.setVisibility(View.INVISIBLE);
                 grabButton.setVisibility(View.INVISIBLE);
                 ungrabButton.setVisibility(View.VISIBLE);

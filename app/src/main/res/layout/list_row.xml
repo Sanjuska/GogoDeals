@@ -8,6 +8,7 @@ android:layout_width="match_parent" android:layout_height="match_parent">
     android:textAppearance="?android:attr/textAppearanceListItem"
     android:textSize="20sp"
     android:id="@+id/label"
+    android:textColor="@color/editline"
     android:layout_alignParentTop="true"
     android:layout_alignParentLeft="true"
     android:layout_alignParentStart="true" />
