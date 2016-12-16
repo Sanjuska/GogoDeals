@@ -17,8 +17,8 @@ import com.facebook.login.widget.LoginButton;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * @author Olle Renard, Johan Johansson, Mattias Landkvist, Nikolaos-Machairiotis Sasopoulos
+/** This class opens after Intro. This is the main view with login and registration options.
+ * @author Olle Renard, Johan Johansson, Mattias Landkvist, Nikolaos-Machairiotis Sasopoulos, Sanja Colak
  */
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
@@ -41,6 +41,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     public static String userID;
 
+    /**
+     *
+     * @param savedInstanceState
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -55,12 +59,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
          //  This is the first instantiation of the IdentifierSingleton. This is needed for the
          //   session and user id
-
         filterList = new ArrayList<>();
 
-
         //  Create deal list
-
         dealArrayList = new ArrayList<Deal>();
 
         mainLogin.setOnClickListener(this);
@@ -68,29 +69,22 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         gogoProfile.setOnClickListener(this);
 
     }
-
-
     @Override
 
     /**
      * Temporary main screen where user can sign in, sign up
+     * @param v
      */
     public void onClick(View v) {
         switch (v.getId()) {
 
              // Login for Facebook users
-
-
             case R.id.mainLogin:
                 Intent gogoApp = new Intent(MainActivity.this, FacebookLogin.class);
                 startActivity(gogoApp);
-
-
                 break;
 
-
              // Registration for non-Facebook users
-
             case R.id.mainsignup:
                 Intent gogoApp2 = new Intent(MainActivity.this, newUserSignup.class);
                 startActivity(gogoApp2);
@@ -100,8 +94,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 Intent gogoApp3 = new Intent(MainActivity.this, GogouserLogin.class);
                 startActivity(gogoApp3);
                 break;
-
-
             }
         }
     }

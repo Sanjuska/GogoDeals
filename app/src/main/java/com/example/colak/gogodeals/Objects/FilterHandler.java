@@ -74,9 +74,6 @@ public class FilterHandler extends MapsActivity implements CompoundButton.OnChec
     public void set(ArrayList<String> filters){
         this.filters = filters;
     }
-
-
-
     /**
      * Adds an element to the ArrayList<String> of filters
      * @param filter

@@ -26,14 +26,16 @@ import java.util.UUID;
 
 /**
  * This class consists of parsers recieveing messages via mqtt and controls different parts of the system
- * @author Johan Johansson,
+ * @author Johan Johansson, Sanja Colak
  */
 public class Parsers {
 
-    /*This method takes a topic and a payload message and depending what topic it is
-    it calls the correct method corresponding to that topic.
-    */
-
+    /**
+     * This method takes a topic and a payload message and depending what topic it is
+     it calls the correct method corresponding to that topic.
+     @param topic
+     @param message
+     */
     public void parse(String topic,MqttMessage message) throws JSONException {
         // Checks if this message is related to this instance of the application or to this user
         Log.i("identify",message.getPayload().toString());
@@ -44,7 +46,6 @@ public class Parsers {
                 case "deal/gogodeals/database/deals":
                     try {
                         JSONObject jsonCheck = new JSONObject(new String(message.getPayload()));
-                        //Log.i("json checking",jsonCheck.toString());
                         if (!jsonCheck.getString("data").equals("{}")) {
                             fetchDealParser(message);
                         }
@@ -53,7 +54,7 @@ public class Parsers {
                         e.printStackTrace();
                     }
                     break;
-                // get info from the da
+                // get info from the deal
                 case "deal/gogodeals/database/info":
                     try {
                         grabbedDealParser(message);
@@ -61,7 +62,7 @@ public class Parsers {
                         e.printStackTrace();
                     }
                     break;
-
+                //get user info on the app
                 case "deal/gogodeals/user/info":
                     try {
                         grabbedDealParser(message);
@@ -77,7 +78,7 @@ public class Parsers {
                         e.printStackTrace();
                     }
                     break;
-
+                //fetch grocode list
                 case "Gro/me@gmail.com/fetch-lists":
                     try {
                         grocodeFetchParser(message);
@@ -122,6 +123,11 @@ public class Parsers {
         }
     }
 
+    /**
+     *  This method enables when user logout from the system and login again,
+     * all his saved deal will be listed in the list view
+     * @param message
+     */
     private void setGrabbedDeals(MqttMessage message) throws JSONException {
         Log.i("grabdeal ","startup parser");
         String jsonString = new String(message.getPayload());
@@ -146,27 +152,28 @@ public class Parsers {
         MainActivity.dealArrayList = deals;
 
     }
-
+    /**
+     *  When user set filters what deals will be visible, this choice will
+     * be saved and every time user login again, the filters will be setup on the last chosen filters
+     * @param message
+     */
     private void setFilters(MqttMessage message) throws JSONException {
-
-
         JSONObject tmpObj = new JSONObject(new String(message.getPayload()));
         JSONObject tmpObj2 = new JSONObject(tmpObj.get("data").toString());
         String tmpString = new String(tmpObj2.get("filters").toString());
         Log.i("filters get start ",tmpString);
         String [] tmpArray =  tmpString.split(",");
 
+        // Save chosen filters into list
         ArrayList<String> replaceArray = new ArrayList<>();
         for (String tmp : tmpArray) {
             String returnString = tmp.trim();
             replaceArray.add(returnString);
             Log.i("filter added",returnString);
         }
-
-
-       MainActivity.filterList = replaceArray;
-            MainActivity.messages.fetchDeals(replaceArray,MapsActivity.mLastLocation);
-
+        // Fetch only those deals which user want's to see
+        MainActivity.filterList = replaceArray;
+        MainActivity.messages.fetchDeals(replaceArray,MapsActivity.mLastLocation);
 
         if (MapsActivity.firstLoad){
             //do nothing
@@ -177,9 +184,7 @@ public class Parsers {
             OptionsPopup.optionsPopup.finish();
         }
 
-        }
-
-
+    }
     private void grocodeFetchParser(MqttMessage message) throws JSONException {
         String payload = new String(message.getPayload());
         Log.i("Gro", payload);
@@ -188,9 +193,7 @@ public class Parsers {
             JSONArray jsonArray = new JSONArray(new JSONObject(payload).getJSONArray("data").toString());
             MainActivity.messages.getDeals(jsonArray);
         }
-
     }
-
     private void grocodeListParser(MqttMessage message) throws JSONException {
         String payload = new String(message.getPayload());
         Log.i("This the payload: ", payload);
@@ -198,7 +201,6 @@ public class Parsers {
             JSONArray jsonArray = new JSONArray(new JSONObject(payload).getJSONArray("data").toString());
 
             ArrayList<Deal> deals = new ArrayList<>();
-
             for (int i = 0; i < jsonArray.length(); i++) {
                 deals.add(new Deal(
                         jsonArray.getJSONObject(i).getString("client_name"),
@@ -215,15 +217,14 @@ public class Parsers {
             //GroPopup.grocodeArrayList.addAll(deals);
         }
     }
-    //}
 
-
-    /*
-    This is the parser for fetching deals to the map
-    It takes a payload from a mqqtmessage and turns it into a jsonobject
-    it then extracts the different information from that object and
-    creates a marker with that information.
-    It then puts the marker on the map in Mapsactivity.
+    /**
+     This is the parser for fetching deals to the map
+     It takes a payload from a mqqtmessage and turns it into a jsonobject
+     it then extracts the different information from that object and
+     creates a marker with that information.
+     It then puts the marker on the map in Mapsactivity.
+     @param message
      */
     private void fetchDealParser(MqttMessage message) throws JSONException {
 
@@ -256,52 +257,52 @@ public class Parsers {
             String companyName = jsonObject.getString("client_name");
             Log.i("grabdeal company",companyName);
 
-
+            // Fetch deal on the location
             LatLng latlng = new LatLng(latitude,longitude);
-                if(filters.equals("clothes")) {
-                    //Deal marker on the map including popup
-                    MapsActivity.mMap.addMarker(new MarkerOptions()
-                            .position(latlng)
-                            .title(name)
-                            .icon(BitmapDescriptorFactory
-                                    .fromResource(R.drawable.clothes))
-                            .snippet(companyName + "€" + description + "€" + price + "€" + count + "€" + duration + "€" + picture + "€" + id));
+            if(filters.equals("clothes")) {
+                //Deal marker on the map including popup
+                MapsActivity.mMap.addMarker(new MarkerOptions()
+                        .position(latlng)
+                        .title(name)
+                        .icon(BitmapDescriptorFactory
+                                .fromResource(R.drawable.clothes))
+                        .snippet(companyName + "€" + description + "€" + price + "€" + count + "€" + duration + "€" + picture + "€" + id));
 
-                }else if(filters.equals("food")){
-                    //Deal marker on the map including popup
-                   MapsActivity.mMap.addMarker(new MarkerOptions()
-                            .position(latlng)
-                            .title(name)
+            }else if(filters.equals("food")){
+                //Deal marker on the map including popup
+                MapsActivity.mMap.addMarker(new MarkerOptions()
+                        .position(latlng)
+                        .title(name)
                         .icon(BitmapDescriptorFactory
                                 .fromResource(R.drawable.food))
-                           .snippet(companyName + "€" + description + "€" + price + "€" + count + "€" + duration + "€" + picture + "€" + id));
-                }else if(filters.equals("alcohol")){
-                    //Deal marker on the map including popup
-                    MapsActivity.mMap.addMarker(new MarkerOptions()
-                            .position(latlng)
-                            .title(name)
+                        .snippet(companyName + "€" + description + "€" + price + "€" + count + "€" + duration + "€" + picture + "€" + id));
+            }else if(filters.equals("alcohol")){
+                //Deal marker on the map including popup
+                MapsActivity.mMap.addMarker(new MarkerOptions()
+                        .position(latlng)
+                        .title(name)
                         .icon(BitmapDescriptorFactory
                                 .fromResource(R.drawable.alcohol))
-                            .snippet(companyName + "€" + description + "€" + price + "€" + count + "€" + duration + "€" + picture + "€" + id));
-                }else if(filters.equals("random")){
-                    //Deal marker on the map including popup
-                   MapsActivity.mMap.addMarker(new MarkerOptions()
-                            .position(latlng)
-                            .title(name)
-                            .icon(BitmapDescriptorFactory
-                                    .fromResource(R.drawable.random))
-                           .snippet(companyName + "€" + description + "€" + price + "€" + count + "€" + duration + "€" + picture + "€" + id));
-                }else if(filters.equals("stuff")){
-                    //Deal marker on the map including popup
-                   MapsActivity.mMap.addMarker(new MarkerOptions()
-                            .position(latlng)
-                            .title(name)
+                        .snippet(companyName + "€" + description + "€" + price + "€" + count + "€" + duration + "€" + picture + "€" + id));
+            }else if(filters.equals("random")){
+                //Deal marker on the map including popup
+                MapsActivity.mMap.addMarker(new MarkerOptions()
+                        .position(latlng)
+                        .title(name)
+                        .icon(BitmapDescriptorFactory
+                                .fromResource(R.drawable.random))
+                        .snippet(companyName + "€" + description + "€" + price + "€" + count + "€" + duration + "€" + picture + "€" + id));
+            }else if(filters.equals("stuff")){
+                //Deal marker on the map including popup
+                MapsActivity.mMap.addMarker(new MarkerOptions()
+                        .position(latlng)
+                        .title(name)
                         .icon(BitmapDescriptorFactory
                                 .fromResource(R.drawable.stuff))
-                           .snippet(companyName + "€" + description + "€" + price + "€" + count + "€" + duration + "€" + picture + "€" + id));
-                }
+                        .snippet(companyName + "€" + description + "€" + price + "€" + count + "€" + duration + "€" + picture + "€" + id));
+            }
         }
-        }
+    }
     /**
      * Get the id from a MqttMessage
      * @param message
@@ -319,18 +320,20 @@ public class Parsers {
         return null;
     }
 
-    /*
-   This is the parser for grabbing deals which are showed on the map
-   It takes a payload from a mqttmessage and turns it into a jsonobject
-   it then extracts the different information from that object and
-   those information will be used for displaying them to the user ( Verification number),
-   and it will extract deals_id from the message and save it together with the user_id.
-   This will connect specific user with specific deal.
-    */
+    /**
+     This is the parser for grabbing deals which are showed on the map
+     It takes a payload from a mqttmessage and turns it into a jsonobject
+     it then extracts the different information from that object and
+     those information will be used for displaying them to the user ( Verification number),
+     and it will extract deals_id from the message and save it together with the user_id.
+     This will connect specific user with specific deal.
+     @param message
+     */
     private void grabbedDealParser(MqttMessage message) throws JSONException {
         String dealID;
         int count = 0;
         String verificationID = null;
+
         // Split upp payload messageString into components
         String jsonString = new String(message.getPayload());
         JSONObject jsonData;
@@ -342,15 +345,17 @@ public class Parsers {
         DealsPopup.grabbedView.setVisibility(View.VISIBLE);
         // update units in popup
         DealsPopup.units.setText(String.valueOf(count));
+
         // add deal to list
-        //TextView description = (TextView) MapsActivity.popupMessage.getContentView().findViewById(R.id.description);
-        //MapsActivity.dealArrayList.add(MapsActivity.descriptionOfGrabbedDeal);
         MainActivity.grabbedDeal.setVerificationID(verificationID);
         MainActivity.dealArrayList.add(MainActivity.grabbedDeal);
         // add code to deal in list
         DealsPopup.mProgressDlg.dismiss();
     }
-
+    /**
+     * This method checks if credentials user input correspodents to credentails saved in database
+     * @param message
+     */
     public void checkEmail(MqttMessage message) throws JSONException {
         String emailData;
         String passwordData;
@@ -364,6 +369,7 @@ public class Parsers {
         passwordData = jsonData.getString("password");
         id = jsonData.getString("id");
         IdentifierSingleton.set(id);
+        // Checks information
         if (emailData.equals(GogouserLogin.email) && passwordData.equals(GogouserLogin.password)){
             GogouserLogin.loginResult=true;
             MainActivity.userID = id;
@@ -378,7 +384,9 @@ public class Parsers {
             GogouserLogin.mProgressDlg.dismiss();
         }
     }
-
+    /** This method takes unique user_id from the user who used Facebook for login, and saves this ID in the database as user_id.
+     * @param message
+     */
     public void checkFacebook(MqttMessage message) throws JSONException {
         Log.i("timestampfacebook",new Date().getTime()+"");
         String id;
@@ -396,15 +404,17 @@ public class Parsers {
         FacebookLogin.faceBookLogin.startActivity(gogoApp);
         FacebookLogin.faceBookLogin.finish();
     }
-
+    /**
+     * When filter is chosen, this method put this choice in the database
+     */
     public void putFilters(){
 
         MapsActivity.mPositionMarker = null;
         ArrayList<String> arrayLoop;
         arrayLoop = FilterPopup.filterHandler.filters;
         MainActivity.filterList = arrayLoop;
-            Log.i("filters set",arrayLoop.toString());
-            MainActivity.messages.fetchDeals(arrayLoop,MapsActivity.mLastLocation);
+        Log.i("filters set",arrayLoop.toString());
+        MainActivity.messages.fetchDeals(arrayLoop,MapsActivity.mLastLocation);
 
         FilterPopup.filterPopup.startActivity(new Intent(FilterPopup.filterPopup,OptionsPopup.class));
         FilterPopup.mProgressDlg.dismiss();

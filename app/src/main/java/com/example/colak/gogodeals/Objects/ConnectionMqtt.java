@@ -18,15 +18,13 @@ import org.json.JSONException;
 
 import java.io.UnsupportedEncodingException;
 
-
-/**
- * Created by colak on 06/10/16.
- */
-
-
 /*
 Connectionmqqt handles the communication with the broker.
+
+/**
+ * @author colak on 06/10/16.
  */
+
 public class ConnectionMqtt extends Activity implements MqttCallback {
     // Variables used in the class
     private static final String TAG = "ConnectionMqtt";
@@ -38,20 +36,23 @@ public class ConnectionMqtt extends Activity implements MqttCallback {
     String receiveTopic;
     int qot;
 
-    /*
+    /**
     This is the constructor for connectionmqtt, it takes an activity as input.
     it also instanciates a new parsers class.
+     @param activity
      */
-public ConnectionMqtt(Activity activity){
-    this.parent = activity;
-    parsers = new Parsers();
-    payload = "";
-    sendTopic= "";
-    receiveTopic ="";
-}
-    /*
-    sentmqtt is called from other classe and takes a payload and a topic and starts the connection
+    public ConnectionMqtt(Activity activity){
+        this.parent = activity;
+        parsers = new Parsers();
+        payload = "";
+        sendTopic= "";
+        receiveTopic ="";
+    }
+    /**
+   The method sentmqtt is called from other classe and takes a payload and a topic and starts the connection
     and publishing to the broker. This method only publish and dont subscribe.
+    @param payload
+     @param topic
      */
     public void sendMqtt(String payload, String topic){
         this.payload = payload;
@@ -61,9 +62,13 @@ public ConnectionMqtt(Activity activity){
         open();
     }
 
-    /*
+    /**
     This method is the same as the previous one with the exception of the recievetopic and the qot.
     This method subsrcibes to the topic given.
+     @param payload
+     @param qot
+     @param receiveTopic
+     @param sendTopic
      */
     public void sendMqtt(String payload, String sendTopic, String receiveTopic, int qot){
         this.payload = payload;
@@ -73,11 +78,13 @@ public ConnectionMqtt(Activity activity){
         open();
     }
 
-    //create and establish an MQTT-ConnectionMqtt
+    /*
+    Create and establish an MQTT-ConnectionMqtt
+     */
     public void open() {
         String clientId = MqttClient.generateClientId();
         client = new MqttAndroidClient(parent.getApplicationContext(), "tcp://54.154.153.243:1883",
-        //client = new MqttAndroidClient(parent.getApplicationContext(), "tcp://176.10.136.208:1883",
+                //client = new MqttAndroidClient(parent.getApplicationContext(), "tcp://176.10.136.208:1883",
                 clientId);
         client.setCallback(this);
         try {
@@ -104,7 +111,9 @@ public ConnectionMqtt(Activity activity){
         }
     }
 
-    // This method publishes the payload to the given topic.
+    /*
+    This method publishes the payload to the given topic.
+     */
     public void publish(String payload, String topic){
         byte[] encodedPayload = new byte[0];
         try {
@@ -115,7 +124,9 @@ public ConnectionMqtt(Activity activity){
             e.printStackTrace();
         }
     }
-    // This method subsribes to the topic given with the qos given.
+    /*
+     This method subsribes to the topic given with the qos given.
+     */
     public void subscribe(final String topic, int qos){
         try {
             IMqttToken subToken = client.subscribe(topic, qos);
@@ -154,7 +165,9 @@ public ConnectionMqtt(Activity activity){
         }
     }
 
-    // When a message arrive from a subsribed topic this method calls the parsers class method parse.
+    /**When a message arrive from a subsribed topic this method calls the parsers class method parse.
+     * @param message
+     * @param topic */
     public void messageArrived(String topic, MqttMessage message) throws MqttException {
         try {
             parsers.parse(topic,message);
@@ -166,7 +179,9 @@ public ConnectionMqtt(Activity activity){
 
     }
 
-    //Called when publish has been completed and accepted by broker.
+    /**
+     * Called when publish has been completed and accepted by broker.
+     * @param token */
     public void deliveryComplete(IMqttDeliveryToken token){
     }
 }
