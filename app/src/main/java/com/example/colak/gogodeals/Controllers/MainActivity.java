@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.example.colak.gogodeals.Objects.Deal;
@@ -29,9 +30,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public static Messages messages;
     private CallbackManager callbackManager;
     public static ArrayList<String> filterList;
-    private Button mainLogin;
+    private ImageButton mainLogin;
     private Button mainsignup;
     private Button gogoProfile;
+    private TextView signup;
     public static IdentifierSingleton identifierSingleton;
     public static ArrayList<Deal> dealArrayList;
     public static Deal grabbedDeal;
@@ -51,7 +53,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         messages = new Messages(this);
         identifierSingleton = IdentifierSingleton.getInstance();
         welcometext = (TextView) findViewById(R.id.welcometext);
-        mainLogin = (Button) findViewById(R.id.mainLogin);
+        mainLogin = (ImageButton) findViewById(R.id.mainLogin);
         mainsignup = (Button) findViewById(R.id.mainsignup);
         gogoProfile = (Button) findViewById(R.id.gogoProfile);
 
@@ -66,7 +68,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         mainLogin.setOnClickListener(this);
         mainsignup.setOnClickListener(this);
         gogoProfile.setOnClickListener(this);
-
     }
     @Override
 
@@ -84,7 +85,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 break;
 
              // Registration for non-Facebook users
-            case R.id.mainsignup:
+          case R.id.mainsignup:
                 Intent gogoApp2 = new Intent(MainActivity.this, newUserSignup.class);
                 startActivity(gogoApp2);
                 break;

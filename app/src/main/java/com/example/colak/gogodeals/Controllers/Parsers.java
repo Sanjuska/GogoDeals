@@ -207,20 +207,22 @@ public class Parsers {
             JSONArray jsonArray = new JSONArray(new JSONObject(payload).getJSONArray("data").toString());
 
             ArrayList<Deal> deals = new ArrayList<>();
-            for (int i = 0; i < jsonArray.length(); i++) {
-                deals.add(new Deal(
-                        jsonArray.getJSONObject(i).getString("client_name"),
+            for (int i = 0; i< jsonArray.length();i++) {
+
+                Deal deal = new Deal("test",
                         jsonArray.getJSONObject(i).getString("duration"),
                         jsonArray.getJSONObject(i).getString("price"),
-                        jsonArray.getJSONObject(i).getString("price"),
+                        jsonArray.getJSONObject(i).getString("picture"),
                         jsonArray.getJSONObject(i).getString("description"),
-                        jsonArray.getJSONObject(i).getString("id")));
+                        jsonArray.getJSONObject(i).getString("id"));
+                Log.i("grabdeals startup ", deal.toString());
+                deals.add(deal);
             }
             MainActivity.groDeals = deals;
             OptionsPopup.optionsPopup.startActivity(new Intent(OptionsPopup.optionsPopup, GroPopup.class));
             OptionsPopup.mProgressDlg.dismiss();
             OptionsPopup.optionsPopup.finish();
-            //GroPopup.grocodeArrayList.addAll(deals);
+          GroPopup.grocodeArrayList.addAll(deals);
         } else {
             OptionsPopup.mProgressDlg.dismiss();
             OptionsPopup.optionsPopup.finish();

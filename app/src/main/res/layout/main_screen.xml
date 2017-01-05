@@ -4,26 +4,6 @@
     android:background ="@drawable/gogologin"
     android:layout_height="match_parent">
 
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Facebook login"
-        android:id="@+id/mainLogin"
-        android:layout_marginLeft="0dp"
-        android:nestedScrollingEnabled="false"
-        android:layout_below="@+id/gogoProfile"
-        android:layout_centerHorizontal="true" />
-
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="SIGN UP"
-        android:id="@+id/mainsignup"
-        android:layout_marginLeft="60dp"
-        android:onClick="publishButtonClicked"
-        android:layout_below="@+id/mainLogin"
-        android:layout_centerHorizontal="true" />
-
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -36,14 +16,40 @@
         android:typeface="serif"
         android:textSize="26dp" />
 
+
     <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Gogodeals login"
+        android:layout_width="200dp"
+        android:layout_height="40dp"
+        android:text="GogoDeals Login"
         android:id="@+id/gogoProfile"
         android:layout_marginLeft="0dp"
         android:nestedScrollingEnabled="false"
         android:layout_below="@+id/welcometext"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="132dp" />
-</RelativeLayout>	
+        android:layout_marginTop="78dp"
+        android:layout_alignStart="@+id/mainLogin"
+        android:layout_alignEnd="@+id/mainLogin" />
+
+    <ImageButton
+        android:layout_width="200dp"
+        android:layout_height="70dp"
+        android:text="Facebook login"
+        android:background="@drawable/facebook"
+        android:id="@+id/mainLogin"
+        android:layout_marginLeft="0dp"
+        android:nestedScrollingEnabled="false"
+        android:layout_marginTop="41dp"
+        android:layout_below="@+id/mainsignup"
+        android:layout_alignParentEnd="true"
+        android:layout_marginEnd="66dp" />
+
+    <Button
+        android:layout_width="200dp"
+        android:layout_height="40dp"
+        android:text="SIGN UP"
+        android:id="@+id/mainsignup"
+        android:onClick="publishButtonClicked"
+
+        android:layout_below="@+id/gogoProfile"
+        android:layout_alignStart="@+id/gogoProfile" />
+
+</RelativeLayout>

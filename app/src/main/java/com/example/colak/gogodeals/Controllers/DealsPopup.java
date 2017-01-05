@@ -151,7 +151,10 @@ public class DealsPopup extends Activity {
         duration.setText(components[4]);
 
          // Converting the picture
+        //Log.i(" komigen ",components[5]);
         String base = components[5].split(",")[1];
+        Log.i("komigen1 ",base);
+        Log.i("komigen2 ",components[5].split(",")[0]);
         byte[] decodedString = Base64.decode(base, Base64.DEFAULT);
         Bitmap decodedByte = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
         dealPicture.setImageBitmap(decodedByte);
