@@ -12,6 +12,7 @@ public class IdentifierSingleton {
 
     public static final UUID SESSION_ID = UUID.randomUUID();
     public static UUID USER_ID;
+    public static String EMAIL;
     public static User USER;
 
     /**

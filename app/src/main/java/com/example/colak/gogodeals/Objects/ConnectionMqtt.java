@@ -84,7 +84,7 @@ public class ConnectionMqtt extends Activity implements MqttCallback {
     public void open() {
         String clientId = MqttClient.generateClientId();
         client = new MqttAndroidClient(parent.getApplicationContext(), "tcp://54.154.153.243:1883",
-                //client = new MqttAndroidClient(parent.getApplicationContext(), "tcp://176.10.136.208:1883",
+        //client = new MqttAndroidClient(parent.getApplicationContext(), "tcp://176.10.136.208:1883",
                 clientId);
         client.setCallback(this);
         try {

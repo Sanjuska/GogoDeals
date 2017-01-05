@@ -2,8 +2,12 @@ package com.example.colak.gogodeals.Controllers;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Base64;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -17,7 +21,9 @@ import com.example.colak.gogodeals.R;
 
 import java.util.ArrayList;
 
-
+/**
+ * Class for the content of an activity with a listview populated with information from the Gro system
+ */
 public class GroPopup extends Activity {
     private ListView grocodeListView;
     public static ArrayAdapter<Deal> grocodeAdapter;
@@ -33,6 +39,7 @@ public class GroPopup extends Activity {
     TextView verificationHeader;
 
     Button grocodeBackButton;
+
 
 
     @Override
@@ -80,13 +87,22 @@ public class GroPopup extends Activity {
         });
     }
 
+    //When the user click the deal popup opens with specific information
     public void getContent(Deal deal) {
+        Log.i("grabdeal ",deal.toString());
         company.setText(deal.getCompany());
         description.setText(deal.getDescription());
         price.setText(deal.getPrice());
         verificationHeader.setText("Verification code");
         units.setText(deal.getVerificationID());
         duration.setText(deal.getDuration());
-        dealPicture = deal.getPicture();
+        if (!deal.getStringPicture().isEmpty()){
+            String[] pictureParts = deal.getStringPicture().split(",");
+            byte[] decodedString = Base64.decode(pictureParts[1], Base64.DEFAULT);
+            Bitmap decodedByte = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
+            picture.setImageBitmap(decodedByte);
+        }else{
+            picture = deal.getPicture();
+        }
     }
 }

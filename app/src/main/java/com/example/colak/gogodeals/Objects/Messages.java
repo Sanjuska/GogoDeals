@@ -189,15 +189,15 @@ public class Messages {
      */
     public void getFromGrocode(){
 
-        String subscribeTopic = "Gro/me@gmail.com/fetch-lists"; //+ IdentifierSingleton.USER.getEmail();
+        String subscribeTopic = "Gro/me@gmail.com/fetch-lists"; // "Gro/" + IdentifierSingleton.EMAIL + "/fetch-lists";
 
         String payload =
                 "{" +
-                        " \"client_id\": \"me@gmail.com\"," +
+                        " \"client_id\": \"me@gmail.com\"," +   // "\"" + IdentifierSingleton.EMAIL + "\","
                         " \"request\": \"fetch-lists\"" +
                         "}";
 
-        String publishTopic = "Gro/me@gmail.com/fetch-lists";
+        String publishTopic = "Gro/me@gmail.com/fetch-lists"; // "Gro/" + IdentifierSingleton.EMAIL + "/fetch-lists";
 
         new ConnectionMqtt(activity).sendMqtt(payload,publishTopic,subscribeTopic,qos);
     }

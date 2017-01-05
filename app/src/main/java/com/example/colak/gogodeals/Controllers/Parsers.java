@@ -215,14 +215,16 @@ public class Parsers {
                         jsonArray.getJSONObject(i).getString("picture"),
                         jsonArray.getJSONObject(i).getString("description"),
                         jsonArray.getJSONObject(i).getString("id"));
-                Log.i("grabdeals startup ", deal.toString());
+                Log.i("grodeals startup ",deal.toString());
                 deals.add(deal);
+
             }
             MainActivity.groDeals = deals;
+
             OptionsPopup.optionsPopup.startActivity(new Intent(OptionsPopup.optionsPopup, GroPopup.class));
             OptionsPopup.mProgressDlg.dismiss();
             OptionsPopup.optionsPopup.finish();
-          GroPopup.grocodeArrayList.addAll(deals);
+            //GroPopup.grocodeArrayList.addAll(deals);
         } else {
             OptionsPopup.mProgressDlg.dismiss();
             OptionsPopup.optionsPopup.finish();
